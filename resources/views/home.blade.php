@@ -1,124 +1,67 @@
 @extends('layouts.app')
 
-<style>
-.hero {
-    height: 80vh;
-    background: linear-gradient(135deg, #2563eb, #1e40af);
-    color: white;
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    align-items: center;
-
-    text-align: center;
-    padding: 0 20px;
-}
-
-.hero h1 {
-    font-size: 42px;
-    margin-bottom: 15px;
-}
-
-.hero p {
-    max-width: 600px;
-    margin-bottom: 25px;
-    line-height: 1.6;
-}
-
-/* BUTTON */
-.btn-primary,
-.btn-secondary {
-    padding: 12px 24px;
-    border-radius: 6px;
-    text-decoration: none;
-    font-weight: 600;
-}
-
-.btn-primary {
-    background: white;
-    color: #1e40af;
-}
-
-.btn-secondary {
-    background: #1e40af;
-    color: white;
-}
-
-/* SECTION */
-.section {
-    padding: 60px 20px;
-    text-align: center;
-}
-
-.section h2 {
-    margin-bottom: 20px;
-    font-size: 28px;
-}
-.feature-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
-    gap: 20px;
-    max-width: 900px;
-    margin: 0 auto;
-}
-
-.feature-card {
-    background: #f9fafb;
-    padding: 25px;
-    border-radius: 10px;
-    box-shadow: 0 4px 10px rgba(0,0,0,0.05);
-}
-.cta {
-    background: #f1f5f9;
-    padding: 60px 20px;
-    text-align: center;
-}
-
-</style>
-
 @section('content')
     {{-- HERO --}}
-    <section class="hero">
-        <h1>Selamat Datang di SD Lantabur</h1>
-        <p>
+    <section class="min-h-screen bg-gradient-to-br from-green-700 via-green-800 to-emerald-900 text-white flex flex-col justify-center items-center text-center px-5 py-20">
+        <h1 class="text-6xl font-bold mb-6 leading-tight">Selamat Datang di SD Al- Qur'an Lantabur</h1>
+        <p class="max-w-3xl mb-10 leading-relaxed text-lg text-green-100">
             Membangun generasi cerdas, berakhlak, dan siap menghadapi masa depan
-            melalui pendidikan yang berkualitas.
+            melalui pendidikan yang berkualitas dan inovatif.
         </p>
-        <a href="/about" class="btn-primary">Pelajari Lebih Lanjut</a>
+        <div class="flex gap-4 flex-wrap justify-center">
+            <a href="/about" class="px-8 py-4 bg-white text-green-800 font-bold rounded-lg hover:bg-green-50 transition transform hover:scale-105">Pelajari Lebih Lanjut</a>
+            <a href="/contact" class="px-8 py-4 bg-green-600 text-white font-bold rounded-lg border-2 border-white hover:bg-green-700 transition transform hover:scale-105">Hubungi Kami</a>
+        </div>
     </section>
 
     {{-- ABOUT --}}
-    <section class="section about">
-        <h2>Tentang Kami</h2>
-        <p>
-            SD Lantabur berkomitmen memberikan pendidikan terbaik dengan
-            mengedepankan nilai akademik, karakter, dan teknologi.
-        </p>
+    <section class="py-24 px-5 bg-white">
+        <div class="max-w-4xl mx-auto text-center">
+            <h2 class="text-5xl font-bold mb-8 text-green-800">Tentang Kami</h2>
+            <p class="text-xl text-gray-700 leading-relaxed mb-8">
+                SD Lantabur berkomitmen memberikan pendidikan terbaik dengan
+                mengedepankan nilai akademik, karakter, dan teknologi untuk mempersiapkan
+                generasi pemimpin masa depan.
+            </p>
+            <div class="h-1 w-20 bg-green-700 mx-auto"></div>
+        </div>
     </section>
 
     {{-- KEUNGGULAN --}}
-    <secbtion class="section features">
-        <h2>Keunggulan Kami</h2>
-        <div class="feature-grid">
-            <div class="feature-card">
-                <h3>Guru Profesional</h3>
-                <p>Tenaga pendidik berpengalaman dan berdedikasi.</p>
-            </div>
-            <div class="feature-card">
-                <h3>Lingkungan Nyaman</h3>
-                <p>Suasana belajar yang aman dan kondusif.</p>
-            </div>
-            <div class="feature-card">
-                <h3>Pendidikan Karakter</h3>
-                <p>Menanamkan nilai moral sejak dini.</p>
+    <section class="py-24 px-5 bg-green-50">
+        <div class="max-w-6xl mx-auto">
+            <h2 class="text-5xl font-bold mb-16 text-center text-green-800">Keunggulan Kami</h2>
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+                <div class="bg-white p-10 rounded-2xl shadow-lg hover:shadow-2xl transition transform hover:-translate-y-2 border-t-4 border-green-700">
+                    <div class="text-4xl mb-4">👨‍🏫</div>
+                    <h3 class="text-2xl font-bold mb-4 text-green-800">Guru Profesional</h3>
+                    <p class="text-gray-700 leading-relaxed">Tenaga pendidik berpengalaman dan berdedikasi tinggi dalam memberikan pembelajaran terbaik.</p>
+                </div>
+                <div class="bg-white p-10 rounded-2xl shadow-lg hover:shadow-2xl transition transform hover:-translate-y-2 border-t-4 border-green-700">
+                    <div class="text-4xl mb-4">🏫</div>
+                    <h3 class="text-2xl font-bold mb-4 text-green-800">Lingkungan Nyaman</h3>
+                    <p class="text-gray-700 leading-relaxed">Suasana belajar yang aman, bersih, dan kondusif untuk mengembangkan potensi siswa.</p>
+                </div>
+                <div class="bg-white p-10 rounded-2xl shadow-lg hover:shadow-2xl transition transform hover:-translate-y-2 border-t-4 border-green-700">
+                    <div class="text-4xl mb-4">💚</div>
+                    <h3 class="text-2xl font-bold mb-4 text-green-800">Pendidikan Karakter</h3>
+                    <p class="text-gray-700 leading-relaxed">Menanamkan nilai moral, etika, dan akhlak mulia sejak dini kepada peserta didik.</p>
+                </div>
             </div>
         </div>
-    </secbtion>
+    </section>
 
     {{-- CTA --}}
-    <section class="cta">
-        <h2>Bergabung Bersama Kami</h2>
-        <p>Daftarkan putra-putri Anda dan wujudkan masa depan yang gemilang.</p>
-        <a href="/contact" class="btn-secondary">Hubungi Kami</a>
+    <section class="bg-gradient-to-r from-green-700 to-emerald-900 py-24 px-5 text-center text-white">
+        <div class="max-w-4xl mx-auto">
+            <h2 class="text-5xl font-bold mb-6">Bergabung Bersama Kami</h2>
+            <p class="text-xl mb-10 text-green-100 leading-relaxed">
+                Daftarkan putra-putri Anda dan wujudkan masa depan yang gemilang bersama
+                SD Lantabur, tempat impian menjadi kenyataan.
+            </p>
+            <a href="/contact" class="inline-block px-10 py-4 bg-white text-green-800 font-bold text-lg rounded-lg hover:bg-green-50 transition transform hover:scale-105 shadow-lg">
+                Hubungi Kami Sekarang
+            </a>
+        </div>
     </section>
 @endsection
