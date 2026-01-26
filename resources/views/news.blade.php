@@ -1,8 +1,9 @@
 @extends('layouts.app')
 
 @section('content')
+
     {{-- HERO NEWS --}}
-    <section class="bg-gradient-to-r from-[#47663D] to-[#47663D] text-white py-24 px-5">
+    <section class="bg-gradient-to-r from-[#47663D] to-[#47663D] text-white py-24 px-5 border-b-4 border-[#FFB81C]">
         <div class="max-w-4xl mx-auto text-center">
             <h1 class="text-5xl font-bold mb-6">Berita & Informasi</h1>
             <p class="text-xl text-white/60">Dapatkan update terbaru dari SD Al-Qur'an Lantabur</p>
@@ -12,6 +13,12 @@
     {{-- NEWS SECTION --}}
     <section class="py-24 px-5 bg-white">
         <div class="max-w-6xl mx-auto">
+            <div class="text-center mb-16">
+                <p class="text-[#FFB81C] text-2xl ornament-text mb-4">✦ ✦ ✦</p>
+                <h2 class="text-5xl font-bold text-[#47663D] mb-4">Berita & Informasi</h2>
+                <p class="text-gray-600 text-lg italic">Update terbaru dari komunitas SD Al-Qur'an Lantabur</p>
+            </div>
+            
             {{-- Search & Filter --}}
             <div class="mb-12 flex gap-4 flex-wrap justify-center">
                 <input type="text" placeholder="Cari berita..." class="px-6 py-3 border-2 border-[#47663D]/30 rounded-lg focus:outline-none focus:border-[#47663D] transition w-full md:w-64">
@@ -27,23 +34,23 @@
             {{-- News Grid --}}
             <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
                 {{-- News Card 1 --}}
-                <article class="bg-white rounded-lg shadow-md hover:shadow-xl transition overflow-hidden border-t-4 border-[#47663D]">
+                <article class="bg-white rounded-lg shadow-md hover:shadow-xl transition overflow-hidden border-t-4 border-[#47663D] border-b-4 border-b-[#FFB81C]">
                     <div class="bg-gradient-to-br from-[#47663D] to-[#47663D] h-48 flex items-center justify-center text-white">
                         <div class="text-6xl">📚</div>
                     </div>
                     <div class="p-6">
                         <div class="flex items-center gap-2 mb-3">
-                            <span class="text-xs text-[#47663D]/50 text-[#47663D] px-3 py-1 rounded-full font-semibold">Akademik</span>
+                            <span class="text-xs bg-blue-100 text-blue-800 px-3 py-1 rounded-full font-semibold">Akademik</span>
                             <span class="text-xs text-gray-500">23 Januari 2026</span>
                         </div>
-                        <h3 class="text-2xl font-bold text-[#47663D] mb-3">Peluncuran Program Literasi Digital</h3>
-                        <p class="text-gray-700 mb-4 line-clamp-3">SD Al-Qur'an Lantabur meluncurkan program literasi digital untuk meningkatkan kemampuan siswa dalam menggunakan teknologi dengan bijak.</p>
-                        <a href="#" class="text-[#47663D] font-semibold hover:text-[#47663D] transition">Baca Selengkapnya →</a>
+                        <h3 class="text-2xl font-bold text-[#47663D] mb-3">Peluncuran Program Literasi Al-Qur'an Digital</h3>
+                        <p class="text-gray-700 mb-4 line-clamp-3">SD Al-Qur'an Lantabur meluncurkan program literasi digital berbasis Al-Qur'an untuk meningkatkan kemampuan siswa menggunakan teknologi dengan bijak.</p>
+                        <a href="#" class="text-[#FFB81C] font-semibold hover:text-[#F0A500] transition">Baca Selengkapnya →</a>
                     </div>
                 </article>
 
                 {{-- News Card 2 --}}
-                <article class="bg-white rounded-lg shadow-md hover:shadow-xl transition overflow-hidden border-t-4 border-[#47663D]">
+                <article class="bg-white rounded-lg shadow-md hover:shadow-xl transition overflow-hidden border-t-4 border-[#47663D] border-b-4 border-b-[#FFB81C]">
                     <div class="bg-gradient-to-br from-[#47663D] to-[#47663D] h-48 flex items-center justify-center text-white">
                         <div class="text-6xl">🏆</div>
                     </div>
@@ -53,24 +60,24 @@
                             <span class="text-xs text-gray-500">20 Januari 2026</span>
                         </div>
                         <h3 class="text-2xl font-bold text-[#47663D] mb-3">Juara Lomba Cerdas Cermat Tingkat Kabupaten</h3>
-                        <p class="text-gray-700 mb-4 line-clamp-3">Tim siswa SD Al-Qur'an Lantabur berhasil meraih juara pertama dalam kompetisi Cerdas Cermat tingkat kabupaten dengan skor sempurna.</p>
-                        <a href="#" class="text-[#47663D] font-semibold hover:text-[#47663D] transition">Baca Selengkapnya →</a>
+                        <p class="text-gray-700 mb-4 line-clamp-3">Tim siswa SD Al-Qur'an Lantabur meraih juara pertama dalam kompetisi Cerdas Cermat tingkat kabupaten dengan skor sempurna.</p>
+                        <a href="#" class="text-[#FFB81C] font-semibold hover:text-[#F0A500] transition">Baca Selengkapnya →</a>
                     </div>
                 </article>
 
                 {{-- News Card 3 --}}
-                <article class="bg-white rounded-lg shadow-md hover:shadow-xl transition overflow-hidden border-t-4 border-[#47663D]">
+                <article class="bg-white rounded-lg shadow-md hover:shadow-xl transition overflow-hidden border-t-4 border-[#47663D] border-b-4 border-b-[#FFB81C]">
                     <div class="bg-gradient-to-br from-[#47663D] to-[#47663D] h-48 flex items-center justify-center text-white">
                         <div class="text-6xl">🎉</div>
                     </div>
                     <div class="p-6">
                         <div class="flex items-center gap-2 mb-3">
-                            <span class="text-xs bg-blue-100 text-blue-800 px-3 py-1 rounded-full font-semibold">Kegiatan</span>
+                            <span class="text-xs bg-purple-100 text-purple-800 px-3 py-1 rounded-full font-semibold">Kegiatan</span>
                             <span class="text-xs text-gray-500">18 Januari 2026</span>
                         </div>
-                        <h3 class="text-2xl font-bold text-[#47663D] mb-3">Perayaan Tahun Baru Imlek 2577</h3>
-                        <p class="text-gray-700 mb-4 line-clamp-3">Seluruh siswa dan guru SD Al-Qur'an Lantabur merayakan Tahun Baru Imlek dengan berbagai acara budaya dan hiburan yang meriah.</p>
-                        <a href="#" class="text-[#47663D] font-semibold hover:text-[#47663D] transition">Baca Selengkapnya →</a>
+                        <h3 class="text-2xl font-bold text-[#47663D] mb-3">Perayaan Isra & Mi'raj Penuh Makna</h3>
+                        <p class="text-gray-700 mb-4 line-clamp-3">Seluruh siswa dan guru SD Al-Qur'an Lantabur merayakan Isra & Mi'raj dengan berbagai kegiatan keagamaan dan edukasi spiritual yang bermakna.</p>
+                        <a href="#" class="text-[#FFB81C] font-semibold hover:text-[#F0A500] transition">Baca Selengkapnya →</a>
                     </div>
                 </article>
 
