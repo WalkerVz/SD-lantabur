@@ -1,105 +1,111 @@
 @extends('layouts.app')
 
 @section('content')
+
     {{-- HERO STAFF --}}
-    <section class="bg-gradient-to-r from-[#47663D] to-[#47663D] text-white py-24 px-5">
+    <section class="bg-gradient-to-r from-[#47663D] to-[#47663D] text-white py-24 px-5 border-b-4 border-[#FFB81C]">
         <div class="max-w-4xl mx-auto text-center">
             <h1 class="text-5xl font-bold mb-6">Tenaga Pendidik</h1>
-            <p class="text-xl text-white/60">Tim profesional yang berdedikasi untuk kesuksesan siswa</p>
         </div>
     </section>
 
-    {{-- STAFF STRUCTURE --}}
-    <section class="py-24 px-5 bg-white">
+    <section class="py-20 px-5">
         <div class="max-w-6xl mx-auto">
-            <h2 class="text-4xl font-bold text-center text-[#47663D] mb-16">Struktur Organisasi</h2>
+            <div class="text-center mb-16">
+                <p class="text-[#FFB81C] text-2xl ornament-text mb-4">✦ ✦ ✦</p>
+                <h2 class="text-5xl font-bold text-[#47663D] mb-4">Struktur Organisasi</h2>
+                <p class="text-gray-600 text-lg italic">Tim Profesional Berdedikasi untuk Kesuksesan Siswa</p>
+            </div>
             
             {{-- Kepala Sekolah --}}
             <div class="mb-16">
-                <div class="bg-gradient-to-r from-[#47663D] to-[#47663D] text-white p-8 rounded-lg shadow-lg max-w-md mx-auto">
+                <div class="bg-gradient-to-r from-[#47663D] to-[#47663D] text-white p-8 rounded-xl shadow-lg max-w-md mx-auto border-b-4 border-[#FFB81C]">
                     <div class="text-4xl mb-4 text-center">👨‍💼</div>
                     <h3 class="text-2xl font-bold text-center mb-2">Kepala Sekolah</h3>
-                    <p class="text-center text-white/60">Memimpin dan mengelola seluruh kegiatan sekolah</p>
+                    <p class="text-center text-white/70 italic">Memimpin dan mengelola visi pendidikan Islami berkualitas</p>
                 </div>
             </div>
 
             {{-- Guru dan Staff --}}
             <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
                 {{-- Guru Kelas --}}
-                <div class="bg-gray-100 p-8 rounded-lg shadow-md border-l-4 border-[#47663D] hover:shadow-lg transition">
+                <div class="bg-white p-8 rounded-xl shadow-md border-l-4 border-[#FFB81C] border-b-4 border-b-[#47663D] hover:shadow-lg transition">
                     <div class="text-4xl mb-4">👩‍🏫</div>
                     <h3 class="text-2xl font-bold text-[#47663D] mb-3">Guru Kelas</h3>
-                    <p class="text-gray-700 mb-4">Mengajar mata pelajaran umum dengan metode pembelajaran terkini.</p>
+                    <p class="text-gray-700 mb-4">Mengajar mata pelajaran umum dengan metode pembelajaran inovatif berbasis Islami.</p>
                     <ul class="text-gray-700 space-y-2 text-sm">
-                        <li>✓ Kelas 1 - 6</li>
-                        <li>✓ Kurikulum nasional</li>
-                        <li>✓ Pembelajaran interaktif</li>
+                        <li class="flex gap-2"><span class="text-[#FFB81C]">✦</span> Kelas 1 - 6</li>
+                        <li class="flex gap-2"><span class="text-[#FFB81C]">✦</span> Kurikulum nasional + nilai Al-Qur'an</li>
+                        <li class="flex gap-2"><span class="text-[#FFB81C]">✦</span> Pembelajaran interaktif</li>
                     </ul>
                 </div>
 
                 {{-- Guru Mata Pelajaran --}}
-                <div class="bg-gray-100 p-8 rounded-lg shadow-md border-l-4 border-[#47663D] hover:shadow-lg transition">
+                <div class="bg-white p-8 rounded-xl shadow-md border-l-4 border-[#FFB81C] border-b-4 border-b-[#47663D] hover:shadow-lg transition">
                     <div class="text-4xl mb-4">🎓</div>
                     <h3 class="text-2xl font-bold text-[#47663D] mb-3">Guru Mata Pelajaran</h3>
-                    <p class="text-gray-700 mb-4">Spesialis dalam mata pelajaran tertentu dengan expertise mendalam.</p>
+                    <p class="text-gray-700 mb-4">Spesialis dalam mata pelajaran dengan expertise mendalam dan dedikasi tinggi.</p>
                     <ul class="text-gray-700 space-y-2 text-sm">
-                        <li>✓ Bahasa Indonesia</li>
-                        <li>✓ Matematika</li>
-                        <li>✓ Ilmu Pengetahuan Alam</li>
-                        <li>✓ Ilmu Pengetahuan Sosial</li>
+                        <li class="flex gap-2"><span class="text-[#FFB81C]">✦</span> Bahasa Indonesia</li>
+                        <li class="flex gap-2"><span class="text-[#FFB81C]">✦</span> Matematika</li>
+                        <li class="flex gap-2"><span class="text-[#FFB81C]">✦</span> IPA & IPS</li>
                     </ul>
                 </div>
 
                 {{-- Guru Pendamping --}}
-                <div class="bg-gray-100 p-8 rounded-lg shadow-md border-l-4 border-[#47663D] hover:shadow-lg transition">
+                <div class="bg-white p-8 rounded-xl shadow-md border-l-4 border-[#FFB81C] border-b-4 border-b-[#47663D] hover:shadow-lg transition">
                     <div class="text-4xl mb-4">🤝</div>
                     <h3 class="text-2xl font-bold text-[#47663D] mb-3">Guru Pendamping</h3>
-                    <p class="text-gray-700 mb-4">Memberikan dukungan khusus dan pendampingan untuk siswa.</p>
+                    <p class="text-gray-700 mb-4">Memberikan dukungan khusus dan pendampingan holistik untuk setiap siswa.</p>
                     <ul class="text-gray-700 space-y-2 text-sm">
-                        <li>✓ Bimbingan pribadi</li>
-                        <li>✓ Pembelajaran remedial</li>
-                        <li>✓ Pengayaan materi</li>
+                        <li class="flex gap-2"><span class="text-[#FFB81C]">✦</span> Bimbingan pribadi</li>
+                        <li class="flex gap-2"><span class="text-[#FFB81C]">✦</span> Pembelajaran remedial</li>
+                        <li class="flex gap-2"><span class="text-[#FFB81C]">✦</span> Pengayaan materi</li>
                     </ul>
                 </div>
 
                 {{-- Guru Agama --}}
-                <div class="bg-gray-100 p-8 rounded-lg shadow-md border-l-4 border-[#47663D] hover:shadow-lg transition">
+                <div class="bg-white p-8 rounded-xl shadow-md border-l-4 border-[#FFB81C] border-b-4 border-b-[#47663D] hover:shadow-lg transition">
                     <div class="text-4xl mb-4">📖</div>
-                    <h3 class="text-2xl font-bold text-[#47663D] mb-3">Guru Agama</h3>
-                    <p class="text-gray-700 mb-4">Membimbing pendidikan karakter dan nilai-nilai spiritual.</p>
+                    <h3 class="text-2xl font-bold text-[#47663D] mb-3">Guru Al-Qur'an</h3>
+                    <p class="text-gray-700 mb-4">Membimbing pendidikan karakter dan nilai-nilai spiritual berbasis Al-Qur'an.</p>
                     <ul class="text-gray-700 space-y-2 text-sm">
-                        <li>✓ Pendidikan Al-Qur'an</li>
-                        <li>✓ Nilai moral</li>
-                        <li>✓ Akhlak mulia</li>
+                        <li class="flex gap-2"><span class="text-[#FFB81C]">✦</span> Tahsin & Tahfiz</li>
+                        <li class="flex gap-2"><span class="text-[#FFB81C]">✦</span> Nilai moral Islami</li>
+                        <li class="flex gap-2"><span class="text-[#FFB81C]">✦</span> Akhlak mulia</li>
                     </ul>
                 </div>
 
                 {{-- Guru Olahraga & Seni --}}
-                <div class="bg-gray-100 p-8 rounded-lg shadow-md border-l-4 border-[#47663D] hover:shadow-lg transition">
+                <div class="bg-white p-8 rounded-xl shadow-md border-l-4 border-[#FFB81C] border-b-4 border-b-[#47663D] hover:shadow-lg transition">
                     <div class="text-4xl mb-4">🎨</div>
                     <h3 class="text-2xl font-bold text-[#47663D] mb-3">Guru Olahraga & Seni</h3>
-                    <p class="text-gray-700 mb-4">Mengembangkan kreativitas dan kesehatan jasmani siswa.</p>
+                    <p class="text-gray-700 mb-4">Mengembangkan kreativitas dan kesehatan jasmani dengan pendekatan Islami.</p>
                     <ul class="text-gray-700 space-y-2 text-sm">
-                        <li>✓ Pendidikan Jasmani</li>
-                        <li>✓ Seni Rupa</li>
-                        <li>✓ Seni Musik</li>
+                        <li class="flex gap-2"><span class="text-[#FFB81C]">✦</span> Pendidikan Jasmani</li>
+                        <li class="flex gap-2"><span class="text-[#FFB81C]">✦</span> Seni Rupa</li>
+                        <li class="flex gap-2"><span class="text-[#FFB81C]">✦</span> Seni Musik</li>
                     </ul>
                 </div>
 
                 {{-- Staff Administrasi --}}
-                <div class="bg-gray-100 p-8 rounded-lg shadow-md border-l-4 border-[#47663D] hover:shadow-lg transition">
+                <div class="bg-white p-8 rounded-xl shadow-md border-l-4 border-[#FFB81C] border-b-4 border-b-[#47663D] hover:shadow-lg transition">
                     <div class="text-4xl mb-4">📋</div>
                     <h3 class="text-2xl font-bold text-[#47663D] mb-3">Staff Administrasi</h3>
-                    <p class="text-gray-700 mb-4">Mengelola data dan administrasi sekolah dengan profesional.</p>
+                    <p class="text-gray-700 mb-4">Mengelola data dan administrasi sekolah dengan profesional dan transparansi.</p>
                     <ul class="text-gray-700 space-y-2 text-sm">
-                        <li>✓ Tata usaha</li>
-                        <li>✓ Keuangan</li>
-                        <li>✓ Arsip data</li>
+                        <li class="flex gap-2"><span class="text-[#FFB81C]">✦</span> Tata usaha</li>
+                        <li class="flex gap-2"><span class="text-[#FFB81C]">✦</span> Keuangan</li>
+                        <li class="flex gap-2"><span class="text-[#FFB81C]">✦</span> Arsip data</li>
                     </ul>
                 </div>
             </div>
+        </div>
+    </section>
 
-            {{-- Kualifikasi --}}
+    {{-- Kualifikasi --}}
+    <section class="py-20 px-5">
+        <div class="max-w-6xl mx-auto">
             <div class="mt-16 bg-gray-100 p-12 rounded-lg">
                 <h3 class="text-3xl font-bold text-[#47663D] mb-8 text-center">Kualifikasi Tenaga Pendidik</h3>
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
