@@ -4,23 +4,11 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>SD Al-Qur'an Lantabur - Sekolah Dasar Unggul</title>
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+    <link rel="icon" type="image/png" href="{{ asset('images/logo.png') }}">
     <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
     <script src="https://cdn.tailwindcss.com"></script>
-<<<<<<< HEAD
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
     
-=======
-    <!-- @vite(['resources/css/app.css', 'resources/js/app.js']) -->
-    <style>
-        @keyframes spin-slow {
-            from { transform: rotate(0deg); }
-            to { transform: rotate(360deg); }
-        }
-        .animate-spin-slow {
-            animation: spin-slow 2s linear infinite;
-        }
-    </style>
->>>>>>> 6fce58e258438c0c421736a4bc6dc8a2803d5513
 </head>
 <body class="font-sans" x-data="{ pageLoading: true, navigationLoading: false }" 
     x-init="setTimeout(() => pageLoading = false, 800)"

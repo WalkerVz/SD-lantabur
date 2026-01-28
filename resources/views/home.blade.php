@@ -18,17 +18,17 @@
     </div>
 
     {{-- HERO SLIDER --}}
-    <section class="h-96 md:h-[550px] lg:h-[660px] text-white flex flex-col justify-center items-center text-center px-5 py-20 relative overflow-hidden" x-data="{ current: 0, slides: [
-        { title: 'Selamat Datang di SD Al-Qur\'an Lantabur', desc: 'Membangun generasi cerdas, berakhlak, dan siap menghadapi masa depan melalui pendidikan yang berkualitas dan inovatif.', image: 'url({{ asset('images/slide-1.jpeg') }})' },
-        { title: 'Pendidikan Berkualitas', desc: 'Dengan kurikulum terkini dan metode pembelajaran inovatif, kami memastikan setiap siswa mendapatkan pendidikan terbaik.', image: 'url({{ asset('images/slide-2.jpeg') }})' },
-        { title: 'Lingkungan Mendukung', desc: 'Fasilitas lengkap, guru profesional, dan suasana yang kondusif untuk mengembangkan potensi maksimal siswa.', image: 'url({{ asset('images/slide-3.jpeg') }})' }
-    ]}" x-init="setInterval(() => { current = (current + 1) % slides.length }, 5000)">
+    <section
+        class="h-96 md:h-[550px] lg:h-[660px] text-white flex flex-col justify-center items-center text-center px-5 py-20 relative overflow-hidden"
+        x-data="heroSlider()"
+        x-init="setInterval(() => { if (slides.length > 0) { current = (current + 1) % slides.length } }, 5000)"
+    >
         
         {{-- Background Image with Overlay --}}
         <template x-for="(slide, index) in slides" :key="index">
             <div :class="current === index ? 'opacity-100' : 'opacity-0'" 
                 class="slider-fade absolute inset-0" 
-                :style="{ backgroundImage: slide.image, backgroundSize: 'cover', backgroundPosition: 'center' }">
+                :style="{ backgroundImage: 'url(' + slide.image + ')', backgroundSize: 'cover', backgroundPosition: 'center' }">
                 <div class="absolute inset-0 bg-gradient-to-b from-black/50 via-black/40 to-[#47663D]/60"></div>
             </div>
         </template>
@@ -67,6 +67,15 @@
             <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path></svg>
         </button>
     </section>
+
+    <script>
+        function heroSlider() {
+            return {
+                current: 0,
+                slides: @json($slidesData),
+            };
+        }
+    </script>
 
     {{-- SEKAPUR SIRIH --}}
     <section class="py-16 px-5 bg-gradient-to-r from-[#47663D] to-[#47663D]/90 text-white">

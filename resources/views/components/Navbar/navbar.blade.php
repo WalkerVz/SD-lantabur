@@ -7,13 +7,14 @@
                 <span>0822-8835-9565</span>
             </a>
             <a href="mailto:sdalquranlantabur@gmail.com" class="flex items-center gap-2 hover:text-white/70 transition">
-                <span>✉️</span>
+            <i class="fa-solid fa-envelope text-purple-300 "></i>
                 <span>sdalquranlantabur@gmail.com</span>
             </a>
         </div>
-        <div class="flex gap-3">
+        <div class="flex gap-3 items-center">
+            <i class = "fa-brands fa-facebook text-blue-300"></i>
             <a href="#" class="hover:text-white/70 transition">Facebook</a>
-            <span>•</span>
+            <i class="fa-brands fa-instagram text-pink-300 mt-1"></i>
             <a href="#" class="hover:text-white/70 transition">Instagram</a>
         </div>
     </div>
