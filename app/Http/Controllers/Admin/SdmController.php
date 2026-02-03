@@ -44,13 +44,21 @@ class SdmController extends Controller
             'nomor_handphone' => 'nullable|string|max:20',
             'spesialisasi_id' => 'nullable|exists:spesialisasi,id',
             'foto' => 'nullable|image|max:2048',
+            'jenis_kelamin' => 'nullable|string|max:20',
+            'tempat_lahir' => 'nullable|string|max:100',
+            'tanggal_lahir' => 'nullable|date',
+            'alamat' => 'nullable|string',
+            'agama' => 'nullable|string|max:30',
         ]);
 
-        $data = $request->only(['nama', 'jabatan', 'email', 'nomor_handphone', 'spesialisasi_id']);
+        $data = $request->only(['nama', 'jabatan', 'email', 'nomor_handphone', 'spesialisasi_id', 'jenis_kelamin', 'tempat_lahir', 'tanggal_lahir', 'alamat', 'agama']);
         if ($request->hasFile('foto')) {
             $data['foto'] = $request->file('foto')->store('staff_sdm', 'public');
         }
         StaffSdm::create($data);
+        if ($request->wantsJson()) {
+            return response()->json(['success' => true]);
+        }
         return redirect()->route('admin.sdm.index')->with('success', 'Data SDM berhasil ditambahkan.');
     }
 
@@ -71,9 +79,14 @@ class SdmController extends Controller
             'nomor_handphone' => 'nullable|string|max:20',
             'spesialisasi_id' => 'nullable|exists:spesialisasi,id',
             'foto' => 'nullable|image|max:2048',
+            'jenis_kelamin' => 'nullable|string|max:20',
+            'tempat_lahir' => 'nullable|string|max:100',
+            'tanggal_lahir' => 'nullable|date',
+            'alamat' => 'nullable|string',
+            'agama' => 'nullable|string|max:30',
         ]);
 
-        $data = $request->only(['nama', 'jabatan', 'email', 'nomor_handphone', 'spesialisasi_id']);
+        $data = $request->only(['nama', 'jabatan', 'email', 'nomor_handphone', 'spesialisasi_id', 'jenis_kelamin', 'tempat_lahir', 'tanggal_lahir', 'alamat', 'agama']);
         if ($request->hasFile('foto')) {
             if ($item->foto) {
                 Storage::disk('public')->delete($item->foto);
@@ -81,28 +94,46 @@ class SdmController extends Controller
             $data['foto'] = $request->file('foto')->store('staff_sdm', 'public');
         }
         $item->update($data);
+        if ($request->wantsJson()) {
+            return response()->json(['success' => true]);
+        }
         return redirect()->route('admin.sdm.index')->with('success', 'Data SDM berhasil diubah.');
     }
 
-    public function destroy(string $id)
+    public function destroy(string $id, Request $request)
     {
         $item = StaffSdm::findOrFail($id);
         if ($item->foto) {
             Storage::disk('public')->delete($item->foto);
         }
         $item->delete();
+        if ($request->wantsJson()) {
+            return response()->json(['success' => true]);
+        }
         return redirect()->route('admin.sdm.index')->with('success', 'Data SDM berhasil dihapus.');
     }
 
     public function exportExcel(Request $request)
     {
-        $query = StaffSdm::with('spesialisasi')->orderBy('nama');
-        if ($request->filled('spesialisasi_id')) {
-            $query->where('spesialisasi_id', $request->spesialisasi_id);
-        }
-        $rows = $query->get();
-        $filename = 'data_sdm_' . date('Y-m-d_His') . '.xlsx';
+        try {
+            while (ob_get_level()) {
+                ob_end_clean();
+            }
+            $query = StaffSdm::with('spesialisasi')->orderBy('nama');
+            if ($request->filled('spesialisasi_id')) {
+                $query->where('spesialisasi_id', $request->spesialisasi_id);
+            }
+            $rows = $query->get();
+            $filename = 'data_sdm_' . date('Y-m-d_His') . '.xlsx';
 
-        return Excel::download(new SdmExport($rows), $filename, \Maatwebsite\Excel\Excel::XLSX);
+            $path = 'exports/' . $filename;
+            Storage::disk('local')->makeDirectory('exports');
+            \Maatwebsite\Excel\Facades\Excel::store(new SdmExport($rows), $path, 'local');
+
+            return response()->download(storage_path('app/' . $path), $filename)->deleteFileAfterSend(true);
+        } catch (\Throwable $e) {
+            report($e);
+            return redirect()->route('admin.sdm.index')->with('error', 'Export gagal: ' . $e->getMessage());
+        }
     }
 }

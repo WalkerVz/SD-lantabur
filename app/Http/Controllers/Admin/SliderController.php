@@ -37,6 +37,9 @@ class SliderController extends Controller
             'urutan' => $request->urutan ?? 0,
             'aktif' => $request->boolean('aktif'),
         ]);
+        if ($request->wantsJson()) {
+            return response()->json(['success' => true]);
+        }
         return redirect()->route('admin.slider.index')->with('success', 'Slider berhasil ditambahkan.');
     }
 
@@ -67,14 +70,20 @@ class SliderController extends Controller
             $data['gambar'] = $request->file('gambar')->store('sliders', 'public');
         }
         $item->update($data);
+        if ($request->wantsJson()) {
+            return response()->json(['success' => true]);
+        }
         return redirect()->route('admin.slider.index')->with('success', 'Slider berhasil diubah.');
     }
 
-    public function destroy(string $id)
+    public function destroy(string $id, Request $request)
     {
         $item = Slider::findOrFail($id);
         Storage::disk('public')->delete($item->gambar);
         $item->delete();
+        if ($request->wantsJson()) {
+            return response()->json(['success' => true]);
+        }
         return redirect()->route('admin.slider.index')->with('success', 'Slider berhasil dihapus.');
     }
 }

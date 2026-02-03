@@ -40,6 +40,9 @@ class GalleryController extends Controller
             'gambar' => $path,
             'urutan' => $request->urutan ?? 0,
         ]);
+        if ($request->wantsJson()) {
+            return response()->json(['success' => true]);
+        }
         return redirect()->route('admin.gallery.index')->with('success', 'Foto galeri berhasil ditambahkan.');
     }
 
@@ -65,14 +68,20 @@ class GalleryController extends Controller
             $data['gambar'] = $request->file('gambar')->store('gallery', 'public');
         }
         $item->update($data);
+        if ($request->wantsJson()) {
+            return response()->json(['success' => true]);
+        }
         return redirect()->route('admin.gallery.index')->with('success', 'Foto galeri berhasil diubah.');
     }
 
-    public function destroy(string $id)
+    public function destroy(string $id, Request $request)
     {
         $item = Gallery::findOrFail($id);
         Storage::disk('public')->delete($item->gambar);
         $item->delete();
+        if ($request->wantsJson()) {
+            return response()->json(['success' => true]);
+        }
         return redirect()->route('admin.gallery.index')->with('success', 'Foto galeri berhasil dihapus.');
     }
 }

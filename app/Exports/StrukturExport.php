@@ -40,17 +40,17 @@ class StrukturExport implements FromCollection, WithHeadings, WithStyles, WithCo
                 'font' => ['bold' => true, 'size' => 12],
                 'fill' => [
                     'fillType' => \PhpOffice\PhpSpreadsheet\Style\Fill::FILL_SOLID,
-                    'startColor' => ['rgb' => '47663D'],
+                    'startColor' => ['argb' => 'FF47663D'],
                 ],
                 'alignment' => ['horizontal' => \PhpOffice\PhpSpreadsheet\Style\Alignment::HORIZONTAL_CENTER],
             ],
-            'A1:G1' => ['font' => ['color' => ['rgb' => 'FFFFFF']]],
+            'A1:G1' => ['font' => ['color' => ['argb' => 'FFFFFFFF']]],
             'A:G' => [
                 'alignment' => ['vertical' => \PhpOffice\PhpSpreadsheet\Style\Alignment::VERTICAL_CENTER],
                 'borders' => [
                     'allBorders' => [
                         'borderStyle' => \PhpOffice\PhpSpreadsheet\Style\Border::BORDER_THIN,
-                        'color' => ['rgb' => 'CCCCCC'],
+                        'color' => ['argb' => 'FFCCCCCC'],
                     ],
                 ],
             ],

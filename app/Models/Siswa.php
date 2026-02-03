@@ -13,8 +13,12 @@ class Siswa extends Model
         'nama',
         'kelas',
         'nis',
+        'nisn',
+        'jenis_kelamin',
         'tempat_lahir',
         'tanggal_lahir',
+        'alamat',
+        'agama',
         'foto',
     ];
 
@@ -25,5 +29,15 @@ class Siswa extends Model
     public function raportNilai(): HasMany
     {
         return $this->hasMany(RaportNilai::class);
+    }
+
+    public function infoPribadi(): \Illuminate\Database\Eloquent\Relations\HasOne
+    {
+        return $this->hasOne(InfoPribadiSiswa::class);
+    }
+
+    public function enrollments(): \Illuminate\Database\Eloquent\Relations\HasMany
+    {
+        return $this->hasMany(Enrollment::class);
     }
 }

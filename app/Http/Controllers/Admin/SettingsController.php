@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
+use App\Models\MasterTahunAjaran;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
@@ -12,7 +13,10 @@ class SettingsController extends Controller
 {
     public function index()
     {
-        return view('admin.settings.index');
+        $tahunAjaranList = MasterTahunAjaran::orderBy('urutan')->orderByDesc('nama')->get();
+        $tahunAktif = MasterTahunAjaran::getAktif();
+
+        return view('admin.settings.index', compact('tahunAjaranList', 'tahunAktif'));
     }
 
     public function updateProfile(Request $request)
@@ -36,5 +40,38 @@ class SettingsController extends Controller
 
         Auth::user()->update(['password' => Hash::make($request->password)]);
         return back()->with('success', 'Password berhasil diubah.');
+    }
+
+    public function storeTahunAjaran(Request $request)
+    {
+        $request->validate([
+            'nama' => 'required|string|max:20|regex:/^\d{2}\/\d{2}$/',
+        ], [
+            'nama.regex' => 'Format tahun ajaran: XX/XX (contoh: 25/26).',
+        ]);
+
+        $exists = MasterTahunAjaran::where('nama', $request->nama)->exists();
+        if ($exists) {
+            return back()->with('error', 'Tahun ajaran ' . $request->nama . ' sudah ada.');
+        }
+
+        $maxUrutan = MasterTahunAjaran::max('urutan') ?? 0;
+        MasterTahunAjaran::create([
+            'nama' => $request->nama,
+            'is_aktif' => MasterTahunAjaran::count() === 0,
+            'urutan' => $maxUrutan + 1,
+        ]);
+
+        return back()->with('success', 'Tahun ajaran ' . $request->nama . ' berhasil ditambahkan.');
+    }
+
+    public function setAktifTahunAjaran(Request $request)
+    {
+        $request->validate(['id' => 'required|exists:master_tahun_ajaran,id']);
+
+        MasterTahunAjaran::query()->update(['is_aktif' => false]);
+        MasterTahunAjaran::where('id', $request->id)->update(['is_aktif' => true]);
+
+        return back()->with('success', 'Tahun ajaran aktif berhasil diubah.');
     }
 }

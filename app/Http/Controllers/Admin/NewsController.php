@@ -42,6 +42,9 @@ class NewsController extends Controller
             $data['gambar'] = $request->file('gambar')->store('berita', 'public');
         }
         Berita::create($data);
+        if ($request->wantsJson()) {
+            return response()->json(['success' => true]);
+        }
         return redirect()->route('admin.news.index')->with('success', 'Berita berhasil ditambahkan.');
     }
 
@@ -71,16 +74,22 @@ class NewsController extends Controller
             $data['gambar'] = $request->file('gambar')->store('berita', 'public');
         }
         $item->update($data);
+        if ($request->wantsJson()) {
+            return response()->json(['success' => true]);
+        }
         return redirect()->route('admin.news.index')->with('success', 'Berita berhasil diubah.');
     }
 
-    public function destroy(string $id)
+    public function destroy(string $id, Request $request)
     {
         $item = Berita::findOrFail($id);
         if ($item->gambar) {
             Storage::disk('public')->delete($item->gambar);
         }
         $item->delete();
+        if ($request->wantsJson()) {
+            return response()->json(['success' => true]);
+        }
         return redirect()->route('admin.news.index')->with('success', 'Berita berhasil dihapus.');
     }
 }

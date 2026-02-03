@@ -46,8 +46,10 @@ Route::prefix('admin')->name('admin.')->group(function () {
         Route::get('struktur/export/excel', [StrukturOrganisasiController::class, 'exportExcel'])->name('struktur.export.excel');
 
         Route::get('siswa', [SiswaController::class, 'index'])->name('siswa.index');
+        Route::get('siswa/list-by-kelas', [SiswaController::class, 'listByKelas'])->name('siswa.list-by-kelas');
         Route::get('siswa/create', [SiswaController::class, 'create'])->name('siswa.create');
         Route::post('siswa', [SiswaController::class, 'store'])->name('siswa.store');
+        Route::get('siswa/{id}', [SiswaController::class, 'show'])->name('siswa.show');
         Route::get('siswa/{id}/edit', [SiswaController::class, 'edit'])->name('siswa.edit');
         Route::put('siswa/{id}', [SiswaController::class, 'update'])->name('siswa.update');
         Route::delete('siswa/{id}', [SiswaController::class, 'destroy'])->name('siswa.destroy');
@@ -85,5 +87,7 @@ Route::prefix('admin')->name('admin.')->group(function () {
         Route::get('settings', [SettingsController::class, 'index'])->name('settings.index');
         Route::put('settings/profile', [SettingsController::class, 'updateProfile'])->name('settings.profile');
         Route::put('settings/password', [SettingsController::class, 'updatePassword'])->name('settings.password');
+        Route::post('settings/tahun-ajaran', [SettingsController::class, 'storeTahunAjaran'])->name('settings.tahun-ajaran.store');
+        Route::put('settings/tahun-ajaran/aktif', [SettingsController::class, 'setAktifTahunAjaran'])->name('settings.tahun-ajaran.aktif');
     });
 });

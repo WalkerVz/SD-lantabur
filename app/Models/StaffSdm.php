@@ -15,7 +15,16 @@ class StaffSdm extends Model
         'email',
         'foto',
         'nomor_handphone',
+        'jenis_kelamin',
+        'tempat_lahir',
+        'tanggal_lahir',
+        'alamat',
+        'agama',
         'spesialisasi_id',
+    ];
+
+    protected $casts = [
+        'tanggal_lahir' => 'date',
     ];
 
     public function spesialisasi(): BelongsTo

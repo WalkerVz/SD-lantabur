@@ -40,6 +40,9 @@ class StrukturOrganisasiController extends Controller
             $data['foto'] = $request->file('foto')->store('struktur_organisasi', 'public');
         }
         StrukturOrganisasi::create($data);
+        if ($request->wantsJson()) {
+            return response()->json(['success' => true]);
+        }
         return redirect()->route('admin.struktur.index')->with('success', 'Struktur berhasil ditambahkan.');
     }
 
@@ -71,24 +74,40 @@ class StrukturOrganisasiController extends Controller
             $data['foto'] = $request->file('foto')->store('struktur_organisasi', 'public');
         }
         $item->update($data);
+        if ($request->wantsJson()) {
+            return response()->json(['success' => true]);
+        }
         return redirect()->route('admin.struktur.index')->with('success', 'Struktur berhasil diubah.');
     }
 
-    public function destroy(string $id)
+    public function destroy(string $id, Request $request)
     {
         $item = StrukturOrganisasi::findOrFail($id);
         if ($item->foto) {
             Storage::disk('public')->delete($item->foto);
         }
         $item->delete();
+        if ($request->wantsJson()) {
+            return response()->json(['success' => true]);
+        }
         return redirect()->route('admin.struktur.index')->with('success', 'Struktur berhasil dihapus.');
     }
 
     public function exportExcel()
     {
-        $rows = StrukturOrganisasi::orderBy('level')->orderBy('urutan')->get();
-        $filename = 'struktur_organisasi_' . date('Y-m-d_His') . '.xlsx';
-
-        return Excel::download(new StrukturExport($rows), $filename, \Maatwebsite\Excel\Excel::XLSX);
+        try {
+            while (ob_get_level()) {
+                ob_end_clean();
+            }
+            $rows = StrukturOrganisasi::orderBy('level')->orderBy('urutan')->get();
+            $filename = 'struktur_organisasi_' . date('Y-m-d_His') . '.xlsx';
+            $path = 'exports/' . $filename;
+            Storage::disk('local')->makeDirectory('exports');
+            Excel::store(new StrukturExport($rows), $path, 'local');
+            return response()->download(storage_path('app/' . $path), $filename)->deleteFileAfterSend(true);
+        } catch (\Throwable $e) {
+            report($e);
+            return redirect()->route('admin.struktur.index')->with('error', 'Export gagal: ' . $e->getMessage());
+        }
     }
 }

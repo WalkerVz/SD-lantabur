@@ -4,7 +4,39 @@
 
 @section('content')
 <div class="max-w-2xl mx-auto space-y-8">
-    <h1 class="text-2xl font-bold text-gray-800">Pengaturan Akun</h1>
+    <h1 class="text-2xl font-bold text-gray-800">Pengaturan</h1>
+
+    {{-- Tahun Ajaran --}}
+    <div id="tahun-ajaran" class="bg-white rounded-xl shadow border border-gray-100 p-6 scroll-mt-4">
+        <h2 class="text-lg font-semibold text-gray-800 mb-2">Tahun Ajaran</h2>
+        <p class="text-sm text-gray-600 mb-4">Tahun ajaran aktif digunakan sebagai default di halaman Data Siswa dan Raport. Format: <strong>XX/XX</strong> (contoh: 25/26).</p>
+        <div class="flex flex-wrap gap-2 mb-4">
+            @foreach($tahunAjaranList as $t)
+                <div class="inline-flex items-center gap-2 px-3 py-2 rounded-lg {{ $t->is_aktif ? 'bg-[#47663D] text-white' : 'bg-gray-100 text-gray-700' }}">
+                    <span class="font-medium">{{ $t->nama }}</span>
+                    @if($t->is_aktif)
+                        <span class="text-xs bg-white/20 px-2 py-0.5 rounded">Aktif</span>
+                    @else
+                        <form action="{{ route('admin.settings.tahun-ajaran.aktif') }}" method="POST" class="inline">
+                            @csrf
+                            @method('PUT')
+                            <input type="hidden" name="id" value="{{ $t->id }}">
+                            <button type="submit" class="text-xs underline hover:no-underline">Jadikan aktif</button>
+                        </form>
+                    @endif
+                </div>
+            @endforeach
+        </div>
+        <form action="{{ route('admin.settings.tahun-ajaran.store') }}" method="POST" class="flex flex-wrap items-end gap-2">
+            @csrf
+            <div>
+                <label class="block text-sm font-medium text-gray-700 mb-1">Tambah tahun ajaran</label>
+                <input type="text" name="nama" placeholder="25/26" maxlength="5" pattern="\d{2}/\d{2}" class="w-24 px-3 py-2 rounded-lg border border-gray-300 focus:ring-2 focus:ring-[#47663D] focus:border-[#47663D]" title="Format: XX/XX">
+                @error('nama')<p class="text-red-500 text-sm mt-1">{{ $message }}</p>@enderror
+            </div>
+            <button type="submit" class="px-4 py-2 bg-[#47663D] text-white rounded-lg hover:bg-[#5a7d52] font-medium text-sm">Tambah</button>
+        </form>
+    </div>
 
     {{-- Ubah Nama --}}
     <div class="bg-white rounded-xl shadow border border-gray-100 p-6">

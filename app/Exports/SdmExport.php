@@ -17,13 +17,15 @@ class SdmExport implements FromCollection, WithHeadings, WithStyles, WithColumnW
 
     public function collection(): Collection
     {
-        return $this->rows->map(fn ($r) => [
-            $r->nama,
-            $r->jabatan,
-            $r->spesialisasi?->nama ?? '-',
-            $r->email ?? '',
-            $r->nomor_handphone ?? '',
-        ]);
+        return $this->rows->map(function ($r) {
+            return [
+                $r->nama ?? '',
+                $r->jabatan ?? '',
+                $r->spesialisasi?->nama ?? '-',
+                $r->email ?? '',
+                $r->nomor_handphone ?? '',
+            ];
+        });
     }
 
     public function headings(): array
@@ -38,17 +40,17 @@ class SdmExport implements FromCollection, WithHeadings, WithStyles, WithColumnW
                 'font' => ['bold' => true, 'size' => 12],
                 'fill' => [
                     'fillType' => \PhpOffice\PhpSpreadsheet\Style\Fill::FILL_SOLID,
-                    'startColor' => ['rgb' => '47663D'],
+                    'startColor' => ['argb' => 'FF47663D'],
                 ],
                 'alignment' => ['horizontal' => \PhpOffice\PhpSpreadsheet\Style\Alignment::HORIZONTAL_CENTER],
             ],
-            'A1:E1' => ['font' => ['color' => ['rgb' => 'FFFFFF']]],
+            'A1:E1' => ['font' => ['color' => ['argb' => 'FFFFFFFF']]],
             'A:E' => [
                 'alignment' => ['vertical' => \PhpOffice\PhpSpreadsheet\Style\Alignment::VERTICAL_CENTER],
                 'borders' => [
                     'allBorders' => [
                         'borderStyle' => \PhpOffice\PhpSpreadsheet\Style\Border::BORDER_THIN,
-                        'color' => ['rgb' => 'CCCCCC'],
+                        'color' => ['argb' => 'FFCCCCCC'],
                     ],
                 ],
             ],
