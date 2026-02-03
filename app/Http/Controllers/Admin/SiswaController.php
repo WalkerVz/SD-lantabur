@@ -35,10 +35,13 @@ class SiswaController extends Controller
         }
 
         $rows = [];
-        $tahunKelas = TahunKelas::where('tahun_ajaran', $tahunAjaran)->orderBy('kelas')->get()->keyBy('kelas');
         for ($kelas = 1; $kelas <= 6; $kelas++) {
             $count = Enrollment::where('tahun_ajaran', $tahunAjaran)->where('kelas', $kelas)->count();
-            $wali = $tahunKelas->get($kelas)?->waliKelas;
+            
+            // Auto-detect wali kelas dari staff_sdm berdasarkan jabatan
+            $jabatanWaliKelas = 'Wali Kelas ' . $kelas;
+            $wali = StaffSdm::where('jabatan', $jabatanWaliKelas)->first();
+            
             $rows[] = (object)[
                 'kelas' => $kelas,
                 'jumlah_siswa' => $count,

@@ -40,6 +40,7 @@ class SdmController extends Controller
         $request->validate([
             'nama' => 'required|string|max:255',
             'jabatan' => 'required|string|max:255',
+            'niy' => 'nullable|string|max:50',
             'email' => 'nullable|email',
             'nomor_handphone' => 'nullable|string|max:20',
             'spesialisasi_id' => 'nullable|exists:spesialisasi,id',
@@ -51,7 +52,7 @@ class SdmController extends Controller
             'agama' => 'nullable|string|max:30',
         ]);
 
-        $data = $request->only(['nama', 'jabatan', 'email', 'nomor_handphone', 'spesialisasi_id', 'jenis_kelamin', 'tempat_lahir', 'tanggal_lahir', 'alamat', 'agama']);
+        $data = $request->only(['nama', 'jabatan', 'niy', 'email', 'nomor_handphone', 'spesialisasi_id', 'jenis_kelamin', 'tempat_lahir', 'tanggal_lahir', 'alamat', 'agama']);
         if ($request->hasFile('foto')) {
             $data['foto'] = $request->file('foto')->store('staff_sdm', 'public');
         }
@@ -75,6 +76,7 @@ class SdmController extends Controller
         $request->validate([
             'nama' => 'required|string|max:255',
             'jabatan' => 'required|string|max:255',
+            'niy' => 'nullable|string|max:50',
             'email' => 'nullable|email',
             'nomor_handphone' => 'nullable|string|max:20',
             'spesialisasi_id' => 'nullable|exists:spesialisasi,id',
@@ -86,7 +88,7 @@ class SdmController extends Controller
             'agama' => 'nullable|string|max:30',
         ]);
 
-        $data = $request->only(['nama', 'jabatan', 'email', 'nomor_handphone', 'spesialisasi_id', 'jenis_kelamin', 'tempat_lahir', 'tanggal_lahir', 'alamat', 'agama']);
+        $data = $request->only(['nama', 'jabatan', 'niy', 'email', 'nomor_handphone', 'spesialisasi_id', 'jenis_kelamin', 'tempat_lahir', 'tanggal_lahir', 'alamat', 'agama']);
         if ($request->hasFile('foto')) {
             if ($item->foto) {
                 Storage::disk('public')->delete($item->foto);

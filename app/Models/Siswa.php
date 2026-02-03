@@ -40,4 +40,17 @@ class Siswa extends Model
     {
         return $this->hasMany(Enrollment::class);
     }
+
+    /**
+     * Get formatted class name with surah name
+     */
+    public static function getNamaKelas(int $kelas): string
+    {
+        $mapping = [
+            1 => '1 An-Naas',
+            2 => '2 Al-Mulk',
+        ];
+
+        return $mapping[$kelas] ?? "Kelas $kelas";
+    }
 }

@@ -20,6 +20,10 @@ class RaportNilai extends Model
         'ipas',
         'olahraga',
         'alquran_hadist',
+        'deskripsi_pai',
+        'deskripsi_literasi',
+        'deskripsi_sains',
+        'deskripsi_adab',
         'catatan_wali',
     ];
 

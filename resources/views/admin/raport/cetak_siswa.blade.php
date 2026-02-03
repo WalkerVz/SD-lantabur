@@ -270,7 +270,7 @@
     <table class="info">
         <tr>
             <td>Nama Peserta Didik</td><td>: {{ strtoupper($siswa->nama) }}</td>
-            <td>Kelas</td><td>: {{ $raport->kelas ?? '-' }}</td>
+            <td>Kelas</td><td>: {{ \App\Models\Siswa::getNamaKelas($raport->kelas ?? 0) }}</td>
         </tr>
         <tr>
             <td>Nama Sekolah</td><td>: SD AL QUR'AN LANTABUR</td>
@@ -291,10 +291,10 @@
 
         // Mapping mata pelajaran dari database ke raport umum
         $mapel = [
-            ['nama' => 'PAI', 'nilai' => $raport->alquran_hadist ?? null],
-            ['nama' => 'Literasi', 'nilai' => $raport->bahasa_indonesia ?? null],
-            ['nama' => 'Sains (Math)', 'nilai' => $raport->matematika ?? null],
-            ['nama' => 'Adab', 'nilai' => $raport->pendidikan_pancasila ?? null],
+            ['nama' => 'PAI', 'nilai' => $raport->alquran_hadist ?? null, 'deskripsi' => $raport->deskripsi_pai],
+            ['nama' => 'Literasi', 'nilai' => $raport->bahasa_indonesia ?? null, 'deskripsi' => $raport->deskripsi_literasi],
+            ['nama' => 'Sains (Math)', 'nilai' => $raport->matematika ?? null, 'deskripsi' => $raport->deskripsi_sains],
+            ['nama' => 'Adab', 'nilai' => $raport->pendidikan_pancasila ?? null, 'deskripsi' => $raport->deskripsi_adab],
         ];
 
         $totalNilai = 0;
@@ -329,7 +329,9 @@
             <td>{{ $m['nilai'] ? number_format($m['nilai'], 0) : '-' }}</td>
             <td>{{ $m['nilai'] ? getPredikat($m['nilai']) : '-' }}</td>
             <td class="deskripsi">
-                @if($m['nilai'] && $m['nilai'] >= 75)
+                @if($m['deskripsi'])
+                    {{ $m['deskripsi'] }}
+                @elseif($m['nilai'] && $m['nilai'] >= 75)
                     Ananda {{ strtoupper($siswa->nama) }} menunjukkan pemahaman yang baik dalam mata pelajaran {{ $m['nama'] }}.
                 @endif
             </td>
@@ -392,7 +394,7 @@
         </div>
 
         <div>
-            <p>Pekanbaru, {{ $tanggal_cetak ?? date('d F Y') }}<br>Wali Kelas {{ $raport->kelas ?? '-' }}</p>
+            <p>Pekanbaru, {{ $tanggal_cetak ?? date('d F Y') }}<br>Wali Kelas {{ \App\Models\Siswa::getNamaKelas($raport->kelas ?? 0) }}</p>
             <br><br>
             <p><b>{{ strtoupper($signatures['wali_kelas'] ?? '_______________') }}</b><br>{{ $signatures['niy_wali'] ?? '' }}</p>
         </div>

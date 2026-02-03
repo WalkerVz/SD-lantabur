@@ -45,7 +45,7 @@
                     @foreach($rows as $idx => $row)
                     <tr class="border-b border-gray-100 hover:bg-gray-50/80">
                         <td class="px-4 py-3 text-gray-600">{{ $idx + 1 }}</td>
-                        <td class="px-4 py-3 font-medium text-gray-800">Kelas {{ $row->kelas }}</td>
+                        <td class="px-4 py-3 font-medium text-gray-800">{{ \App\Models\Siswa::getNamaKelas($row->kelas) }}</td>
                         <td class="px-4 py-3 text-gray-600">{{ $row->jumlah_siswa }}</td>
                         <td class="px-4 py-3 text-gray-600">{{ $row->wali_kelas_nama }}</td>
                         <td class="px-4 py-3">

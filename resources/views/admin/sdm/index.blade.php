@@ -47,6 +47,7 @@
                         <th class="px-4 py-3 text-sm font-semibold text-gray-700 w-12">No</th>
                         <th class="px-4 py-3 text-sm font-semibold text-gray-700">Nama</th>
                         <th class="px-4 py-3 text-sm font-semibold text-gray-700">Jabatan</th>
+                        <th class="px-4 py-3 text-sm font-semibold text-gray-700">NIY</th>
                         <th class="px-4 py-3 text-sm font-semibold text-gray-700">Spesialisasi</th>
                         <th class="px-4 py-3 text-sm font-semibold text-gray-700">Email</th>
                         <th class="px-4 py-3 text-sm font-semibold text-gray-700">No. HP</th>
@@ -68,6 +69,7 @@
                             </div>
                         </td>
                         <td class="px-4 py-3 text-gray-600">{{ $s->jabatan }}</td>
+                        <td class="px-4 py-3 text-gray-600">{{ $s->niy ?? '-' }}</td>
                         <td class="px-4 py-3 text-gray-600">{{ $s->spesialisasi?->nama ?? '-' }}</td>
                         <td class="px-4 py-3 text-gray-600">{{ $s->email ?? '-' }}</td>
                         <td class="px-4 py-3 text-gray-600">{{ $s->nomor_handphone ?? '-' }}</td>
@@ -77,7 +79,7 @@
                         </td>
                     </tr>
                     @empty
-                    <tr><td colspan="7" class="px-4 py-8 text-center text-gray-500">Belum ada data SDM.</td></tr>
+                    <tr><td colspan="8" class="px-4 py-8 text-center text-gray-500">Belum ada data SDM.</td></tr>
                     @endforelse
                 </tbody>
             </table>

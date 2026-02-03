@@ -61,13 +61,19 @@ class RaportController extends Controller
             'ipas' => 'nullable|numeric|min:0|max:100',
             'olahraga' => 'nullable|numeric|min:0|max:100',
             'alquran_hadist' => 'nullable|numeric|min:0|max:100',
+            'deskripsi_pai' => 'nullable|string',
+            'deskripsi_literasi' => 'nullable|string',
+            'deskripsi_sains' => 'nullable|string',
+            'deskripsi_adab' => 'nullable|string',
             'catatan_wali' => 'nullable|string',
         ]);
 
         $data = $request->only([
             'siswa_id', 'kelas', 'semester', 'tahun_ajaran',
             'bahasa_indonesia', 'matematika', 'pendidikan_pancasila',
-            'ipas', 'olahraga', 'alquran_hadist', 'catatan_wali',
+            'ipas', 'olahraga', 'alquran_hadist',
+            'deskripsi_pai', 'deskripsi_literasi', 'deskripsi_sains', 'deskripsi_adab',
+            'catatan_wali',
         ]);
 
         RaportNilai::updateOrCreate(
@@ -108,12 +114,18 @@ class RaportController extends Controller
             'ipas' => 'nullable|numeric|min:0|max:100',
             'olahraga' => 'nullable|numeric|min:0|max:100',
             'alquran_hadist' => 'nullable|numeric|min:0|max:100',
+            'deskripsi_pai' => 'nullable|string',
+            'deskripsi_literasi' => 'nullable|string',
+            'deskripsi_sains' => 'nullable|string',
+            'deskripsi_adab' => 'nullable|string',
             'catatan_wali' => 'nullable|string',
         ]);
 
         $item->update($request->only([
             'bahasa_indonesia', 'matematika', 'pendidikan_pancasila',
-            'ipas', 'olahraga', 'alquran_hadist', 'catatan_wali',
+            'ipas', 'olahraga', 'alquran_hadist',
+            'deskripsi_pai', 'deskripsi_literasi', 'deskripsi_sains', 'deskripsi_adab',
+            'catatan_wali',
         ]));
 
         return redirect()->route('admin.raport.byKelas', $item->kelas)
@@ -146,23 +158,24 @@ class RaportController extends Controller
             'tanpa_keterangan' => 0,
         ];
 
-        // Ambil data wali kelas dari tahun_kelas
-        $tahunKelas = \App\Models\TahunKelas::with('waliKelas')
-            ->where('tahun_ajaran', $raport->tahun_ajaran)
-            ->where('kelas', $raport->kelas)
-            ->first();
-
         // Ambil nama orang tua dari info pribadi siswa
         $infoPribadi = $siswa->infoPribadi;
         $namaOrtu = $infoPribadi ? ($infoPribadi->nama_ibu ?: $infoPribadi->nama_ayah) : '';
 
+        // Ambil data Kepala Sekolah dari staff_sdm
+        $kepalaSekolah = \App\Models\StaffSdm::where('jabatan', 'Kepala Sekolah')->first();
+
+        // Ambil data Wali Kelas dari staff_sdm berdasarkan jabatan
+        $jabatanWaliKelas = 'Wali Kelas ' . $raport->kelas;
+        $waliKelas = \App\Models\StaffSdm::where('jabatan', $jabatanWaliKelas)->first();
+
         // Data tanda tangan
         $signatures = [
             'ortu' => $namaOrtu,
-            'kepala_sekolah' => 'KASMIDAR, S.Pd',
-            'niy_kepala' => 'NIY. 2403001',
-            'wali_kelas' => $tahunKelas && $tahunKelas->waliKelas ? $tahunKelas->waliKelas->nama : '',
-            'niy_wali' => '', // NIY bisa ditambahkan ke tabel staff_sdm jika diperlukan
+            'kepala_sekolah' => $kepalaSekolah ? $kepalaSekolah->nama : 'KASMIDAR, S.Pd',
+            'niy_kepala' => $kepalaSekolah && $kepalaSekolah->niy ? $kepalaSekolah->niy : 'NIY. 2403001',
+            'wali_kelas' => $waliKelas ? $waliKelas->nama : '',
+            'niy_wali' => $waliKelas && $waliKelas->niy ? $waliKelas->niy : '',
         ];
 
         $tanggal_cetak = now()->locale('id')->translatedFormat('d F Y');

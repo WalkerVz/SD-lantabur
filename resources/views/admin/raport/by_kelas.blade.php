@@ -29,12 +29,10 @@
                     <tr>
                         <th class="px-4 py-3 font-semibold text-gray-700">No</th>
                         <th class="px-4 py-3 font-semibold text-gray-700">Nama Siswa</th>
-                        <th class="px-4 py-3 font-semibold text-gray-700">B. Indonesia</th>
-                        <th class="px-4 py-3 font-semibold text-gray-700">Matematika</th>
-                        <th class="px-4 py-3 font-semibold text-gray-700">P. Pancasila</th>
-                        <th class="px-4 py-3 font-semibold text-gray-700">IPAS</th>
-                        <th class="px-4 py-3 font-semibold text-gray-700">Olahraga</th>
-                        <th class="px-4 py-3 font-semibold text-gray-700">Al-Qur'an Hadist</th>
+                        <th class="px-4 py-3 font-semibold text-gray-700">PAI</th>
+                        <th class="px-4 py-3 font-semibold text-gray-700">Literasi</th>
+                        <th class="px-4 py-3 font-semibold text-gray-700">Sains</th>
+                        <th class="px-4 py-3 font-semibold text-gray-700">Adab</th>
                         <th class="px-4 py-3 font-semibold text-gray-700">Rata-rata</th>
                         <th class="px-4 py-3 font-semibold text-gray-700 w-24">Aksi</th>
                     </tr>
@@ -43,18 +41,16 @@
                     @foreach($siswa as $idx => $s)
                     @php
                         $nilai = $raport->get($s->id);
-                        $cols = $nilai ? ['bahasa_indonesia','matematika','pendidikan_pancasila','ipas','olahraga','alquran_hadist'] : [];
-                        $rata = $nilai && count($cols) ? array_sum(array_map(fn($c)=> (float)($nilai->$c ?? 0), $cols)) / 6 : null;
+                        $cols = $nilai ? ['alquran_hadist','bahasa_indonesia','matematika','pendidikan_pancasila'] : [];
+                        $rata = $nilai && count($cols) ? array_sum(array_map(fn($c)=> (float)($nilai->$c ?? 0), $cols)) / 4 : null;
                     @endphp
                     <tr class="border-b border-gray-100 hover:bg-gray-50">
                         <td class="px-4 py-3 text-gray-600">{{ $idx + 1 }}</td>
                         <td class="px-4 py-3 font-medium text-gray-800">{{ $s->nama }}</td>
+                        <td class="px-4 py-3">{{ $nilai->alquran_hadist ?? '-' }}</td>
                         <td class="px-4 py-3">{{ $nilai->bahasa_indonesia ?? '-' }}</td>
                         <td class="px-4 py-3">{{ $nilai->matematika ?? '-' }}</td>
                         <td class="px-4 py-3">{{ $nilai->pendidikan_pancasila ?? '-' }}</td>
-                        <td class="px-4 py-3">{{ $nilai->ipas ?? '-' }}</td>
-                        <td class="px-4 py-3">{{ $nilai->olahraga ?? '-' }}</td>
-                        <td class="px-4 py-3">{{ $nilai->alquran_hadist ?? '-' }}</td>
                         <td class="px-4 py-3 font-medium">{{ $rata !== null ? number_format($rata, 1) : '-' }}</td>
                         <td class="px-4 py-3">
                             @if($nilai)

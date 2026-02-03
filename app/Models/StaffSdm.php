@@ -12,6 +12,7 @@ class StaffSdm extends Model
     protected $fillable = [
         'nama',
         'jabatan',
+        'niy',
         'email',
         'foto',
         'nomor_handphone',
