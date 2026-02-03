@@ -133,4 +133,40 @@ class RaportController extends Controller
 
         return view('admin.raport.cetak', compact('kelas', 'raport', 'semester', 'tahun'));
     }
+
+    public function cetakSiswa(string $id)
+    {
+        $raport = RaportNilai::with('siswa.infoPribadi')->findOrFail($id);
+        $siswa = $raport->siswa;
+
+        // Data kehadiran (bisa disesuaikan dengan sistem absensi jika ada)
+        $attendance = [
+            'sakit' => 0,
+            'izin' => 0,
+            'tanpa_keterangan' => 0,
+        ];
+
+        // Ambil data wali kelas dari tahun_kelas
+        $tahunKelas = \App\Models\TahunKelas::with('waliKelas')
+            ->where('tahun_ajaran', $raport->tahun_ajaran)
+            ->where('kelas', $raport->kelas)
+            ->first();
+
+        // Ambil nama orang tua dari info pribadi siswa
+        $infoPribadi = $siswa->infoPribadi;
+        $namaOrtu = $infoPribadi ? ($infoPribadi->nama_ibu ?: $infoPribadi->nama_ayah) : '';
+
+        // Data tanda tangan
+        $signatures = [
+            'ortu' => $namaOrtu,
+            'kepala_sekolah' => 'KASMIDAR, S.Pd',
+            'niy_kepala' => 'NIY. 2403001',
+            'wali_kelas' => $tahunKelas && $tahunKelas->waliKelas ? $tahunKelas->waliKelas->nama : '',
+            'niy_wali' => '', // NIY bisa ditambahkan ke tabel staff_sdm jika diperlukan
+        ];
+
+        $tanggal_cetak = now()->locale('id')->translatedFormat('d F Y');
+
+        return view('admin.raport.cetak_siswa', compact('raport', 'siswa', 'attendance', 'signatures', 'tanggal_cetak'));
+    }
 }

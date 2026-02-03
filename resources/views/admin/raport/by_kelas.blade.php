@@ -59,6 +59,8 @@
                         <td class="px-4 py-3">
                             @if($nilai)
                                 <a href="{{ route('admin.raport.edit', $nilai->id) }}" class="text-blue-600 hover:underline">Edit</a>
+                                <span class="text-gray-300">|</span>
+                                <a href="{{ route('admin.raport.cetakSiswa', $nilai->id) }}" target="_blank" class="text-amber-600 hover:underline">Cetak</a>
                             @else
                                 <a href="{{ route('admin.raport.create', ['kelas'=>$kelas,'semester'=>$semester,'tahun_ajaran'=>$tahun,'siswa_id'=>$s->id]) }}" class="text-[#47663D] hover:underline">Isi</a>
                             @endif
