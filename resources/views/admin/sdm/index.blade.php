@@ -34,7 +34,6 @@
             </div>
         </div>
         <div class="flex gap-2">
-            <a href="{{ route('admin.sdm.export.excel', request()->only('spesialisasi_id')) }}" class="px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 text-sm font-medium">Export Excel</a>
             <button type="button" @click="openFormModal(null)" class="px-4 py-2 bg-[#47663D] text-white rounded-lg hover:bg-[#5a7d52] text-sm font-medium">+ Tambah Staff</button>
         </div>
     </div>

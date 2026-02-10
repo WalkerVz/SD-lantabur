@@ -55,38 +55,44 @@
         }
 
         /* Header */
+        /* Header */
         .header {
             position: relative;
-            text-align: center;
-            border-bottom: 3px solid #000;
-            padding: 10px 0 8px 0;
-            margin-bottom: 12px;
+            border-bottom: 4px double #000;
+            padding: 10px 0 15px 0;
+            margin-bottom: 20px;
             display: grid;
-            grid-template-columns: 70px 1fr;
-            gap: 15px;
+            grid-template-columns: 100px 1fr; /* Logo | Text */
+            gap: 10px;
             align-items: center;
         }
 
         .header-logo {
-            width: 55px;
+            width: 90px;
             height: auto;
-            justify-self: start;
+            justify-self: center;
         }
 
         .header-text {
             text-align: center;
+            font-family: "Times New Roman", Times, serif;
+            padding-right: 50px; /* Balance the logo space on the left? Optional */
         }
 
         .header h3 {
-            font-size: 15pt;
+            font-size: 16pt;
             font-weight: bold;
-            margin: 3px 0;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            margin: 0 0 5px 0;
+            line-height: 1.2;
         }
 
         .header h4 {
-            font-size: 13pt;
+            font-size: 14pt;
             font-weight: bold;
             margin: 2px 0;
+            line-height: 1.2;
         }
 
         /* Tables */
@@ -234,7 +240,12 @@
             /* A4 Page Setup */
             @page {
                 size: A4;
-                margin: 15mm 10mm;
+                margin: 0; /* Menghilangkan Header/Footer bawaan browser (Tanggal, URL, dll) */
+            }
+
+            .container {
+                padding: 15mm 10mm; /* Margin dipindah ke sini supaya konten tetap aman */
+                margin: 0 auto;
             }
         }
 
@@ -289,19 +300,12 @@
             return '-';
         }
 
-        // Mapping mata pelajaran dari database ke raport umum
-        $mapel = [
-            ['nama' => 'PAI', 'nilai' => $raport->alquran_hadist ?? null, 'deskripsi' => $raport->deskripsi_pai],
-            ['nama' => 'Literasi', 'nilai' => $raport->bahasa_indonesia ?? null, 'deskripsi' => $raport->deskripsi_literasi],
-            ['nama' => 'Sains (Math)', 'nilai' => $raport->matematika ?? null, 'deskripsi' => $raport->deskripsi_sains],
-            ['nama' => 'Adab', 'nilai' => $raport->pendidikan_pancasila ?? null, 'deskripsi' => $raport->deskripsi_adab],
-        ];
-
         $totalNilai = 0;
         $jumlahMapel = 0;
-        foreach ($mapel as $m) {
-            if ($m['nilai'] !== null && $m['nilai'] > 0) {
-                $totalNilai += $m['nilai'];
+        foreach ($master_mapel ?? [] as $m) {
+            $nilaiData = $mapel_values[$m->id] ?? null;
+            if ($nilaiData && $nilaiData->nilai !== null && $nilaiData->nilai > 0) {
+                $totalNilai += $nilaiData->nilai;
                 $jumlahMapel++;
             }
         }
@@ -321,18 +325,23 @@
         </tr>
         </thead>
         <tbody>
-        @foreach($mapel as $idx => $m)
+        @foreach($master_mapel ?? [] as $idx => $m)
+        @php
+            $nilaiData = $mapel_values[$m->id] ?? null;
+            $nilai = $nilaiData?->nilai;
+            $deskripsi = $nilaiData?->deskripsi;
+        @endphp
         <tr>
             <td>{{ $idx + 1 }}</td>
-            <td>{{ $m['nama'] }}</td>
-            <td>75</td>
-            <td>{{ $m['nilai'] ? number_format($m['nilai'], 0) : '-' }}</td>
-            <td>{{ $m['nilai'] ? getPredikat($m['nilai']) : '-' }}</td>
+            <td>{{ $m->nama }}</td>
+            <td>{{ $m->kkm }}</td>
+            <td>{{ $nilai ? number_format($nilai, 0) : '-' }}</td>
+            <td>{{ $nilai ? getPredikat($nilai) : '-' }}</td>
             <td class="deskripsi">
-                @if($m['deskripsi'])
-                    {{ $m['deskripsi'] }}
-                @elseif($m['nilai'] && $m['nilai'] >= 75)
-                    Ananda {{ strtoupper($siswa->nama) }} menunjukkan pemahaman yang baik dalam mata pelajaran {{ $m['nama'] }}.
+                @if($deskripsi)
+                    {{ $deskripsi }}
+                @elseif($nilai && $nilai >= $m->kkm)
+                    Ananda {{ strtoupper($siswa->nama) }} menunjukkan pemahaman yang baik dalam mata pelajaran {{ $m->nama }}.
                 @endif
             </td>
         </tr>
