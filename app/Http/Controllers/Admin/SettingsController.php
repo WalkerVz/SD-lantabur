@@ -17,10 +17,11 @@ class SettingsController extends Controller
     {
         $tahunAjaranList = MasterTahunAjaran::orderBy('urutan')->orderByDesc('nama')->get();
         $tahunAktif = MasterTahunAjaran::getAktif();
-<<<<<<< HEAD
         $biayaSpp = BiayaSpp::all()->keyBy(fn ($r) => $r->tahun_ajaran . '-' . $r->kelas);
+        $mapel1 = MasterMapel::where('kelas', 1)->orderBy('urutan')->get();
+        $mapel2 = MasterMapel::where('kelas', 2)->orderBy('urutan')->get();
 
-        return view('admin.settings.index', compact('tahunAjaranList', 'tahunAktif', 'biayaSpp'));
+        return view('admin.settings.index', compact('tahunAjaranList', 'tahunAktif', 'biayaSpp', 'mapel1', 'mapel2'));
     }
 
     public function storeBiayaSpp(Request $request)
@@ -37,12 +38,6 @@ class SettingsController extends Controller
         );
 
         return back()->with('success', 'Biaya SPP berhasil disimpan.');
-=======
-        $mapel1 = MasterMapel::where('kelas', 1)->orderBy('urutan')->get();
-        $mapel2 = MasterMapel::where('kelas', 2)->orderBy('urutan')->get();
-
-        return view('admin.settings.index', compact('tahunAjaranList', 'tahunAktif', 'mapel1', 'mapel2'));
->>>>>>> 2e7df86c715515a3c7ea5e793c0e393ff6c3f144
     }
 
     public function updateProfile(Request $request)

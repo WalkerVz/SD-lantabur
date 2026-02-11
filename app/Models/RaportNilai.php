@@ -83,4 +83,15 @@ class RaportNilai extends Model
 
         return true;
     }
+
+    public function hitungRataRata(): float
+    {
+        $nilai = [];
+        if (!empty($this->bahasa_indonesia)) $nilai[] = $this->bahasa_indonesia;
+        if (!empty($this->matematika)) $nilai[] = $this->matematika;
+        if (!empty($this->pendidikan_pancasila)) $nilai[] = $this->pendidikan_pancasila;
+        if (!empty($this->alquran_hadist)) $nilai[] = $this->alquran_hadist;
+
+        return count($nilai) > 0 ? array_sum($nilai) / count($nilai) : 0;
+    }
 }

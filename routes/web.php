@@ -36,6 +36,7 @@ Route::prefix('admin')->name('admin.')->group(function () {
         Route::get('sdm/{id}/edit', [SdmController::class, 'edit'])->name('sdm.edit');
         Route::put('sdm/{id}', [SdmController::class, 'update'])->name('sdm.update');
         Route::delete('sdm/{id}', [SdmController::class, 'destroy'])->name('sdm.destroy');
+
         Route::get('sdm/export/pdf', [SdmController::class, 'exportPdf'])->name('sdm.export.pdf');
 
         Route::get('struktur', [StrukturOrganisasiController::class, 'index'])->name('struktur.index');
@@ -60,13 +61,6 @@ Route::prefix('admin')->name('admin.')->group(function () {
         Route::post('pembayaran', [PembayaranController::class, 'store'])->name('pembayaran.store');
         Route::get('pembayaran/{id}/kwitansi', [PembayaranController::class, 'kwitansi'])->name('pembayaran.kwitansi');
         Route::get('pembayaran/export/pdf', [PembayaranController::class, 'exportPdf'])->name('pembayaran.export.pdf');
-=======
-        // Route::get('siswa/export/excel', [SiswaController::class, 'exportExcel'])->name('siswa.export.excel');
-        Route::get('siswa/cetak-absen/kelas/{kelas}', [SiswaController::class, 'cetakAbsen'])->name('siswa.cetakAbsen');
-        Route::get('siswa-promotion', [SiswaController::class, 'promotion'])->name('siswa.promotion');
-        Route::post('siswa-promote', [SiswaController::class, 'promote'])->name('siswa.promote');
->>>>>>> 2e7df86c715515a3c7ea5e793c0e393ff6c3f144
-
         Route::get('raport', [RaportController::class, 'index'])->name('raport.index');
         Route::get('raport/kelas/{kelas}', [RaportController::class, 'byKelas'])->name('raport.byKelas');
         Route::get('raport/kelas/{kelas}/create', [RaportController::class, 'create'])->name('raport.create');
@@ -105,5 +99,8 @@ Route::prefix('admin')->name('admin.')->group(function () {
         Route::post('settings/tahun-ajaran', [SettingsController::class, 'storeTahunAjaran'])->name('settings.tahun-ajaran.store');
         Route::put('settings/tahun-ajaran/aktif', [SettingsController::class, 'setAktifTahunAjaran'])->name('settings.tahun-ajaran.aktif');
         Route::post('settings/biaya-spp', [SettingsController::class, 'storeBiayaSpp'])->name('settings.biaya-spp.store');
+        Route::post('settings/mapel', [SettingsController::class, 'storeMapel'])->name('settings.mapel.store');
+        Route::put('settings/mapel/{id}', [SettingsController::class, 'updateMapel'])->name('settings.mapel.update');
+        Route::delete('settings/mapel/{id}', [SettingsController::class, 'destroyMapel'])->name('settings.mapel.destroy');
     });
 });

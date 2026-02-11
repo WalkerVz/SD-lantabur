@@ -43,18 +43,11 @@ class SiswaController extends Controller
         }
 
         $rows = [];
+        $tahunKelas = TahunKelas::where('tahun_ajaran', $tahunAjaran)->get()->keyBy('kelas_id');
         for ($kelas = 1; $kelas <= 2; $kelas++) {
             $count = Enrollment::where('tahun_ajaran', $tahunAjaran)->where('kelas', $kelas)->count();
-<<<<<<< HEAD
             $wali = $tahunKelas->get($kelas)?->waliKelas;
             $spp = BiayaSpp::getNominal($tahunAjaran, $kelas);
-=======
-            
-            // Auto-detect wali kelas dari staff_sdm berdasarkan jabatan
-            $jabatanWaliKelas = 'Wali Kelas ' . $kelas;
-            $wali = StaffSdm::where('jabatan', $jabatanWaliKelas)->first();
-            
->>>>>>> 2e7df86c715515a3c7ea5e793c0e393ff6c3f144
             $rows[] = (object)[
                 'kelas' => $kelas,
                 'jumlah_siswa' => $count,
@@ -246,13 +239,8 @@ class SiswaController extends Controller
             }
 
             $label = $tahunAjaran ? str_replace('/', '-', (string) $tahunAjaran) : '';
-<<<<<<< HEAD
             if ($kelas >= 1 && $kelas <= 6) {
                 $label .= ($label !== '' ? '_' : '') . ' Kelas ' . $kelas;
-=======
-            if ($kelas >= 1 && $kelas <= 2) {
-                $label .= ($label !== '' ? '_' : '') . 'kelas-' . $kelas;
->>>>>>> 2e7df86c715515a3c7ea5e793c0e393ff6c3f144
             }
             $filename = 'data_siswa_' . ($label ? str_replace(' ', '_', $label) . '_' : '') . date('Y-m-d_His') . '.pdf';
 

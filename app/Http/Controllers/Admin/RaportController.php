@@ -323,7 +323,7 @@ class RaportController extends Controller
     public function cetakPraktik(string $id)
     {
         $raport = RaportNilai::with(['siswa.infoPribadi', 'praktik'])->findOrFail($id);
-        $siswa = $raport->raportNilai ? $raport->raportNilai->siswa : $raport->siswa; // Safety check
+        $siswa = $raport->siswa;
 
         // Data for the template provided by user
         $semester = $raport->semester;

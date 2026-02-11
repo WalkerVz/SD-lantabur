@@ -18,19 +18,11 @@
         </select>
     </div>
 
-<<<<<<< HEAD
     {{-- Export semua kelas (untuk tahun terpilih) --}}
     <div class="flex justify-end mb-4">
         <a href="{{ route('admin.siswa.export.pdf', ['tahun_ajaran' => $tahun_ajaran]) }}" class="inline-flex items-center gap-2 px-4 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700 text-sm font-medium shadow-sm">
             <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/></svg>
             Export PDF Semua Kelas ({{ $tahun_ajaran }})
-=======
-    {{-- Export & Promotion --}}
-    <div class="flex justify-between items-center mb-4 gap-2">
-        <a href="{{ route('admin.siswa.promotion') }}" class="inline-flex items-center gap-2 px-4 py-2 bg-[#47663D] text-white rounded-lg hover:bg-[#5a7d52] text-sm font-medium shadow-sm">
-            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6"/></svg>
-            Pindah / Naik Kelas
->>>>>>> 2e7df86c715515a3c7ea5e793c0e393ff6c3f144
         </a>
     </div>
 
@@ -61,15 +53,9 @@
                                 <button type="button" @click="openListModal({{ $row->kelas }})" class="px-3 py-1.5 bg-[#47663D] text-white rounded-lg text-sm font-medium hover:bg-[#5a7d52] transition shadow-sm">
                                     Siswa
                                 </button>
-<<<<<<< HEAD
                                 <a href="{{ route('admin.siswa.export.pdf', ['tahun_ajaran' => $tahun_ajaran, 'kelas' => $row->kelas]) }}" class="inline-flex items-center gap-1 px-2.5 py-1.5 bg-red-600 text-white rounded-lg text-xs font-medium hover:bg-red-700 transition shadow-sm" title="Export PDF Kelas {{ $row->kelas }}">
                                     <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/></svg>
                                     Export
-=======
-                                <a href="{{ route('admin.siswa.cetakAbsen', $row->kelas) }}" target="_blank" class="inline-flex items-center gap-1 px-2.5 py-1.5 bg-gray-600 text-white rounded-lg text-xs font-medium hover:bg-gray-700 transition shadow-sm" title="Cetak Daftar Siswa Kelas {{ $row->kelas }}">
-                                    <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 17h2a2 2 0 002-2v-4a2 2 0 00-2-2H5a2 2 0 00-2 2v4a2 2 0 002 2h2m2 4h6a2 2 0 002-2v-4a2 2 0 00-2-2H9a2 2 0 00-2 2v4a2 2 0 002 2zm8-12V5a2 2 0 00-2-2H9a2 2 0 00-2 2v4h10z"/></svg>
-                                    Cetak
->>>>>>> 2e7df86c715515a3c7ea5e793c0e393ff6c3f144
                                 </a>
                             </div>
                         </td>
