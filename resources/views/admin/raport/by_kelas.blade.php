@@ -50,7 +50,7 @@
                                     <div class="font-bold text-gray-900 leading-tight">{{ $s->nama }}</div>
                                     <div class="text-xs text-gray-400 mt-0.5 uppercase tracking-wider">NISN: {{ $s->nisn ?? '-' }}</div>
                                 </div>
-                                <a href="{{ route('admin.raport.history', $s->id) }}" class="p-2 text-gray-400 hover:text-[#47663D] hover:bg-gray-50 rounded-full transition-colors" title="Lihat Histori Raport">
+                                <a href="{{ route('admin.raport.history', ['id' => $s->id, 'ret_kelas' => $kelas, 'ret_tahun' => $tahun, 'ret_semester' => $semester]) }}" class="p-2 text-gray-400 hover:text-[#47663D] hover:bg-gray-50 rounded-full transition-colors" title="Lihat Histori Raport">
                                     <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
                                 </a>
                             </div>

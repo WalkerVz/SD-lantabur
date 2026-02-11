@@ -116,23 +116,6 @@ class RaportController extends Controller
             'sakit', 'izin', 'tanpa_keterangan',
         ]);
 
-        // Legacy mapping for backward compatibility
-        $legacyMapping = [
-            'Bahasa Indonesia' => 'bahasa_indonesia',
-            'Matematika' => 'matematika',
-            'Pendidikan Pancasila' => 'pendidikan_pancasila',
-            "Al-Qur'an Hadist" => 'alquran_hadist'
-        ];
-
-        if ($request->mapel_nilai) {
-            foreach ($request->mapel_nilai as $mapelId => $nilai) {
-                $mapel = MasterMapel::find($mapelId);
-                if ($mapel && isset($legacyMapping[$mapel->nama])) {
-                    $data[$legacyMapping[$mapel->nama]] = $nilai;
-                }
-            }
-        }
-
         $raport = RaportNilai::updateOrCreate(
             [
                 'siswa_id' => $data['siswa_id'],
@@ -170,8 +153,11 @@ class RaportController extends Controller
             }
         }
 
-        return redirect()->route('admin.raport.byKelas', $data['kelas'])
-            ->with('success', 'Nilai raport berhasil disimpan.');
+        return redirect()->route('admin.raport.byKelas', [
+            'kelas' => $data['kelas'],
+            'tahun_ajaran' => $data['tahun_ajaran'],
+            'semester' => $data['semester']
+        ])->with('success', 'Nilai raport berhasil disimpan.');
     }
 
     public function edit(string $id)
@@ -214,22 +200,6 @@ class RaportController extends Controller
             'sakit', 'izin', 'tanpa_keterangan',
         ]);
 
-        // Legacy mapping for backward compatibility
-        $legacyMapping = [
-            'Bahasa Indonesia' => 'bahasa_indonesia',
-            'Matematika' => 'matematika',
-            'Pendidikan Pancasila' => 'pendidikan_pancasila',
-            "Al-Qur'an Hadist" => 'alquran_hadist'
-        ];
-
-        if ($request->mapel_nilai) {
-            foreach ($request->mapel_nilai as $mapelId => $nilai) {
-                $mapel = MasterMapel::find($mapelId);
-                if ($mapel && isset($legacyMapping[$mapel->nama])) {
-                    $data[$legacyMapping[$mapel->nama]] = $nilai;
-                }
-            }
-        }
 
         $item->update($data);
 
@@ -260,8 +230,11 @@ class RaportController extends Controller
             }
         }
 
-        return redirect()->route('admin.raport.byKelas', $item->kelas)
-            ->with('success', 'Nilai raport berhasil diubah.');
+        return redirect()->route('admin.raport.byKelas', [
+            'kelas' => $item->kelas,
+            'tahun_ajaran' => $item->tahun_ajaran,
+            'semester' => $item->semester
+        ])->with('success', 'Nilai raport berhasil diubah.');
     }
 
     public function cetak(int $kelas)
@@ -360,14 +333,21 @@ class RaportController extends Controller
         return view('admin.raport.cetak_praktik', $data);
     }
 
-    public function history(string $siswa_id)
+    public function history(string $siswa_id, Request $request)
     {
         $siswa = Siswa::findOrFail($siswa_id);
         $reports = RaportNilai::where('siswa_id', $siswa_id)
+            ->with('mapelNilai')
             ->orderByRaw("CAST(SUBSTRING_INDEX(tahun_ajaran, '/', 1) AS UNSIGNED) DESC")
             ->orderBy('semester', 'desc')
             ->get();
 
-        return view('admin.raport.history', compact('siswa', 'reports'));
+        $return_params = [
+            'kelas' => $request->query('ret_kelas'),
+            'tahun' => $request->query('ret_tahun'),
+            'semester' => $request->query('ret_semester'),
+        ];
+
+        return view('admin.raport.history', compact('siswa', 'reports', 'return_params'));
     }
 }

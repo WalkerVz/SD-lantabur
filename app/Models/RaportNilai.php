@@ -83,4 +83,23 @@ class RaportNilai extends Model
 
         return true;
     }
+
+    public function hitungRataRata(): float
+    {
+        $totalNilai = 0;
+        $jumlahMapel = 0;
+
+        // 1. Ambil dari mapel dinamis (tabel raport_mapel_nilai)
+        $dinamis = $this->mapelNilai;
+        if ($dinamis->isNotEmpty()) {
+            foreach ($dinamis as $mn) {
+                if ($mn->nilai !== null) {
+                    $totalNilai += (float) $mn->nilai;
+                    $jumlahMapel++;
+                }
+            }
+        }
+
+        return $jumlahMapel > 0 ? $totalNilai / $jumlahMapel : 0;
+    }
 }
