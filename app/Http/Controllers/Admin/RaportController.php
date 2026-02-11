@@ -22,23 +22,8 @@ class RaportController extends Controller
 
     public function byKelas(int $kelas)
     {
-        $semester = request('semester', 'Ganjil');
-        
-        $tahun = request('tahun_ajaran');
-        if ($tahun) {
-            session(['selected_tahun_ajaran' => $tahun]);
-        } else {
-            $tahun = session('selected_tahun_ajaran', MasterTahunAjaran::getAktif() ?: (MasterTahunAjaran::orderBy('urutan', 'desc')->first()?->nama ?: date('y') . '/' . (date('y') + 1)));
-        }
-        
-        $siswa = Enrollment::where('tahun_ajaran', $tahun)
-            ->where('kelas', $kelas)
-            ->with('siswa')
-            ->get()
-            ->pluck('siswa')
-            ->filter()
-            ->sortBy('nama')
-            ->values();
+        [$tahun, $semester] = $this->resolveTahunSemester(request());
+        $siswa = $this->getSiswaByKelas($kelas, $tahun);
 
         $raport = RaportNilai::where('kelas', $kelas)
             ->where('semester', $semester)
@@ -55,23 +40,8 @@ class RaportController extends Controller
     public function create(Request $request)
     {
         $kelas = (int) $request->route('kelas');
-        $semester = $request->get('semester', 'Ganjil');
-        
-        $tahun = $request->get('tahun_ajaran');
-        if ($tahun) {
-            session(['selected_tahun_ajaran' => $tahun]);
-        } else {
-            $tahun = session('selected_tahun_ajaran', MasterTahunAjaran::getAktif() ?: (MasterTahunAjaran::orderBy('urutan', 'desc')->first()?->nama ?: date('y') . '/' . (date('y') + 1)));
-        }
-        
-        $siswa = Enrollment::where('tahun_ajaran', $tahun)
-            ->where('kelas', $kelas)
-            ->with('siswa')
-            ->get()
-            ->pluck('siswa')
-            ->filter()
-            ->sortBy('nama')
-            ->values();
+        [$tahun, $semester] = $this->resolveTahunSemester($request);
+        $siswa = $this->getSiswaByKelas($kelas, $tahun);
 
         $preselectSiswaId = $request->get('siswa_id');
 
@@ -126,32 +96,7 @@ class RaportController extends Controller
             $data
         );
 
-        if ($request->has('praktik')) {
-            foreach ($request->praktik as $section => $categories) {
-                foreach ($categories as $kategori => $nilaiData) {
-                    RaportPraktik::updateOrCreate(
-                        [
-                            'raport_id' => $raport->id,
-                            'section' => $section,
-                            'kategori' => $kategori,
-                        ],
-                        [
-                            'nilai' => $nilaiData['nilai'] ?? null,
-                            'deskripsi' => $nilaiData['deskripsi'] ?? null,
-                        ]
-                    );
-                }
-            }
-        }
-
-        if ($request->mapel_nilai) {
-            foreach ($request->mapel_nilai as $mapelId => $nilai) {
-                RaportMapelNilai::updateOrCreate(
-                    ['raport_id' => $raport->id, 'mapel_id' => $mapelId],
-                    ['nilai' => $nilai, 'deskripsi' => $request->mapel_deskripsi[$mapelId] ?? null]
-                );
-            }
-        }
+        $this->syncRaportDetails($raport, $request);
 
         return redirect()->route('admin.raport.byKelas', [
             'kelas' => $data['kelas'],
@@ -195,40 +140,8 @@ class RaportController extends Controller
             'mapel_deskripsi' => 'nullable|array',
         ]);
 
-        $data = $request->only([
-            'catatan_wali',
-            'sakit', 'izin', 'tanpa_keterangan',
-        ]);
-
-
-        $item->update($data);
-
-        if ($request->has('praktik')) {
-            foreach ($request->praktik as $section => $categories) {
-                foreach ($categories as $kategori => $nilaiData) {
-                    RaportPraktik::updateOrCreate(
-                        [
-                            'raport_id' => $item->id,
-                            'section' => $section,
-                            'kategori' => $kategori,
-                        ],
-                        [
-                            'nilai' => $nilaiData['nilai'] ?? null,
-                            'deskripsi' => $nilaiData['deskripsi'] ?? null,
-                        ]
-                    );
-                }
-            }
-        }
-
-        if ($request->mapel_nilai) {
-            foreach ($request->mapel_nilai as $mapelId => $nilai) {
-                RaportMapelNilai::updateOrCreate(
-                    ['raport_id' => $item->id, 'mapel_id' => $mapelId],
-                    ['nilai' => $nilai, 'deskripsi' => $request->mapel_deskripsi[$mapelId] ?? null]
-                );
-            }
-        }
+        $item->update($request->only(['catatan_wali', 'sakit', 'izin', 'tanpa_keterangan']));
+        $this->syncRaportDetails($item, $request);
 
         return redirect()->route('admin.raport.byKelas', [
             'kelas' => $item->kelas,
@@ -239,8 +152,7 @@ class RaportController extends Controller
 
     public function cetak(int $kelas)
     {
-        $semester = request('semester', 'Ganjil');
-        $tahun = request('tahun_ajaran', MasterTahunAjaran::getAktif() ?: (MasterTahunAjaran::orderBy('urutan', 'desc')->first()?->nama ?: date('y') . '/' . (date('y') + 1)));
+        [$tahun, $semester] = $this->resolveTahunSemester(request());
         $raport = RaportNilai::where('kelas', $kelas)
             ->where('semester', $semester)
             ->where('tahun_ajaran', $tahun)
@@ -261,34 +173,15 @@ class RaportController extends Controller
         
         $mapel_values = $raport->mapelNilai->keyBy('mapel_id');
 
-        // Data kehadiran dari database
+        $meta = $this->getPrintMetadata($raport);
+        $signatures = $meta['signatures'];
+        $tanggal_cetak = $meta['tanggal'];
+
         $attendance = [
             'sakit' => $raport->sakit ?? 0,
             'izin' => $raport->izin ?? 0,
             'tanpa_keterangan' => $raport->tanpa_keterangan ?? 0,
         ];
-
-        // Ambil nama orang tua dari info pribadi siswa
-        $infoPribadi = $siswa->infoPribadi;
-        $namaOrtu = $infoPribadi ? ($infoPribadi->nama_ibu ?: $infoPribadi->nama_ayah) : '';
-
-        // Ambil data Kepala Sekolah dari staff_sdm
-        $kepalaSekolah = \App\Models\StaffSdm::where('jabatan', 'Kepala Sekolah')->first();
-
-        // Ambil data Wali Kelas dari staff_sdm berdasarkan jabatan
-        $jabatanWaliKelas = 'Wali Kelas ' . $raport->kelas;
-        $waliKelas = \App\Models\StaffSdm::where('jabatan', $jabatanWaliKelas)->first();
-
-        // Data tanda tangan
-        $signatures = [
-            'ortu' => $namaOrtu,
-            'kepala_sekolah' => $kepalaSekolah ? $kepalaSekolah->nama : 'KASMIDAR, S.Pd',
-            'niy_kepala' => $kepalaSekolah && $kepalaSekolah->niy ? $kepalaSekolah->niy : 'NIY. 2403001',
-            'wali_kelas' => $waliKelas ? $waliKelas->nama : '',
-            'niy_wali' => $waliKelas && $waliKelas->niy ? $waliKelas->niy : '',
-        ];
-
-        $tanggal_cetak = now()->locale('id')->translatedFormat('d F Y');
 
         return view('admin.raport.cetak_siswa', compact('raport', 'siswa', 'attendance', 'signatures', 'tanggal_cetak', 'master_mapel', 'mapel_values'));
     }
@@ -307,14 +200,9 @@ class RaportController extends Controller
         $praktik_pai = $raport->praktik->where('section', 'PAI')->values()->toArray();
         $praktik_adab = $raport->praktik->where('section', 'ADAB')->values()->toArray();
 
-        // Signatures (reuse logic from cetakSiswa)
-        $infoPribadi = $siswa->infoPribadi;
-        $namaOrtu = $infoPribadi ? ($infoPribadi->nama_ibu ?: $infoPribadi->nama_ayah) : '_______________';
-
-        $kepalaSekolah = \App\Models\StaffSdm::where('jabatan', 'Kepala Sekolah')->first();
-        $jabatanWaliKelas = 'Wali Kelas ' . $raport->kelas;
-        $waliKelas = \App\Models\StaffSdm::where('jabatan', $jabatanWaliKelas)->first();
-
+        $meta = $this->getPrintMetadata($raport);
+        $signatures = $meta['signatures'];
+        
         $data = [
             'siswa' => $siswa,
             'semester' => $semester,
@@ -322,12 +210,12 @@ class RaportController extends Controller
             'kelas' => $kelas,
             'praktik_pai' => $praktik_pai,
             'praktik_adab' => $praktik_adab,
-            'ortu' => strtoupper($namaOrtu),
-            'tanggal' => $tanggal,
-            'wali_kelas' => $waliKelas ? $waliKelas->nama : '_______________',
-            'niy_wali' => $waliKelas ? $waliKelas->niy : '',
-            'kepala_sekolah' => $kepalaSekolah ? $kepalaSekolah->nama : 'KASMIDAR, S.Pd',
-            'niy_kepsek' => $kepalaSekolah ? $kepalaSekolah->niy : '2403001',
+            'ortu' => strtoupper($signatures['ortu']),
+            'tanggal' => $meta['tanggal'],
+            'wali_kelas' => $signatures['wali_kelas'] ?: '_______________',
+            'niy_wali' => $signatures['niy_wali'],
+            'kepala_sekolah' => $signatures['kepala_sekolah'],
+            'niy_kepsek' => str_replace('NIY. ', '', $signatures['niy_kepala']),
         ];
 
         return view('admin.raport.cetak_praktik', $data);
@@ -348,6 +236,75 @@ class RaportController extends Controller
             'semester' => $request->query('ret_semester'),
         ];
 
-        return view('admin.raport.history', compact('siswa', 'reports', 'return_params'));
+    }
+
+    private function resolveTahunSemester(Request $request): array
+    {
+        $semester = $request->get('semester', 'Ganjil');
+        $tahun = $request->get('tahun_ajaran');
+        
+        if ($tahun) {
+            session(['selected_tahun_ajaran' => $tahun]);
+        } else {
+            $tahun = session('selected_tahun_ajaran', MasterTahunAjaran::getAktif() ?: (MasterTahunAjaran::orderBy('urutan', 'desc')->first()?->nama ?: date('y') . '/' . (date('y') + 1)));
+        }
+
+        return [$tahun, $semester];
+    }
+
+    private function getSiswaByKelas(int $kelas, string $tahun)
+    {
+        return Enrollment::where('tahun_ajaran', $tahun)
+            ->where('kelas', $kelas)
+            ->with('siswa')
+            ->get()
+            ->pluck('siswa')
+            ->filter()
+            ->sortBy('nama')
+            ->values();
+    }
+
+    private function syncRaportDetails(RaportNilai $raport, Request $request): void
+    {
+        if ($request->has('praktik')) {
+            foreach ($request->praktik as $section => $categories) {
+                foreach ($categories as $kategori => $nilaiData) {
+                    RaportPraktik::updateOrCreate(
+                        ['raport_id' => $raport->id, 'section' => $section, 'kategori' => $kategori],
+                        ['nilai' => $nilaiData['nilai'] ?? null, 'deskripsi' => $nilaiData['deskripsi'] ?? null]
+                    );
+                }
+            }
+        }
+
+        if ($request->mapel_nilai) {
+            foreach ($request->mapel_nilai as $mapelId => $nilai) {
+                RaportMapelNilai::updateOrCreate(
+                    ['raport_id' => $raport->id, 'mapel_id' => $mapelId],
+                    ['nilai' => $nilai, 'deskripsi' => $request->mapel_deskripsi[$mapelId] ?? null]
+                );
+            }
+        }
+    }
+
+    private function getPrintMetadata(RaportNilai $raport): array
+    {
+        $siswa = $raport->siswa;
+        $infoPribadi = $siswa->infoPribadi;
+        $namaOrtu = $infoPribadi ? ($infoPribadi->nama_ibu ?: $infoPribadi->nama_ayah) : '_______________';
+
+        $kepalaSekolah = \App\Models\StaffSdm::where('jabatan', 'Kepala Sekolah')->first();
+        $waliKelas = \App\Models\StaffSdm::where('jabatan', 'Wali Kelas ' . $raport->kelas)->first();
+
+        return [
+            'signatures' => [
+                'ortu' => $namaOrtu,
+                'kepala_sekolah' => $kepalaSekolah ? $kepalaSekolah->nama : 'KASMIDAR, S.Pd',
+                'niy_kepala' => $kepalaSekolah && $kepalaSekolah->niy ? $kepalaSekolah->niy : 'NIY. 2403001',
+                'wali_kelas' => $waliKelas ? $waliKelas->nama : '',
+                'niy_wali' => $waliKelas && $waliKelas->niy ? $waliKelas->niy : '',
+            ],
+            'tanggal' => now()->locale('id')->translatedFormat('d F Y'),
+        ];
     }
 }

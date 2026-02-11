@@ -38,14 +38,5 @@
             </a>
         @endfor
     </div>
-
-    <div class="mt-12 bg-[#47663D]/5 rounded-2xl p-6 border border-[#47663D]/10">
-        <h4 class="text-sm font-bold text-[#47663D] uppercase tracking-wider mb-3">Mata Pelajaran Utama</h4>
-        <div class="flex flex-wrap gap-2">
-            @foreach(['Al-Qur\'an Hadist', 'Bahasa Indonesia', 'Matematika', 'Pendidikan Pancasila', 'Praktik PAI', 'Praktik Adab'] as $subject)
-                <span class="px-3 py-1 bg-white rounded-full text-xs font-medium text-gray-600 border border-gray-100 shadow-sm">{{ $subject }}</span>
-            @endforeach
-        </div>
-    </div>
 </div>
 @endsection

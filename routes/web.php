@@ -35,7 +35,6 @@ Route::prefix('admin')->name('admin.')->group(function () {
         Route::get('sdm/{id}/edit', [SdmController::class, 'edit'])->name('sdm.edit');
         Route::put('sdm/{id}', [SdmController::class, 'update'])->name('sdm.update');
         Route::delete('sdm/{id}', [SdmController::class, 'destroy'])->name('sdm.destroy');
-        // Route::get('sdm/export/excel', [SdmController::class, 'exportExcel'])->name('sdm.export.excel');
 
         Route::get('struktur', [StrukturOrganisasiController::class, 'index'])->name('struktur.index');
         Route::get('struktur/create', [StrukturOrganisasiController::class, 'create'])->name('struktur.create');
@@ -43,7 +42,6 @@ Route::prefix('admin')->name('admin.')->group(function () {
         Route::get('struktur/{id}/edit', [StrukturOrganisasiController::class, 'edit'])->name('struktur.edit');
         Route::put('struktur/{id}', [StrukturOrganisasiController::class, 'update'])->name('struktur.update');
         Route::delete('struktur/{id}', [StrukturOrganisasiController::class, 'destroy'])->name('struktur.destroy');
-        // Route::get('struktur/export/excel', [StrukturOrganisasiController::class, 'exportExcel'])->name('struktur.export.excel');
 
         Route::get('siswa', [SiswaController::class, 'index'])->name('siswa.index');
         Route::get('siswa/list-by-kelas', [SiswaController::class, 'listByKelas'])->name('siswa.list-by-kelas');
@@ -53,7 +51,6 @@ Route::prefix('admin')->name('admin.')->group(function () {
         Route::get('siswa/{id}/edit', [SiswaController::class, 'edit'])->name('siswa.edit');
         Route::put('siswa/{id}', [SiswaController::class, 'update'])->name('siswa.update');
         Route::delete('siswa/{id}', [SiswaController::class, 'destroy'])->name('siswa.destroy');
-        // Route::get('siswa/export/excel', [SiswaController::class, 'exportExcel'])->name('siswa.export.excel');
         Route::get('siswa/cetak-absen/kelas/{kelas}', [SiswaController::class, 'cetakAbsen'])->name('siswa.cetakAbsen');
         Route::get('siswa-promotion', [SiswaController::class, 'promotion'])->name('siswa.promotion');
         Route::post('siswa-promote', [SiswaController::class, 'promote'])->name('siswa.promote');

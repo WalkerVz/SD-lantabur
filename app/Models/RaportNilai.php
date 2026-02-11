@@ -15,29 +15,11 @@ class RaportNilai extends Model
         'kelas',
         'semester',
         'tahun_ajaran',
-        'bahasa_indonesia',
-        'matematika',
-        'pendidikan_pancasila',
-        'alquran_hadist',
-        'deskripsi_pai',
-        'deskripsi_literasi',
-        'deskripsi_sains',
-        'deskripsi_adab',
         'catatan_wali',
         'sakit',
         'izin',
         'tanpa_keterangan',
     ];
-
-    public static function mapelList(): array
-    {
-        return [
-            'bahasa_indonesia' => 'Bahasa Indonesia',
-            'matematika' => 'Matematika',
-            'pendidikan_pancasila' => 'Pendidikan Pancasila',
-            'alquran_hadist' => "Al-Qur'an Hadist",
-        ];
-    }
 
     public function siswa(): BelongsTo
     {
