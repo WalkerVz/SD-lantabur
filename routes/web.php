@@ -11,6 +11,7 @@ use App\Http\Controllers\Admin\NewsController;
 use App\Http\Controllers\Admin\GalleryController;
 use App\Http\Controllers\Admin\SliderController;
 use App\Http\Controllers\Admin\SettingsController;
+use App\Http\Controllers\Admin\MapelController;
 use Illuminate\Support\Facades\Route;
 
 Route::get('/', [PageController::class, 'home']);
@@ -30,6 +31,7 @@ Route::prefix('admin')->name('admin.')->group(function () {
         Route::get('/', [DashboardController::class, 'index'])->name('dashboard');
 
         Route::get('sdm', [SdmController::class, 'index'])->name('sdm.index');
+        Route::get('sdm/export/excel', [SdmController::class, 'exportExcel'])->name('sdm.export.excel');
         Route::get('sdm/create', [SdmController::class, 'create'])->name('sdm.create');
         Route::post('sdm', [SdmController::class, 'store'])->name('sdm.store');
         Route::get('sdm/{id}/edit', [SdmController::class, 'edit'])->name('sdm.edit');
@@ -37,6 +39,7 @@ Route::prefix('admin')->name('admin.')->group(function () {
         Route::delete('sdm/{id}', [SdmController::class, 'destroy'])->name('sdm.destroy');
 
         Route::get('struktur', [StrukturOrganisasiController::class, 'index'])->name('struktur.index');
+        Route::get('struktur/export/excel', [StrukturOrganisasiController::class, 'exportExcel'])->name('struktur.export.excel');
         Route::get('struktur/create', [StrukturOrganisasiController::class, 'create'])->name('struktur.create');
         Route::post('struktur', [StrukturOrganisasiController::class, 'store'])->name('struktur.store');
         Route::get('struktur/{id}/edit', [StrukturOrganisasiController::class, 'edit'])->name('struktur.edit');
@@ -92,8 +95,10 @@ Route::prefix('admin')->name('admin.')->group(function () {
         Route::put('settings/password', [SettingsController::class, 'updatePassword'])->name('settings.password');
         Route::post('settings/tahun-ajaran', [SettingsController::class, 'storeTahunAjaran'])->name('settings.tahun-ajaran.store');
         Route::put('settings/tahun-ajaran/aktif', [SettingsController::class, 'setAktifTahunAjaran'])->name('settings.tahun-ajaran.aktif');
-        Route::post('settings/mapel', [SettingsController::class, 'storeMapel'])->name('settings.mapel.store');
-        Route::put('settings/mapel/{id}', [SettingsController::class, 'updateMapel'])->name('settings.mapel.update');
-        Route::delete('settings/mapel/{id}', [SettingsController::class, 'destroyMapel'])->name('settings.mapel.destroy');
+
+        Route::get('mapel', [MapelController::class, 'index'])->name('mapel.index');
+        Route::post('mapel', [MapelController::class, 'store'])->name('mapel.store');
+        Route::put('mapel/{id}', [MapelController::class, 'update'])->name('mapel.update');
+        Route::delete('mapel/{id}', [MapelController::class, 'destroy'])->name('mapel.destroy');
     });
 });

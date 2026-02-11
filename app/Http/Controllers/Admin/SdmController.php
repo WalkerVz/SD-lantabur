@@ -56,7 +56,11 @@ class SdmController extends Controller
         if ($request->hasFile('foto')) {
             $data['foto'] = $request->file('foto')->store('staff_sdm', 'public');
         }
-        StaffSdm::create($data);
+        $staff = StaffSdm::create($data);
+        
+        // Auto-assign sebagai Wali Kelas berdasarkan jabatan
+        $this->syncWaliKelasFromJabatan($staff);
+        
         if ($request->wantsJson()) {
             return response()->json(['success' => true]);
         }
@@ -96,6 +100,10 @@ class SdmController extends Controller
             $data['foto'] = $request->file('foto')->store('staff_sdm', 'public');
         }
         $item->update($data);
+        
+        // Auto-assign sebagai Wali Kelas berdasarkan jabatan
+        $this->syncWaliKelasFromJabatan($item);
+        
         if ($request->wantsJson()) {
             return response()->json(['success' => true]);
         }
@@ -105,10 +113,17 @@ class SdmController extends Controller
     public function destroy(string $id, Request $request)
     {
         $item = StaffSdm::findOrFail($id);
+        
+        // Cleanup assignment Wali Kelas sebelum delete
+        // Agar tidak ada orphaned foreign key di tahun_kelas
+        \App\Models\TahunKelas::where('wali_kelas_id', $item->id)
+            ->update(['wali_kelas_id' => null]);
+        
         if ($item->foto) {
             Storage::disk('public')->delete($item->foto);
         }
         $item->delete();
+        
         if ($request->wantsJson()) {
             return response()->json(['success' => true]);
         }
@@ -136,6 +151,30 @@ class SdmController extends Controller
         } catch (\Throwable $e) {
             report($e);
             return redirect()->route('admin.sdm.index')->with('error', 'Export gagal: ' . $e->getMessage());
+        }
+    }
+
+    /**
+     * Auto-sync Wali Kelas berdasarkan jabatan
+     */
+    /**
+     * Auto-sync Wali Kelas berdasarkan jabatan
+     */
+    private function syncWaliKelasFromJabatan(StaffSdm $staff): void
+    {
+        // 1. Hapus assignment lama untuk staff ini (dari kelas mana pun)
+        \App\Models\MasterKelas::where('wali_kelas_id', $staff->id)
+            ->update(['wali_kelas_id' => null]);
+
+        // 2. Deteksi kelas dari jabatan (contoh: "Wali Kelas 3" -> 3)
+        if (preg_match('/Wali Kelas (\d+)/', $staff->jabatan, $matches)) {
+            $kelas = (int) $matches[1];
+            if ($kelas >= 1 && $kelas <= 6) {
+                // 3. Update MasterKelas langsung
+                //    Otomatis overwrite jika ada wali kelas lama (karena kolom di tabel hanya satu)
+                \App\Models\MasterKelas::where('tingkat', $kelas)
+                    ->update(['wali_kelas_id' => $staff->id]);
+            }
         }
     }
 }

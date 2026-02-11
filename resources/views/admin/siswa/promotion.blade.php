@@ -31,9 +31,9 @@
                 <label class="block text-sm font-medium text-gray-700 mb-1">Kelas Asal</label>
         <select name="source_kelas" required class="w-full px-4 py-2 rounded-lg border border-gray-300 focus:ring-2 focus:ring-[#47663D]">
             <option value="">-- Pilih Kelas --</option>
-            @for($i=1; $i<=2; $i++)
-                <option value="{{ $i }}" {{ $sourceKelas == $i ? 'selected' : '' }}>{{ \App\Models\Siswa::getNamaKelas($i) }}</option>
-            @endfor
+            @foreach(\App\Models\MasterKelas::orderBy('tingkat')->get() as $mk)
+                <option value="{{ $mk->tingkat }}" {{ $sourceKelas == $mk->tingkat ? 'selected' : '' }}>{{ \App\Models\Siswa::getNamaKelas($mk->tingkat) }}</option>
+            @endforeach
         </select>
             </div>
             <button type="submit" class="px-6 py-2 bg-[#47663D] text-white rounded-lg hover:bg-[#5a7d52] font-medium min-h-[42px]">
@@ -110,11 +110,11 @@
                         <div>
                             <label class="block text-sm font-medium text-gray-700 mb-1">Kelas Tujuan</label>
                             <select name="target_kelas" required class="w-full px-4 py-2 rounded-lg border border-gray-300 focus:ring-2 focus:ring-[#47663D]">
-                                @for($i=1; $i<=2; $i++)
-                                    <option value="{{ $i }}" {{ ($sourceKelas < 2 && $sourceKelas + 1 == $i) ? 'selected' : '' }}>
-                                        Kelas {{ \App\Models\Siswa::getNamaKelas($i) }}
+                                @foreach(\App\Models\MasterKelas::orderBy('tingkat')->get() as $mk)
+                                    <option value="{{ $mk->tingkat }}" {{ ($sourceKelas < 6 && $sourceKelas + 1 == $mk->tingkat) ? 'selected' : '' }}>
+                                        {{ \App\Models\Siswa::getNamaKelas($mk->tingkat) }}
                                     </option>
-                                @endfor
+                                @endforeach
                             </select>
                         </div>
 

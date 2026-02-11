@@ -77,7 +77,9 @@ class GalleryController extends Controller
     public function destroy(string $id, Request $request)
     {
         $item = Gallery::findOrFail($id);
-        Storage::disk('public')->delete($item->gambar);
+        if ($item->gambar) {
+            Storage::disk('public')->delete($item->gambar);
+        }
         $item->delete();
         if ($request->wantsJson()) {
             return response()->json(['success' => true]);

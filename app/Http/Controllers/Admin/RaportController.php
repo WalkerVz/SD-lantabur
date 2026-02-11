@@ -10,6 +10,7 @@ use App\Models\MasterMapel;
 use App\Models\Siswa;
 use App\Models\Enrollment;
 use App\Models\MasterTahunAjaran;
+use App\Models\TahunKelas;
 use Illuminate\Http\Request;
 use Illuminate\View\View;
 
@@ -17,7 +18,8 @@ class RaportController extends Controller
 {
     public function index(): View
     {
-        return view('admin.raport.index');
+        $classes = \App\Models\MasterKelas::orderBy('tingkat')->get();
+        return view('admin.raport.index', compact('classes'));
     }
 
     public function byKelas(int $kelas)
@@ -69,7 +71,7 @@ class RaportController extends Controller
     {
         $request->validate([
             'siswa_id' => 'required|exists:siswa,id',
-            'kelas' => 'required|integer|in:1,2',
+            'kelas' => 'required|integer|exists:master_kelas,tingkat',
             'semester' => 'required|string|in:Ganjil,Genap',
             'tahun_ajaran' => 'required|string|max:20',
             'catatan_wali' => 'nullable|string',
@@ -229,13 +231,13 @@ class RaportController extends Controller
             ->orderByRaw("CAST(SUBSTRING_INDEX(tahun_ajaran, '/', 1) AS UNSIGNED) DESC")
             ->orderBy('semester', 'desc')
             ->get();
-
         $return_params = [
             'kelas' => $request->query('ret_kelas'),
             'tahun' => $request->query('ret_tahun'),
             'semester' => $request->query('ret_semester'),
         ];
 
+        return view('admin.raport.history', compact('siswa', 'reports', 'return_params'));
     }
 
     private function resolveTahunSemester(Request $request): array
@@ -246,7 +248,7 @@ class RaportController extends Controller
         if ($tahun) {
             session(['selected_tahun_ajaran' => $tahun]);
         } else {
-            $tahun = session('selected_tahun_ajaran', MasterTahunAjaran::getAktif() ?: (MasterTahunAjaran::orderBy('urutan', 'desc')->first()?->nama ?: date('y') . '/' . (date('y') + 1)));
+            $tahun = session('selected_tahun_ajaran', MasterTahunAjaran::getAktif() ?: (MasterTahunAjaran::orderBy('urutan', 'desc')->first()?->nama ?: MasterTahunAjaran::getFallback()));
         }
 
         return [$tahun, $semester];
@@ -294,7 +296,10 @@ class RaportController extends Controller
         $namaOrtu = $infoPribadi ? ($infoPribadi->nama_ibu ?: $infoPribadi->nama_ayah) : '_______________';
 
         $kepalaSekolah = \App\Models\StaffSdm::where('jabatan', 'Kepala Sekolah')->first();
-        $waliKelas = \App\Models\StaffSdm::where('jabatan', 'Wali Kelas ' . $raport->kelas)->first();
+        
+        // Ambil Wali Kelas dari MasterKelas
+        $masterKelas = \App\Models\MasterKelas::where('tingkat', $raport->kelas)->with('waliKelas')->first();
+        $waliKelas = $masterKelas?->waliKelas;
 
         return [
             'signatures' => [

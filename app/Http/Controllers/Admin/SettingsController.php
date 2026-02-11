@@ -16,10 +16,9 @@ class SettingsController extends Controller
     {
         $tahunAjaranList = MasterTahunAjaran::orderBy('urutan')->orderByDesc('nama')->get();
         $tahunAktif = MasterTahunAjaran::getAktif();
-        $mapel1 = MasterMapel::where('kelas', 1)->orderBy('urutan')->get();
-        $mapel2 = MasterMapel::where('kelas', 2)->orderBy('urutan')->get();
+        $mapels = []; // Akan dipindah ke menu baru
 
-        return view('admin.settings.index', compact('tahunAjaranList', 'tahunAktif', 'mapel1', 'mapel2'));
+        return view('admin.settings.index', compact('tahunAjaranList', 'tahunAktif'));
     }
 
     public function updateProfile(Request $request)
@@ -68,6 +67,7 @@ class SettingsController extends Controller
         return back()->with('success', 'Tahun ajaran ' . $request->nama . ' berhasil ditambahkan.');
     }
 
+
     public function setAktifTahunAjaran(Request $request)
     {
         $request->validate(['id' => 'required|exists:master_tahun_ajaran,id']);
@@ -75,43 +75,10 @@ class SettingsController extends Controller
         MasterTahunAjaran::query()->update(['is_aktif' => false]);
         MasterTahunAjaran::where('id', $request->id)->update(['is_aktif' => true]);
 
+        // Clear session agar view otomatis update ke tahun aktif yang baru
+        session()->forget('selected_tahun_ajaran');
+
         return back()->with('success', 'Tahun ajaran aktif berhasil diubah.');
     }
-
-    public function storeMapel(Request $request)
-    {
-        $request->validate([
-            'nama' => 'required|string|max:255',
-            'kelas' => 'required|integer|in:1,2',
-            'kkm' => 'required|integer|min:0|max:100',
-            'urutan' => 'required|integer|min:1',
-        ]);
-
-        MasterMapel::create($request->all());
-
-        return back()->with('success', 'Mata pelajaran berhasil ditambahkan.');
-    }
-
-    public function updateMapel(Request $request, $id)
-    {
-        $mapel = MasterMapel::findOrFail($id);
-        $request->validate([
-            'nama' => 'required|string|max:255',
-            'kkm' => 'required|integer|min:0|max:100',
-            'urutan' => 'required|integer|min:1',
-            'is_aktif' => 'required|boolean',
-        ]);
-
-        $mapel->update($request->all());
-
-        return back()->with('success', 'Mata pelajaran berhasil diperbarui.');
-    }
-
-    public function destroyMapel($id)
-    {
-        $mapel = MasterMapel::findOrFail($id);
-        $mapel->delete();
-
-        return back()->with('success', 'Mata pelajaran berhasil dihapus.');
-    }
 }
+
