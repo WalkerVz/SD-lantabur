@@ -30,16 +30,31 @@ class SiswaController extends Controller
     {
         $tahunAjaran = $request->get('tahun_ajaran');
         $listTahun = self::getTahunAjaranList();
+
+        if ($tahunAjaran) {
+            session(['selected_tahun_ajaran' => $tahunAjaran]);
+        } else {
+            $tahunAjaran = session('selected_tahun_ajaran');
+        }
+
         if (! $tahunAjaran || ! in_array($tahunAjaran, $listTahun)) {
             $tahunAjaran = MasterTahunAjaran::getAktif() ?? $listTahun[0] ?? (date('y') . '/' . (date('y') + 1));
+            session(['selected_tahun_ajaran' => $tahunAjaran]);
         }
 
         $rows = [];
-        $tahunKelas = TahunKelas::where('tahun_ajaran', $tahunAjaran)->orderBy('kelas')->get()->keyBy('kelas');
-        for ($kelas = 1; $kelas <= 6; $kelas++) {
+        for ($kelas = 1; $kelas <= 2; $kelas++) {
             $count = Enrollment::where('tahun_ajaran', $tahunAjaran)->where('kelas', $kelas)->count();
+<<<<<<< HEAD
             $wali = $tahunKelas->get($kelas)?->waliKelas;
             $spp = BiayaSpp::getNominal($tahunAjaran, $kelas);
+=======
+            
+            // Auto-detect wali kelas dari staff_sdm berdasarkan jabatan
+            $jabatanWaliKelas = 'Wali Kelas ' . $kelas;
+            $wali = StaffSdm::where('jabatan', $jabatanWaliKelas)->first();
+            
+>>>>>>> 2e7df86c715515a3c7ea5e793c0e393ff6c3f144
             $rows[] = (object)[
                 'kelas' => $kelas,
                 'jumlah_siswa' => $count,
@@ -60,7 +75,7 @@ class SiswaController extends Controller
     {
         $tahunAjaran = $request->get('tahun_ajaran');
         $kelas = (int) $request->get('kelas');
-        if ($kelas < 1 || $kelas > 6) {
+        if ($kelas < 1 || $kelas > 2) {
             return response()->json(['siswa' => []]);
         }
         $siswa = Enrollment::where('tahun_ajaran', $tahunAjaran)
@@ -91,7 +106,7 @@ class SiswaController extends Controller
     {
         $request->validate([
             'nama' => 'required|string|max:255',
-            'kelas' => 'required|integer|in:1,2,3,4,5,6',
+            'kelas' => 'required|integer|in:1,2',
             'nis' => 'nullable|string|max:50',
             'nisn' => 'nullable|string|max:50',
             'jenis_kelamin' => 'nullable|string|max:20',
@@ -148,7 +163,7 @@ class SiswaController extends Controller
         $item = Siswa::findOrFail($id);
         $request->validate([
             'nama' => 'required|string|max:255',
-            'kelas' => 'required|integer|in:1,2,3,4,5,6',
+            'kelas' => 'required|integer|in:1,2',
             'nis' => 'nullable|string|max:50',
             'nisn' => 'nullable|string|max:50',
             'jenis_kelamin' => 'nullable|string|max:20',
@@ -214,7 +229,7 @@ class SiswaController extends Controller
 
             if ($tahunAjaran) {
                 $query = Enrollment::where('tahun_ajaran', $tahunAjaran)->with('siswa');
-                if ($kelas >= 1 && $kelas <= 6) {
+                if ($kelas >= 1 && $kelas <= 2) {
                     $query->where('kelas', $kelas);
                 }
                 $enrollments = $query->get();
@@ -224,15 +239,20 @@ class SiswaController extends Controller
                     ->values();
             } else {
                 $query = Siswa::query()->orderBy('nama');
-                if ($kelas >= 1 && $kelas <= 6) {
+                if ($kelas >= 1 && $kelas <= 2) {
                     $query->where('kelas', $kelas);
                 }
                 $rows = $query->get()->map(fn ($s) => (object) ['siswa' => $s, 'kelas' => $s->kelas ?? null]);
             }
 
             $label = $tahunAjaran ? str_replace('/', '-', (string) $tahunAjaran) : '';
+<<<<<<< HEAD
             if ($kelas >= 1 && $kelas <= 6) {
                 $label .= ($label !== '' ? '_' : '') . ' Kelas ' . $kelas;
+=======
+            if ($kelas >= 1 && $kelas <= 2) {
+                $label .= ($label !== '' ? '_' : '') . 'kelas-' . $kelas;
+>>>>>>> 2e7df86c715515a3c7ea5e793c0e393ff6c3f144
             }
             $filename = 'data_siswa_' . ($label ? str_replace(' ', '_', $label) . '_' : '') . date('Y-m-d_His') . '.pdf';
 
@@ -243,5 +263,79 @@ class SiswaController extends Controller
             return redirect()->route('admin.siswa.index', ['tahun_ajaran' => $request->get('tahun_ajaran')])
                 ->with('error', 'Export gagal: ' . $e->getMessage());
         }
+    }
+
+    public function promotion(Request $request)
+    {
+        $sourceTahun = $request->get('source_tahun_ajaran', MasterTahunAjaran::getAktif());
+        $sourceKelas = $request->get('source_kelas');
+        $listTahun = self::getTahunAjaranList();
+
+        $siswa = [];
+        if ($sourceTahun && $sourceKelas) {
+            $siswa = Enrollment::where('tahun_ajaran', $sourceTahun)
+                ->where('kelas', $sourceKelas)
+                ->with('siswa')
+                ->get()
+                ->pluck('siswa')
+                ->filter()
+                ->sortBy('nama')
+                ->values();
+        }
+
+        return view('admin.siswa.promotion', compact('siswa', 'sourceTahun', 'sourceKelas', 'listTahun'));
+    }
+
+    public function promote(Request $request)
+    {
+        $request->validate([
+            'siswa_ids' => 'required|array',
+            'siswa_ids.*' => 'exists:siswa,id',
+            'target_kelas' => 'required|integer|in:1,2',
+            'target_tahun_ajaran' => 'required|string|max:20',
+        ]);
+
+        $count = 0;
+        foreach ($request->siswa_ids as $siswaId) {
+            $siswa = Siswa::find($siswaId);
+            if ($siswa) {
+                // Update current class of the student
+                $siswa->update(['kelas' => $request->target_kelas]);
+
+                // Record the enrollment for the target year/class
+                Enrollment::updateOrCreate(
+                    ['tahun_ajaran' => $request->target_tahun_ajaran, 'siswa_id' => $siswaId],
+                    ['kelas' => $request->target_kelas]
+                );
+                $count++;
+            }
+        }
+
+        return redirect()->route('admin.siswa.index', ['tahun_ajaran' => $request->target_tahun_ajaran])
+            ->with('success', "$count siswa berhasil dipindahkan ke Kelas {$request->target_kelas} ({$request->target_tahun_ajaran}).");
+    }
+
+    public function cetakAbsen(string $kelas)
+    {
+        $tahun_ajaran = request('tahun_ajaran', session('selected_tahun_ajaran', MasterTahunAjaran::getAktif()));
+        
+        $siswa = Enrollment::where('tahun_ajaran', $tahun_ajaran)
+            ->where('kelas', $kelas)
+            ->with('siswa')
+            ->get()
+            ->pluck('siswa')
+            ->filter()
+            ->sortBy('nama')
+            ->values();
+
+        $nama_kelas = Siswa::getNamaKelas($kelas);
+        $tanggal_cetak = now()->locale('id')->translatedFormat('d F Y');
+
+        // Deteksi Wali Kelas (cocokkan dengan index)
+        $jabatanWaliKelas = 'Wali Kelas ' . $kelas;
+        $wali = StaffSdm::where('jabatan', $jabatanWaliKelas)->first();
+        $wali_kelas = $wali ? $wali->nama : '_______________________';
+
+        return view('admin.siswa.cetak_absen', compact('siswa', 'kelas', 'nama_kelas', 'tahun_ajaran', 'tanggal_cetak', 'wali_kelas'));
     }
 }

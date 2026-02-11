@@ -4,6 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 
 class RaportNilai extends Model
 {
@@ -17,10 +18,15 @@ class RaportNilai extends Model
         'bahasa_indonesia',
         'matematika',
         'pendidikan_pancasila',
-        'ipas',
-        'olahraga',
         'alquran_hadist',
+        'deskripsi_pai',
+        'deskripsi_literasi',
+        'deskripsi_sains',
+        'deskripsi_adab',
         'catatan_wali',
+        'sakit',
+        'izin',
+        'tanpa_keterangan',
     ];
 
     public static function mapelList(): array
@@ -29,8 +35,6 @@ class RaportNilai extends Model
             'bahasa_indonesia' => 'Bahasa Indonesia',
             'matematika' => 'Matematika',
             'pendidikan_pancasila' => 'Pendidikan Pancasila',
-            'ipas' => 'IPAS',
-            'olahraga' => 'Olahraga',
             'alquran_hadist' => "Al-Qur'an Hadist",
         ];
     }
@@ -38,5 +42,45 @@ class RaportNilai extends Model
     public function siswa(): BelongsTo
     {
         return $this->belongsTo(Siswa::class);
+    }
+
+    public function praktik(): HasMany
+    {
+        return $this->hasMany(RaportPraktik::class, 'raport_id');
+    }
+
+    public function mapelNilai(): HasMany
+    {
+        return $this->hasMany(RaportMapelNilai::class, 'raport_id');
+    }
+
+    public function isLengkap(): bool
+    {
+        $activeMapelIds = MasterMapel::where('kelas', $this->kelas)
+            ->where('is_aktif', true)
+            ->pluck('id')
+            ->toArray();
+
+        if (empty($activeMapelIds)) {
+            return true;
+        }
+
+        $filledMapelIds = $this->mapelNilai()
+            ->whereNotNull('nilai')
+            ->pluck('mapel_id')
+            ->toArray();
+
+        // Check if all active mapels are filled
+        foreach ($activeMapelIds as $id) {
+            if (!in_array($id, $filledMapelIds)) {
+                return false;
+            }
+        }
+
+        if ($this->sakit === null || $this->izin === null || $this->tanpa_keterangan === null) {
+            return false;
+        }
+
+        return true;
     }
 }

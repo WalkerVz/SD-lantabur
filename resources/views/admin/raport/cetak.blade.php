@@ -19,31 +19,34 @@
                 <tr class="bg-gray-100">
                     <th class="border border-gray-300 px-2 py-2 text-left">No</th>
                     <th class="border border-gray-300 px-2 py-2 text-left">Nama Siswa</th>
-                    <th class="border border-gray-300 px-2 py-2">B. Indonesia</th>
-                    <th class="border border-gray-300 px-2 py-2">Matematika</th>
-                    <th class="border border-gray-300 px-2 py-2">P. Pancasila</th>
-                    <th class="border border-gray-300 px-2 py-2">IPAS</th>
-                    <th class="border border-gray-300 px-2 py-2">Olahraga</th>
-                    <th class="border border-gray-300 px-2 py-2">Al-Qur'an Hadist</th>
+                    @foreach($master_mapel as $m)
+                        <th class="border border-gray-300 px-2 py-2 text-center text-xs">{{ $m->nama }}</th>
+                    @endforeach
                     <th class="border border-gray-300 px-2 py-2">Rata-rata</th>
                 </tr>
             </thead>
             <tbody>
                 @foreach($raport as $idx => $r)
                 @php
-                    $cols = ['bahasa_indonesia','matematika','pendidikan_pancasila','ipas','olahraga','alquran_hadist'];
-                    $rata = array_sum(array_map(fn($c)=> (float)($r->$c ?? 0), $cols)) / 6;
+                    $scores = $r->mapelNilai->pluck('nilai', 'mapel_id')->toArray();
+                    $total = 0;
+                    $count = 0;
+                    foreach($master_mapel as $m) {
+                        $val = $scores[$m->id] ?? 0;
+                        if($val > 0) {
+                            $total += $val;
+                            $count++;
+                        }
+                    }
+                    $rata = $count > 0 ? $total / $count : 0;
                 @endphp
                 <tr>
                     <td class="border border-gray-300 px-2 py-2">{{ $idx + 1 }}</td>
-                    <td class="border border-gray-300 px-2 py-2">{{ $r->siswa->nama ?? '-' }}</td>
-                    <td class="border border-gray-300 px-2 py-2 text-center">{{ $r->bahasa_indonesia ?? '-' }}</td>
-                    <td class="border border-gray-300 px-2 py-2 text-center">{{ $r->matematika ?? '-' }}</td>
-                    <td class="border border-gray-300 px-2 py-2 text-center">{{ $r->pendidikan_pancasila ?? '-' }}</td>
-                    <td class="border border-gray-300 px-2 py-2 text-center">{{ $r->ipas ?? '-' }}</td>
-                    <td class="border border-gray-300 px-2 py-2 text-center">{{ $r->olahraga ?? '-' }}</td>
-                    <td class="border border-gray-300 px-2 py-2 text-center">{{ $r->alquran_hadist ?? '-' }}</td>
-                    <td class="border border-gray-300 px-2 py-2 text-center font-medium">{{ number_format($rata, 1) }}</td>
+                    <td class="border border-gray-300 px-2 py-2 font-medium">{{ $r->siswa->nama ?? '-' }}</td>
+                    @foreach($master_mapel as $m)
+                        <td class="border border-gray-300 px-2 py-2 text-center">{{ $scores[$m->id] ?? '-' }}</td>
+                    @endforeach
+                    <td class="border border-gray-300 px-2 py-2 text-center font-bold text-green-700 bg-green-50">{{ number_format($rata, 1) }}</td>
                 </tr>
                 @endforeach
             </tbody>

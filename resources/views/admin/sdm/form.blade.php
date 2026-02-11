@@ -21,8 +21,27 @@
             </div>
             <div>
                 <label class="block text-sm font-medium text-gray-700 mb-1">Jabatan <span class="text-red-500">*</span></label>
-                <input type="text" name="jabatan" value="{{ old('jabatan', $item?->jabatan) }}" required placeholder="Contoh: Kepala Sekolah, Guru Kelas 1" class="w-full px-4 py-2 rounded-lg border border-gray-300 focus:ring-2 focus:ring-[#47663D] focus:border-[#47663D]">
+                <select name="jabatan" required class="w-full px-4 py-2 rounded-lg border border-gray-300 focus:ring-2 focus:ring-[#47663D] focus:border-[#47663D]">
+                    <option value="">-- Pilih Jabatan --</option>
+                    <option value="Kepala Sekolah" {{ old('jabatan', $item?->jabatan) == 'Kepala Sekolah' ? 'selected' : '' }}>Kepala Sekolah</option>
+                    <option value="Wali Kelas 1" {{ old('jabatan', $item?->jabatan) == 'Wali Kelas 1' ? 'selected' : '' }}>Wali Kelas 1</option>
+                    <option value="Wali Kelas 2" {{ old('jabatan', $item?->jabatan) == 'Wali Kelas 2' ? 'selected' : '' }}>Wali Kelas 2</option>
+                    <option value="Wali Kelas 3" {{ old('jabatan', $item?->jabatan) == 'Wali Kelas 3' ? 'selected' : '' }}>Wali Kelas 3</option>
+                    <option value="Wali Kelas 4" {{ old('jabatan', $item?->jabatan) == 'Wali Kelas 4' ? 'selected' : '' }}>Wali Kelas 4</option>
+                    <option value="Wali Kelas 5" {{ old('jabatan', $item?->jabatan) == 'Wali Kelas 5' ? 'selected' : '' }}>Wali Kelas 5</option>
+                    <option value="Wali Kelas 6" {{ old('jabatan', $item?->jabatan) == 'Wali Kelas 6' ? 'selected' : '' }}>Wali Kelas 6</option>
+                    <option value="Guru Mata Pelajaran" {{ old('jabatan', $item?->jabatan) == 'Guru Mata Pelajaran' ? 'selected' : '' }}>Guru Mata Pelajaran</option>
+                    <option value="Guru Tahfiz" {{ old('jabatan', $item?->jabatan) == 'Guru Tahfiz' ? 'selected' : '' }}>Guru Tahfiz</option>
+                    <option value="Guru Olahraga" {{ old('jabatan', $item?->jabatan) == 'Guru Olahraga' ? 'selected' : '' }}>Guru Olahraga</option>
+                    <option value="Staff Administrasi" {{ old('jabatan', $item?->jabatan) == 'Staff Administrasi' ? 'selected' : '' }}>Staff Administrasi</option>
+                    <option value="Staff TU" {{ old('jabatan', $item?->jabatan) == 'Staff TU' ? 'selected' : '' }}>Staff TU</option>
+                </select>
                 <p id="err-jabatan" class="text-red-500 text-sm mt-1 hidden"></p>
+            </div>
+            <div>
+                <label class="block text-sm font-medium text-gray-700 mb-1">NIY (Nomor Induk Yayasan)</label>
+                <input type="text" name="niy" value="{{ old('niy', $item?->niy) }}" placeholder="Contoh: NIY. 2403001" class="w-full px-4 py-2 rounded-lg border border-gray-300 focus:ring-2 focus:ring-[#47663D] focus:border-[#47663D]">
+                <p id="err-niy" class="text-red-500 text-sm mt-1 hidden"></p>
             </div>
             <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
                 <div>
