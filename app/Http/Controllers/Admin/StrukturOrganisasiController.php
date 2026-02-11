@@ -2,12 +2,11 @@
 
 namespace App\Http\Controllers\Admin;
 
-use App\Exports\StrukturExport;
 use App\Http\Controllers\Controller;
 use App\Models\StrukturOrganisasi;
+use Barryvdh\DomPDF\Facade\Pdf;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
-use Maatwebsite\Excel\Facades\Excel;
 
 class StrukturOrganisasiController extends Controller
 {
@@ -93,18 +92,12 @@ class StrukturOrganisasiController extends Controller
         return redirect()->route('admin.struktur.index')->with('success', 'Struktur berhasil dihapus.');
     }
 
-    public function exportExcel()
+    public function exportPdf()
     {
         try {
-            while (ob_get_level()) {
-                ob_end_clean();
-            }
             $rows = StrukturOrganisasi::orderBy('level')->orderBy('urutan')->get();
-            $filename = 'struktur_organisasi_' . date('Y-m-d_His') . '.xlsx';
-            $path = 'exports/' . $filename;
-            Storage::disk('local')->makeDirectory('exports');
-            Excel::store(new StrukturExport($rows), $path, 'local');
-            return response()->download(storage_path('app/' . $path), $filename)->deleteFileAfterSend(true);
+            $pdf = Pdf::loadView('admin.export.struktur-pdf', compact('rows'));
+            return $pdf->download('struktur_organisasi_' . date('Y-m-d_His') . '.pdf');
         } catch (\Throwable $e) {
             report($e);
             return redirect()->route('admin.struktur.index')->with('error', 'Export gagal: ' . $e->getMessage());
