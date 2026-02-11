@@ -38,7 +38,6 @@ class SiswaController extends Controller
         }
 
         $rows = [];
-<<<<<<< HEAD
         $masterKelas = \App\Models\MasterKelas::orderBy('tingkat')->get();
 
         foreach ($masterKelas as $mKelas) {
@@ -48,13 +47,9 @@ class SiswaController extends Controller
             // Ambil Wali Kelas langsung dari MasterKelas
             $wali = $mKelas->waliKelas;
             
-=======
-        $tahunKelas = TahunKelas::where('tahun_ajaran', $tahunAjaran)->get()->keyBy('kelas_id');
-        for ($kelas = 1; $kelas <= 2; $kelas++) {
-            $count = Enrollment::where('tahun_ajaran', $tahunAjaran)->where('kelas', $kelas)->count();
-            $wali = $tahunKelas->get($kelas)?->waliKelas;
+            // Ambil nominal SPP (Fitur Teman)
             $spp = BiayaSpp::getNominal($tahunAjaran, $kelas);
->>>>>>> b3f425f5dfdddef29492c353c9488dfb30f5d5a3
+
             $rows[] = (object)[
                 'kelas' => $kelas,
                 'nama_surah' => $mKelas->nama_surah,
@@ -247,13 +242,8 @@ class SiswaController extends Controller
             }
 
             $label = $tahunAjaran ? str_replace('/', '-', (string) $tahunAjaran) : '';
-<<<<<<< HEAD
-            if ($kelas) {
-                $label .= ($label !== '' ? '_' : '') . 'kelas-' . $kelas;
-=======
             if ($kelas >= 1 && $kelas <= 6) {
                 $label .= ($label !== '' ? '_' : '') . ' Kelas ' . $kelas;
->>>>>>> b3f425f5dfdddef29492c353c9488dfb30f5d5a3
             }
             $filename = 'data_siswa_' . ($label ? str_replace(' ', '_', $label) . '_' : '') . date('Y-m-d_His') . '.pdf';
 
@@ -332,17 +322,9 @@ class SiswaController extends Controller
         $nama_kelas = Siswa::getNamaKelas($kelas);
         $tanggal_cetak = now()->locale('id')->translatedFormat('d F Y');
 
-        // Ambil data master kelas untuk nama surah
-        $master = \App\Models\MasterKelas::where('tingkat', $kelas)->first();
-        
-        // Ambil Wali Kelas dari TahunKelas (konsisten dengan sistem)
-        $tahunKelas = \App\Models\TahunKelas::with('waliKelas')
-            ->where('tahun_ajaran', $tahun_ajaran)
-            ->where('kelas', $kelas)
-            ->first();
-        $wali_kelas = $tahunKelas && $tahunKelas->waliKelas 
-            ? $tahunKelas->waliKelas->nama 
-            : '_______________________';
+        // Ambil Wali Kelas dari MasterKelas directly (New Architecture)
+        $master = \App\Models\MasterKelas::where('tingkat', $kelas)->with('waliKelas')->first();
+        $wali_kelas = $master && $master->waliKelas ? $master->waliKelas->nama : '_______________________';
 
         return view('admin.siswa.cetak_absen', compact('siswa', 'kelas', 'nama_kelas', 'tahun_ajaran', 'tanggal_cetak', 'wali_kelas'));
     }

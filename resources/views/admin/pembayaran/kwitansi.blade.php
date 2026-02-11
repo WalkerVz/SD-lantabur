@@ -16,6 +16,11 @@
         .footer-right { float: right; width: 50%; text-align: right; }
         .ttd { margin-top: 60px; }
         .ttd-name { font-weight: bold; text-decoration: underline; }
+
+        @media print {
+            @page { margin: 0; size: auto; }
+            body { margin: 1cm; }
+        }
     </style>
 </head>
 <body>
@@ -45,5 +50,10 @@
             </div>
         </div>
     </div>
+    <script>
+        window.onload = function() {
+            window.print();
+        }
+    </script>
 </body>
 </html>
