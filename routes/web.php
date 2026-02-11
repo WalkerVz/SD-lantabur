@@ -36,11 +36,7 @@ Route::prefix('admin')->name('admin.')->group(function () {
         Route::get('sdm/{id}/edit', [SdmController::class, 'edit'])->name('sdm.edit');
         Route::put('sdm/{id}', [SdmController::class, 'update'])->name('sdm.update');
         Route::delete('sdm/{id}', [SdmController::class, 'destroy'])->name('sdm.destroy');
-<<<<<<< HEAD
         Route::get('sdm/export/pdf', [SdmController::class, 'exportPdf'])->name('sdm.export.pdf');
-=======
-        // Route::get('sdm/export/excel', [SdmController::class, 'exportExcel'])->name('sdm.export.excel');
->>>>>>> 2e7df86c715515a3c7ea5e793c0e393ff6c3f144
 
         Route::get('struktur', [StrukturOrganisasiController::class, 'index'])->name('struktur.index');
         Route::get('struktur/create', [StrukturOrganisasiController::class, 'create'])->name('struktur.create');
@@ -48,11 +44,7 @@ Route::prefix('admin')->name('admin.')->group(function () {
         Route::get('struktur/{id}/edit', [StrukturOrganisasiController::class, 'edit'])->name('struktur.edit');
         Route::put('struktur/{id}', [StrukturOrganisasiController::class, 'update'])->name('struktur.update');
         Route::delete('struktur/{id}', [StrukturOrganisasiController::class, 'destroy'])->name('struktur.destroy');
-<<<<<<< HEAD
         Route::get('struktur/export/pdf', [StrukturOrganisasiController::class, 'exportPdf'])->name('struktur.export.pdf');
-=======
-        // Route::get('struktur/export/excel', [StrukturOrganisasiController::class, 'exportExcel'])->name('struktur.export.excel');
->>>>>>> 2e7df86c715515a3c7ea5e793c0e393ff6c3f144
 
         Route::get('siswa', [SiswaController::class, 'index'])->name('siswa.index');
         Route::get('siswa/list-by-kelas', [SiswaController::class, 'listByKelas'])->name('siswa.list-by-kelas');
@@ -62,7 +54,6 @@ Route::prefix('admin')->name('admin.')->group(function () {
         Route::get('siswa/{id}/edit', [SiswaController::class, 'edit'])->name('siswa.edit');
         Route::put('siswa/{id}', [SiswaController::class, 'update'])->name('siswa.update');
         Route::delete('siswa/{id}', [SiswaController::class, 'destroy'])->name('siswa.destroy');
-<<<<<<< HEAD
         Route::get('siswa/export/pdf', [SiswaController::class, 'exportPdf'])->name('siswa.export.pdf');
 
         Route::get('pembayaran', [PembayaranController::class, 'index'])->name('pembayaran.index');
@@ -113,12 +104,6 @@ Route::prefix('admin')->name('admin.')->group(function () {
         Route::put('settings/password', [SettingsController::class, 'updatePassword'])->name('settings.password');
         Route::post('settings/tahun-ajaran', [SettingsController::class, 'storeTahunAjaran'])->name('settings.tahun-ajaran.store');
         Route::put('settings/tahun-ajaran/aktif', [SettingsController::class, 'setAktifTahunAjaran'])->name('settings.tahun-ajaran.aktif');
-<<<<<<< HEAD
         Route::post('settings/biaya-spp', [SettingsController::class, 'storeBiayaSpp'])->name('settings.biaya-spp.store');
-=======
-        Route::post('settings/mapel', [SettingsController::class, 'storeMapel'])->name('settings.mapel.store');
-        Route::put('settings/mapel/{id}', [SettingsController::class, 'updateMapel'])->name('settings.mapel.update');
-        Route::delete('settings/mapel/{id}', [SettingsController::class, 'destroyMapel'])->name('settings.mapel.destroy');
->>>>>>> 2e7df86c715515a3c7ea5e793c0e393ff6c3f144
     });
 });
