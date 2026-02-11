@@ -11,20 +11,18 @@
     <div class="bg-white rounded-xl shadow border border-gray-100 p-4 mb-6">
         <label class="block text-sm font-medium text-gray-700 mb-2">Tahun Ajaran</label>
         <p class="text-xs text-gray-500 mb-2">Atur tahun ajaran aktif di <a href="{{ route('admin.settings.index') }}#tahun-ajaran" class="text-[#47663D] hover:underline">Pengaturan → Tahun Ajaran</a>.</p>
-        <div class="flex flex-wrap gap-2">
+        <select onchange="window.location.href='{{ route('admin.siswa.index') }}?tahun_ajaran='+encodeURIComponent(this.value)" class="px-4 py-2.5 rounded-lg border border-gray-300 focus:ring-2 focus:ring-[#47663D] focus:border-[#47663D] bg-white text-gray-800 font-medium max-w-[180px]">
             @foreach($list_tahun as $t)
-                <a href="{{ route('admin.siswa.index', ['tahun_ajaran' => $t]) }}" class="px-4 py-2.5 rounded-lg font-medium transition {{ $tahun_ajaran === $t ? 'bg-[#47663D] text-white shadow' : 'bg-gray-100 text-gray-700 hover:bg-gray-200' }}">
-                    {{ $t }}
-                </a>
+                <option value="{{ $t }}" {{ $tahun_ajaran === $t ? 'selected' : '' }}>{{ $t }}</option>
             @endforeach
-        </div>
+        </select>
     </div>
 
     {{-- Export semua kelas (untuk tahun terpilih) --}}
     <div class="flex justify-end mb-4">
-        <a href="{{ route('admin.siswa.export.excel', ['tahun_ajaran' => $tahun_ajaran]) }}" class="inline-flex items-center gap-2 px-4 py-2 bg-gray-100 text-gray-700 rounded-lg hover:bg-gray-200 text-sm font-medium shadow-sm">
+        <a href="{{ route('admin.siswa.export.pdf', ['tahun_ajaran' => $tahun_ajaran]) }}" class="inline-flex items-center gap-2 px-4 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700 text-sm font-medium shadow-sm">
             <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/></svg>
-            Export Semua Kelas ({{ $tahun_ajaran }})
+            Export PDF Semua Kelas ({{ $tahun_ajaran }})
         </a>
     </div>
 
@@ -37,6 +35,7 @@
                         <th class="px-4 py-3 text-sm font-semibold w-14">No</th>
                         <th class="px-4 py-3 text-sm font-semibold">Kelas</th>
                         <th class="px-4 py-3 text-sm font-semibold">Jumlah Siswa</th>
+                        <th class="px-4 py-3 text-sm font-semibold">SPP/bulan</th>
                         <th class="px-4 py-3 text-sm font-semibold">Wali Kelas</th>
                         <th class="px-4 py-3 text-sm font-semibold w-32">Siswa</th>
                     </tr>
@@ -47,13 +46,14 @@
                         <td class="px-4 py-3 text-gray-600">{{ $idx + 1 }}</td>
                         <td class="px-4 py-3 font-medium text-gray-800">Kelas {{ $row->kelas }}</td>
                         <td class="px-4 py-3 text-gray-600">{{ $row->jumlah_siswa }}</td>
+                        <td class="px-4 py-3 text-gray-600 font-medium">Rp {{ number_format($row->spp_bulanan, 0, ',', '.') }}</td>
                         <td class="px-4 py-3 text-gray-600">{{ $row->wali_kelas_nama }}</td>
                         <td class="px-4 py-3">
                             <div class="flex flex-wrap items-center gap-2">
                                 <button type="button" @click="openListModal({{ $row->kelas }})" class="px-3 py-1.5 bg-[#47663D] text-white rounded-lg text-sm font-medium hover:bg-[#5a7d52] transition shadow-sm">
                                     Siswa
                                 </button>
-                                <a href="{{ route('admin.siswa.export.excel', ['tahun_ajaran' => $tahun_ajaran, 'kelas' => $row->kelas]) }}" class="inline-flex items-center gap-1 px-2.5 py-1.5 bg-emerald-600 text-white rounded-lg text-xs font-medium hover:bg-emerald-700 transition shadow-sm" title="Export Excel Kelas {{ $row->kelas }}">
+                                <a href="{{ route('admin.siswa.export.pdf', ['tahun_ajaran' => $tahun_ajaran, 'kelas' => $row->kelas]) }}" class="inline-flex items-center gap-1 px-2.5 py-1.5 bg-red-600 text-white rounded-lg text-xs font-medium hover:bg-red-700 transition shadow-sm" title="Export PDF Kelas {{ $row->kelas }}">
                                     <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/></svg>
                                     Export
                                 </a>

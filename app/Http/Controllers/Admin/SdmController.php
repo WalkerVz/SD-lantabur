@@ -2,13 +2,12 @@
 
 namespace App\Http\Controllers\Admin;
 
-use App\Exports\SdmExport;
 use App\Http\Controllers\Controller;
 use App\Models\Spesialisasi;
 use App\Models\StaffSdm;
+use Barryvdh\DomPDF\Facade\Pdf;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
-use Maatwebsite\Excel\Facades\Excel;
 
 class SdmController extends Controller
 {
@@ -113,24 +112,16 @@ class SdmController extends Controller
         return redirect()->route('admin.sdm.index')->with('success', 'Data SDM berhasil dihapus.');
     }
 
-    public function exportExcel(Request $request)
+    public function exportPdf(Request $request)
     {
         try {
-            while (ob_get_level()) {
-                ob_end_clean();
-            }
             $query = StaffSdm::with('spesialisasi')->orderBy('nama');
             if ($request->filled('spesialisasi_id')) {
                 $query->where('spesialisasi_id', $request->spesialisasi_id);
             }
             $rows = $query->get();
-            $filename = 'data_sdm_' . date('Y-m-d_His') . '.xlsx';
-
-            $path = 'exports/' . $filename;
-            Storage::disk('local')->makeDirectory('exports');
-            \Maatwebsite\Excel\Facades\Excel::store(new SdmExport($rows), $path, 'local');
-
-            return response()->download(storage_path('app/' . $path), $filename)->deleteFileAfterSend(true);
+            $pdf = Pdf::loadView('admin.export.sdm-pdf', compact('rows'));
+            return $pdf->download('data_sdm_' . date('Y-m-d_His') . '.pdf');
         } catch (\Throwable $e) {
             report($e);
             return redirect()->route('admin.sdm.index')->with('error', 'Export gagal: ' . $e->getMessage());

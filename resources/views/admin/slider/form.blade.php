@@ -1,4 +1,4 @@
-@extends('admin.layouts.admin')
+@extends(request('modal') ? 'admin.layouts.form' : 'admin.layouts.admin')
 
 @section('title', $item ? 'Edit Slider' : 'Tambah Slider')
 

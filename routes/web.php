@@ -10,6 +10,7 @@ use App\Http\Controllers\Admin\RaportController;
 use App\Http\Controllers\Admin\NewsController;
 use App\Http\Controllers\Admin\GalleryController;
 use App\Http\Controllers\Admin\SliderController;
+use App\Http\Controllers\Admin\PembayaranController;
 use App\Http\Controllers\Admin\SettingsController;
 use Illuminate\Support\Facades\Route;
 
@@ -35,7 +36,7 @@ Route::prefix('admin')->name('admin.')->group(function () {
         Route::get('sdm/{id}/edit', [SdmController::class, 'edit'])->name('sdm.edit');
         Route::put('sdm/{id}', [SdmController::class, 'update'])->name('sdm.update');
         Route::delete('sdm/{id}', [SdmController::class, 'destroy'])->name('sdm.destroy');
-        Route::get('sdm/export/excel', [SdmController::class, 'exportExcel'])->name('sdm.export.excel');
+        Route::get('sdm/export/pdf', [SdmController::class, 'exportPdf'])->name('sdm.export.pdf');
 
         Route::get('struktur', [StrukturOrganisasiController::class, 'index'])->name('struktur.index');
         Route::get('struktur/create', [StrukturOrganisasiController::class, 'create'])->name('struktur.create');
@@ -43,7 +44,7 @@ Route::prefix('admin')->name('admin.')->group(function () {
         Route::get('struktur/{id}/edit', [StrukturOrganisasiController::class, 'edit'])->name('struktur.edit');
         Route::put('struktur/{id}', [StrukturOrganisasiController::class, 'update'])->name('struktur.update');
         Route::delete('struktur/{id}', [StrukturOrganisasiController::class, 'destroy'])->name('struktur.destroy');
-        Route::get('struktur/export/excel', [StrukturOrganisasiController::class, 'exportExcel'])->name('struktur.export.excel');
+        Route::get('struktur/export/pdf', [StrukturOrganisasiController::class, 'exportPdf'])->name('struktur.export.pdf');
 
         Route::get('siswa', [SiswaController::class, 'index'])->name('siswa.index');
         Route::get('siswa/list-by-kelas', [SiswaController::class, 'listByKelas'])->name('siswa.list-by-kelas');
@@ -53,7 +54,12 @@ Route::prefix('admin')->name('admin.')->group(function () {
         Route::get('siswa/{id}/edit', [SiswaController::class, 'edit'])->name('siswa.edit');
         Route::put('siswa/{id}', [SiswaController::class, 'update'])->name('siswa.update');
         Route::delete('siswa/{id}', [SiswaController::class, 'destroy'])->name('siswa.destroy');
-        Route::get('siswa/export/excel', [SiswaController::class, 'exportExcel'])->name('siswa.export.excel');
+        Route::get('siswa/export/pdf', [SiswaController::class, 'exportPdf'])->name('siswa.export.pdf');
+
+        Route::get('pembayaran', [PembayaranController::class, 'index'])->name('pembayaran.index');
+        Route::post('pembayaran', [PembayaranController::class, 'store'])->name('pembayaran.store');
+        Route::get('pembayaran/{id}/kwitansi', [PembayaranController::class, 'kwitansi'])->name('pembayaran.kwitansi');
+        Route::get('pembayaran/export/pdf', [PembayaranController::class, 'exportPdf'])->name('pembayaran.export.pdf');
 
         Route::get('raport', [RaportController::class, 'index'])->name('raport.index');
         Route::get('raport/kelas/{kelas}', [RaportController::class, 'byKelas'])->name('raport.byKelas');
@@ -90,5 +96,6 @@ Route::prefix('admin')->name('admin.')->group(function () {
         Route::put('settings/password', [SettingsController::class, 'updatePassword'])->name('settings.password');
         Route::post('settings/tahun-ajaran', [SettingsController::class, 'storeTahunAjaran'])->name('settings.tahun-ajaran.store');
         Route::put('settings/tahun-ajaran/aktif', [SettingsController::class, 'setAktifTahunAjaran'])->name('settings.tahun-ajaran.aktif');
+        Route::post('settings/biaya-spp', [SettingsController::class, 'storeBiayaSpp'])->name('settings.biaya-spp.store');
     });
 });

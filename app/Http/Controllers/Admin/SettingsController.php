@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
+use App\Models\BiayaSpp;
 use App\Models\MasterTahunAjaran;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -15,8 +16,25 @@ class SettingsController extends Controller
     {
         $tahunAjaranList = MasterTahunAjaran::orderBy('urutan')->orderByDesc('nama')->get();
         $tahunAktif = MasterTahunAjaran::getAktif();
+        $biayaSpp = BiayaSpp::all()->keyBy(fn ($r) => $r->tahun_ajaran . '-' . $r->kelas);
 
-        return view('admin.settings.index', compact('tahunAjaranList', 'tahunAktif'));
+        return view('admin.settings.index', compact('tahunAjaranList', 'tahunAktif', 'biayaSpp'));
+    }
+
+    public function storeBiayaSpp(Request $request)
+    {
+        $request->validate([
+            'tahun_ajaran' => 'required|string|max:20',
+            'kelas' => 'required|integer|in:1,2,3,4,5,6',
+            'nominal' => 'required|numeric|min:0',
+        ]);
+
+        BiayaSpp::updateOrCreate(
+            ['tahun_ajaran' => $request->tahun_ajaran, 'kelas' => $request->kelas],
+            ['nominal' => (int) round($request->nominal)]
+        );
+
+        return back()->with('success', 'Biaya SPP berhasil disimpan.');
     }
 
     public function updateProfile(Request $request)

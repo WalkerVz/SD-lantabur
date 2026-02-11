@@ -2,8 +2,9 @@
 
 namespace App\Http\Controllers\Admin;
 
-use App\Exports\SiswaExport;
 use App\Http\Controllers\Controller;
+use Barryvdh\DomPDF\Facade\Pdf;
+use App\Models\BiayaSpp;
 use App\Models\Enrollment;
 use App\Models\InfoPribadiSiswa;
 use App\Models\MasterTahunAjaran;
@@ -12,7 +13,6 @@ use App\Models\StaffSdm;
 use App\Models\TahunKelas;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
-use Maatwebsite\Excel\Facades\Excel;
 
 class SiswaController extends Controller
 {
@@ -39,11 +39,13 @@ class SiswaController extends Controller
         for ($kelas = 1; $kelas <= 6; $kelas++) {
             $count = Enrollment::where('tahun_ajaran', $tahunAjaran)->where('kelas', $kelas)->count();
             $wali = $tahunKelas->get($kelas)?->waliKelas;
+            $spp = BiayaSpp::getNominal($tahunAjaran, $kelas);
             $rows[] = (object)[
                 'kelas' => $kelas,
                 'jumlah_siswa' => $count,
                 'wali_kelas' => $wali,
                 'wali_kelas_nama' => $wali ? $wali->nama : '-',
+                'spp_bulanan' => $spp,
             ];
         }
 
@@ -204,12 +206,9 @@ class SiswaController extends Controller
         return redirect()->route('admin.siswa.index', ['tahun_ajaran' => $tahunAjaran])->with('success', 'Siswa berhasil dihapus.');
     }
 
-    public function exportExcel(Request $request)
+    public function exportPdf(Request $request)
     {
         try {
-            while (ob_get_level()) {
-                ob_end_clean();
-            }
             $tahunAjaran = $request->get('tahun_ajaran');
             $kelas = $request->filled('kelas') ? (int) $request->kelas : null;
 
@@ -233,15 +232,12 @@ class SiswaController extends Controller
 
             $label = $tahunAjaran ? str_replace('/', '-', (string) $tahunAjaran) : '';
             if ($kelas >= 1 && $kelas <= 6) {
-                $label .= ($label !== '' ? '_' : '') . 'kelas-' . $kelas;
+                $label .= ($label !== '' ? '_' : '') . ' Kelas ' . $kelas;
             }
-            $filename = 'data_siswa_' . ($label !== '' ? $label . '_' : '') . date('Y-m-d_His') . '.xlsx';
+            $filename = 'data_siswa_' . ($label ? str_replace(' ', '_', $label) . '_' : '') . date('Y-m-d_His') . '.pdf';
 
-            $path = 'exports/' . $filename;
-            Storage::disk('local')->makeDirectory('exports');
-            Excel::store(new SiswaExport($rows), $path, 'local');
-
-            return response()->download(storage_path('app/' . $path), $filename)->deleteFileAfterSend(true);
+            $pdf = Pdf::loadView('admin.export.siswa-pdf', compact('rows', 'label'));
+            return $pdf->download($filename);
         } catch (\Throwable $e) {
             report($e);
             return redirect()->route('admin.siswa.index', ['tahun_ajaran' => $request->get('tahun_ajaran')])

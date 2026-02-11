@@ -38,6 +38,60 @@
         </form>
     </div>
 
+    {{-- Biaya SPP per Kelas --}}
+    <div id="biaya-spp" class="bg-white rounded-xl shadow border border-gray-100 p-6 scroll-mt-4">
+        <h2 class="text-lg font-semibold text-gray-800 mb-2">Biaya SPP (per Bulan)</h2>
+        <p class="text-sm text-gray-600 mb-4">Tentukan biaya sekolah per bulan per kelas untuk setiap tahun ajaran. Format Rupiah tanpa titik/koma.</p>
+        <form action="{{ route('admin.settings.biaya-spp.store') }}" method="POST" class="space-y-4">
+            @csrf
+            <div class="flex flex-wrap items-end gap-4">
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-1">Tahun Ajaran</label>
+                    <select name="tahun_ajaran" required class="px-3 py-2 rounded-lg border border-gray-300 focus:ring-2 focus:ring-[#47663D] focus:border-[#47663D]">
+                        @foreach($tahunAjaranList as $t)
+                            <option value="{{ $t->nama }}">{{ $t->nama }}</option>
+                        @endforeach
+                    </select>
+                </div>
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-1">Kelas</label>
+                    <select name="kelas" required class="px-3 py-2 rounded-lg border border-gray-300 focus:ring-2 focus:ring-[#47663D] focus:border-[#47663D]">
+                        @for($k = 1; $k <= 6; $k++)
+                            <option value="{{ $k }}">Kelas {{ $k }}</option>
+                        @endfor
+                    </select>
+                </div>
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-1">Nominal (Rp)</label>
+                    <input type="number" name="nominal" min="0" step="1" placeholder="500000" required class="px-3 py-2 rounded-lg border border-gray-300 focus:ring-2 focus:ring-[#47663D] focus:border-[#47663D] w-36">
+                </div>
+                <button type="submit" class="px-4 py-2 bg-[#47663D] text-white rounded-lg hover:bg-[#5a7d52] font-medium text-sm">Simpan</button>
+            </div>
+        </form>
+        <div class="mt-4 overflow-x-auto">
+            <table class="w-full text-sm">
+                <thead class="bg-gray-50">
+                    <tr>
+                        <th class="px-3 py-2 text-left font-semibold text-gray-700">Tahun Ajaran</th>
+                        <th class="px-3 py-2 text-left font-semibold text-gray-700">Kelas</th>
+                        <th class="px-3 py-2 text-right font-semibold text-gray-700">SPP/bulan</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @forelse($biayaSpp->values()->sortBy(fn($b) => $b->tahun_ajaran . '-' . $b->kelas) as $b)
+                        <tr class="border-b border-gray-100">
+                            <td class="px-3 py-2">{{ $b->tahun_ajaran }}</td>
+                            <td class="px-3 py-2">Kelas {{ $b->kelas }}</td>
+                            <td class="px-3 py-2 text-right font-medium">Rp {{ number_format($b->nominal, 0, ',', '.') }}</td>
+                        </tr>
+                    @empty
+                        <tr><td colspan="3" class="px-3 py-4 text-gray-500 text-center">Belum ada data biaya SPP.</td></tr>
+                    @endforelse
+                </tbody>
+            </table>
+        </div>
+    </div>
+
     {{-- Ubah Nama --}}
     <div class="bg-white rounded-xl shadow border border-gray-100 p-6">
         <h2 class="text-lg font-semibold text-gray-800 mb-4">Ubah Nama</h2>
