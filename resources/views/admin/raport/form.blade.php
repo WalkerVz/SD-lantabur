@@ -16,12 +16,20 @@
             <input type="hidden" name="tahun_ajaran" value="{{ $tahun_ajaran }}">
             <div class="mb-4">
                 <label class="block text-sm font-medium text-gray-700 mb-1">Siswa <span class="text-red-500">*</span></label>
-                <select name="siswa_id" required class="w-full px-4 py-2 rounded-lg border border-gray-300 focus:ring-2 focus:ring-[#47663D] focus:border-[#47663D]">
-                    <option value="">-- Pilih Siswa --</option>
-                    @foreach($siswa as $s)
-                        <option value="{{ $s->id }}" {{ old('siswa_id', $preselectSiswaId ?? '') == $s->id ? 'selected' : '' }}>{{ $s->nama }} (Kelas {{ $s->kelas }})</option>
-                    @endforeach
-                </select>
+                @if($preselectSiswaId)
+                    @php $selectedSiswa = $siswa->firstWhere('id', $preselectSiswaId); @endphp
+                    <div class="w-full px-4 py-2 rounded-lg border border-gray-200 bg-gray-50 text-gray-700 font-semibold">
+                        {{ $selectedSiswa ? $selectedSiswa->nama : 'Siswa Tidak Ditemukan' }}
+                    </div>
+                    <input type="hidden" name="siswa_id" value="{{ $preselectSiswaId }}">
+                @else
+                    <select name="siswa_id" required class="w-full px-4 py-2 rounded-lg border border-gray-300 focus:ring-2 focus:ring-[#47663D] focus:border-[#47663D]">
+                        <option value="">-- Pilih Siswa --</option>
+                        @foreach($siswa as $s)
+                            <option value="{{ $s->id }}" {{ old('siswa_id') == $s->id ? 'selected' : '' }}>{{ $s->nama }} (Kelas {{ $s->kelas }})</option>
+                        @endforeach
+                    </select>
+                @endif
                 @error('siswa_id')<p class="text-red-500 text-sm mt-1">{{ $message }}</p>@enderror
             </div>
         @else

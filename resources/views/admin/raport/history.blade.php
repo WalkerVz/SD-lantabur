@@ -9,7 +9,7 @@
             <h1 class="text-2xl font-bold text-gray-800">Histori Raport Siswa</h1>
             <p class="text-gray-600">Progres akademik untuk <strong>{{ $siswa->nama }}</strong></p>
         </div>
-        <a href="{{ route('admin.raport.byKelas', $siswa->kelas) }}" class="text-sm font-medium text-[#47663D] hover:underline flex items-center">
+        <a href="{{ $return_params['kelas'] ? route('admin.raport.byKelas', ['kelas' => $return_params['kelas'], 'tahun_ajaran' => $return_params['tahun'], 'semester' => $return_params['semester']]) : route('admin.raport.byKelas', $siswa->kelas) }}" class="text-sm font-medium text-[#47663D] hover:underline flex items-center">
             <svg class="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"></path></svg>
             Kembali ke Kelas
         </a>
@@ -55,11 +55,7 @@
                                     <div class="text-center p-2 bg-gray-50 rounded-lg">
                                         <div class="text-[10px] text-gray-400 font-bold uppercase">Rataan Umum</div>
                                         <div class="text-lg font-bold text-gray-800">
-                                            @php
-                                                $cols = ['alquran_hadist','bahasa_indonesia','matematika','pendidikan_pancasila'];
-                                                $rata = array_sum(array_map(fn($c)=> (float)($rep->$c ?? 0), $cols)) / 4;
-                                            @endphp
-                                            {{ number_format($rata, 1) }}
+                                            {{ number_format($rep->hitungRataRata(), 1) }}
                                         </div>
                                     </div>
                                     <div class="text-center p-2 bg-gray-50 rounded-lg">

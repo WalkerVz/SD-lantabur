@@ -15,29 +15,11 @@ class RaportNilai extends Model
         'kelas',
         'semester',
         'tahun_ajaran',
-        'bahasa_indonesia',
-        'matematika',
-        'pendidikan_pancasila',
-        'alquran_hadist',
-        'deskripsi_pai',
-        'deskripsi_literasi',
-        'deskripsi_sains',
-        'deskripsi_adab',
         'catatan_wali',
         'sakit',
         'izin',
         'tanpa_keterangan',
     ];
-
-    public static function mapelList(): array
-    {
-        return [
-            'bahasa_indonesia' => 'Bahasa Indonesia',
-            'matematika' => 'Matematika',
-            'pendidikan_pancasila' => 'Pendidikan Pancasila',
-            'alquran_hadist' => "Al-Qur'an Hadist",
-        ];
-    }
 
     public function siswa(): BelongsTo
     {
@@ -86,6 +68,7 @@ class RaportNilai extends Model
 
     public function hitungRataRata(): float
     {
+<<<<<<< HEAD
         $nilai = [];
         if (!empty($this->bahasa_indonesia)) $nilai[] = $this->bahasa_indonesia;
         if (!empty($this->matematika)) $nilai[] = $this->matematika;
@@ -93,5 +76,22 @@ class RaportNilai extends Model
         if (!empty($this->alquran_hadist)) $nilai[] = $this->alquran_hadist;
 
         return count($nilai) > 0 ? array_sum($nilai) / count($nilai) : 0;
+=======
+        $totalNilai = 0;
+        $jumlahMapel = 0;
+
+        // 1. Ambil dari mapel dinamis (tabel raport_mapel_nilai)
+        $dinamis = $this->mapelNilai;
+        if ($dinamis->isNotEmpty()) {
+            foreach ($dinamis as $mn) {
+                if ($mn->nilai !== null) {
+                    $totalNilai += (float) $mn->nilai;
+                    $jumlahMapel++;
+                }
+            }
+        }
+
+        return $jumlahMapel > 0 ? $totalNilai / $jumlahMapel : 0;
+>>>>>>> 181316f8c3a15389bc8238409e5a1cddc033c03f
     }
 }
