@@ -22,8 +22,8 @@
         </form>
     </div>
 
-    <div class="bg-white rounded-xl shadow border border-gray-100 overflow-hidden">
-        <div class="overflow-x-auto">
+    <div class="bg-white rounded-xl shadow border border-gray-100">
+        <div class="pb-24 sm:pb-0 overflow-visible">
             <table class="w-full text-left text-sm">
                 <thead class="bg-gray-50 border-b border-gray-200">
                     <tr>
@@ -52,42 +52,89 @@
                             </div>
                         </td>
                         <td class="px-6 py-4 text-center">
-                            @if($nilai)
-                                @if($nilai->isLengkap())
-                                    <span class="inline-flex items-center px-3 py-1 bg-green-100 text-green-700 text-xs font-bold rounded-full border border-green-200 uppercase tracking-tighter">
+                            @php 
+                                $rj = $raportJilid->get($s->id); 
+                                $isNilaiDibuat = $nilai ? true : false;
+                                $isLengkapUmum = $nilai ? $nilai->isLengkap() : false; // sudah termasuk check tabel umum & praktik (7 nilai)
+                                $isSemuaLengkap = $isLengkapUmum && $rj; // Jilid juga harus ada datanya
+                            @endphp
+
+                            @if($isNilaiDibuat || $rj)
+                                @if($isSemuaLengkap)
+                                    <span class="inline-flex items-center px-3 py-1 bg-green-100 text-green-700 text-xs font-bold rounded-full border border-green-200 uppercase tracking-tighter w-full justify-center">
                                         <svg class="w-3 h-3 mr-1" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"></path></svg>
-                                        Lengkap
+                                        Nilai Lengkap
                                     </span>
                                 @else
-                                    <span class="inline-flex items-center px-3 py-1 bg-amber-100 text-amber-700 text-xs font-bold rounded-full border border-amber-200 uppercase tracking-tighter">
+                                    <span class="inline-flex items-center px-3 py-1 bg-amber-100 text-amber-700 text-xs font-bold rounded-full border border-amber-200 uppercase tracking-tighter w-full justify-center">
                                         <svg class="w-3 h-3 mr-1" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M8.257 3.099c.765-1.36 2.722-1.36 3.486 0l5.58 9.92c.75 1.334-.213 2.98-1.742 2.98H4.42c-1.53 0-2.493-1.646-1.743-2.98l5.58-9.92zM11 13a1 1 0 11-2 0 1 1 0 012 0zm-1-8a1 1 0 00-1 1v3a1 1 0 002 0V6a1 1 0 00-1-1z" clip-rule="evenodd"></path></svg>
-                                        Belum Lengkap
+                                        Nilai Blm Lengkap
                                     </span>
                                 @endif
+                                
                             @else
-                                <span class="inline-flex items-center px-3 py-1 bg-gray-100 text-gray-500 text-xs font-bold rounded-full border border-gray-200 uppercase tracking-tighter">
+                                <span class="inline-flex items-center px-3 py-1 bg-gray-100 text-gray-500 text-xs font-bold rounded-full border border-gray-200 uppercase tracking-tighter w-full justify-center">
                                     <svg class="w-3 h-3 mr-1" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM7 9a1 1 0 011-1h4a1 1 0 110 2H8a1 1 0 01-1-1z" clip-rule="evenodd"></path></svg>
                                     Belum Diisi
                                 </span>
                             @endif
                         </td>
                         <td class="px-6 py-4">
-                            <div class="flex items-center justify-end gap-3">
+                            @php $rj = $raportJilid->get($s->id); @endphp
+                            <div class="flex items-center justify-end gap-2">
                                 @if($nilai)
-                                    <a href="{{ route('admin.raport.edit', $nilai->id) }}" class="p-2 hover:bg-blue-50 text-blue-600 rounded-lg transition-colors title="Edit Nilai">
-                                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"></path></svg>
-                                    </a>
-                                    <div class="h-6 w-px bg-gray-200"></div>
-                                    <a href="{{ route('admin.raport.cetakSiswa', $nilai->id) }}" target="_blank" class="flex flex-col items-center group px-2">
-                                        <span class="text-[10px] font-bold text-amber-600 uppercase group-hover:text-amber-700">Umum</span>
-                                        <svg class="w-5 h-5 text-amber-500 group-hover:text-amber-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 17h2a2 2 0 002-2v-4a2 2 0 00-2-2H5a2 2 0 00-2 2v4a2 2 0 002 2h2m2 4h6a2 2 0 002-2v-4a2 2 0 00-2-2H9a2 2 0 00-2 2v4a2 2 0 002 2zm8-12V5a2 2 0 00-2-2H9a2 2 0 00-2 2v4h10z"></path></svg>
-                                    </a>
-                                    <a href="{{ route('admin.raport.cetakPraktik', $nilai->id) }}" target="_blank" class="flex flex-col items-center group px-2">
-                                        <span class="text-[10px] font-bold text-green-600 uppercase group-hover:text-green-700">Praktik</span>
-                                        <svg class="w-5 h-5 text-green-500 group-hover:text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path></svg>
-                                    </a>
+                                {{-- Dropdown Edit --}}
+                                <div class="relative" x-data="{ open: false }" @click.outside="open = false">
+                                    <button @click="open = !open" class="inline-flex items-center gap-1 px-3 py-1.5 bg-blue-50 text-blue-700 rounded-lg text-xs font-semibold hover:bg-blue-100 transition-colors">
+                                        <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"/></svg>
+                                        Edit
+                                        <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/></svg>
+                                    </button>
+                                    <div x-show="open" x-transition.opacity.duration.150ms
+                                         class="absolute right-0 z-[9999] mt-1 w-44 bg-white rounded-lg shadow-lg border border-gray-100 py-1 text-sm"
+                                         style="display:none;">
+                                        <a href="{{ route('admin.raport.edit', $nilai->id) }}" class="flex items-center gap-2 px-4 py-2 text-gray-700 hover:bg-blue-50 hover:text-blue-700">
+                                            <span class="w-2 h-2 rounded-full bg-blue-400"></span>Nilai Umum
+                                        </a>
+                                        <a href="{{ route('admin.raport.editPraktik', $nilai->id) }}" class="flex items-center gap-2 px-4 py-2 text-gray-700 hover:bg-green-50 hover:text-green-700">
+                                            <span class="w-2 h-2 rounded-full bg-green-400"></span>Praktik
+                                        </a>
+                                        <a href="{{ route('admin.raport.editJilid', [$s->id, 'tahun_ajaran'=>$tahun, 'semester'=>$semester]) }}" class="flex items-center gap-2 px-4 py-2 text-gray-700 hover:bg-purple-50 hover:text-purple-700">
+                                            <span class="w-2 h-2 rounded-full {{ $rj ? 'bg-purple-400' : 'bg-gray-300' }}"></span>{{ $rj ? 'Jilid' : 'Isi Jilid' }}
+                                        </a>
+                                    </div>
+                                </div>
+
+                                {{-- Dropdown Cetak --}}
+                                <div class="relative" x-data="{ open: false }" @click.outside="open = false">
+                                    <button @click="open = !open" class="inline-flex items-center gap-1 px-3 py-1.5 bg-amber-50 text-amber-700 rounded-lg text-xs font-semibold hover:bg-amber-100 transition-colors">
+                                        <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 17h2a2 2 0 002-2v-4a2 2 0 00-2-2H5a2 2 0 00-2 2v4a2 2 0 002 2h2m2 4h6a2 2 0 002-2v-4a2 2 0 00-2-2H9a2 2 0 00-2 2v4a2 2 0 002 2zm8-12V5a2 2 0 00-2-2H9a2 2 0 00-2 2v4h10z"/></svg>
+                                        Cetak
+                                        <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/></svg>
+                                    </button>
+                                    <div x-show="open" x-transition.opacity.duration.150ms
+                                         class="absolute right-0 z-[9999] mt-1 w-44 bg-white rounded-lg shadow-lg border border-gray-100 py-1 text-sm"
+                                         style="display:none;">
+                                        <a href="{{ route('admin.raport.cetakSiswa', $nilai->id) }}" target="_blank" class="flex items-center gap-2 px-4 py-2 text-gray-700 hover:bg-amber-50 hover:text-amber-700">
+                                            <span class="w-2 h-2 rounded-full bg-amber-400"></span>Raport Umum
+                                        </a>
+                                        <a href="{{ route('admin.raport.cetakPraktik', $nilai->id) }}" target="_blank" class="flex items-center gap-2 px-4 py-2 text-gray-700 hover:bg-green-50 hover:text-green-700">
+                                            <span class="w-2 h-2 rounded-full bg-green-400"></span>Raport Praktik
+                                        </a>
+                                        @if($rj)
+                                        <a href="{{ route('admin.raport.cetakJilid', [$s->id, 'tahun_ajaran'=>$tahun, 'semester'=>$semester]) }}" target="_blank" class="flex items-center gap-2 px-4 py-2 text-gray-700 hover:bg-purple-50 hover:text-purple-700">
+                                            <span class="w-2 h-2 rounded-full bg-purple-400"></span>Raport Jilid
+                                        </a>
+                                        @else
+                                        <span class="flex items-center gap-2 px-4 py-2 text-gray-300 text-xs italic cursor-not-allowed">
+                                            <span class="w-2 h-2 rounded-full bg-gray-200"></span>Jilid (belum diisi)
+                                        </span>
+                                        @endif
+                                    </div>
+                                </div>
                                 @else
-                                    <a href="{{ route('admin.raport.create', ['kelas'=>$kelas,'semester'=>$semester,'tahun_ajaran'=>$tahun,'siswa_id'=>$s->id]) }}" class="inline-flex items-center px-4 py-2 bg-gray-100 hover:bg-[#47663D] hover:text-white text-gray-700 rounded-lg transition-all text-xs font-bold uppercase tracking-widest">
+                                    <a href="{{ route('admin.raport.create', ['kelas'=>$kelas,'semester'=>$semester,'tahun_ajaran'=>$tahun,'siswa_id'=>$s->id]) }}" class="inline-flex items-center gap-1.5 px-4 py-2 bg-gray-100 hover:bg-[#47663D] hover:text-white text-gray-700 rounded-lg transition-all text-xs font-bold uppercase tracking-widest">
+                                        <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"/></svg>
                                         Isi Nilai
                                     </a>
                                 @endif

@@ -38,7 +38,7 @@ class SiswaController extends Controller
         }
 
         $rows = [];
-        $masterKelas = \App\Models\MasterKelas::orderBy('tingkat')->get();
+        $masterKelas = \App\Models\MasterKelas::with('waliKelas')->orderBy('tingkat')->get();
 
         foreach ($masterKelas as $mKelas) {
             $kelas = $mKelas->tingkat;

@@ -13,6 +13,7 @@ use App\Http\Controllers\Admin\SliderController;
 use App\Http\Controllers\Admin\PembayaranController;
 use App\Http\Controllers\Admin\SettingsController;
 use App\Http\Controllers\Admin\MapelController;
+use App\Http\Controllers\Admin\VideoController;
 use Illuminate\Support\Facades\Route;
 
 Route::get('/', [PageController::class, 'home']);
@@ -76,7 +77,13 @@ Route::prefix('admin')->name('admin.')->group(function () {
         Route::get('raport/cetak/kelas/{kelas}', [RaportController::class, 'cetak'])->name('raport.cetak');
         Route::get('raport/cetak/siswa/{id}', [RaportController::class, 'cetakSiswa'])->name('raport.cetakSiswa');
         Route::get('raport/cetak/praktik/{id}', [RaportController::class, 'cetakPraktik'])->name('raport.cetakPraktik');
+        Route::get('raport/cetak/jilid/{siswaId}', [RaportController::class, 'cetakJilid'])->name('raport.cetakJilid');
+        Route::get('raport/jilid/{siswaId}/edit', [RaportController::class, 'editJilid'])->name('raport.editJilid');
+        Route::post('raport/jilid', [RaportController::class, 'jilidStore'])->name('raport.jilidStore');
+        Route::put('raport/jilid/{id}', [RaportController::class, 'jilidUpdate'])->name('raport.jilidUpdate');
         Route::get('raport/history/{id}', [RaportController::class, 'history'])->name('raport.history');
+        Route::get('raport/praktik/{id}/edit', [RaportController::class, 'editPraktik'])->name('raport.editPraktik');
+        Route::put('raport/praktik/{id}', [RaportController::class, 'updatePraktik'])->name('raport.updatePraktik');
 
         Route::get('news', [NewsController::class, 'index'])->name('news.index');
         Route::get('news/create', [NewsController::class, 'create'])->name('news.create');
@@ -110,5 +117,12 @@ Route::prefix('admin')->name('admin.')->group(function () {
         Route::delete('mapel/{id}', [MapelController::class, 'destroy'])->name('mapel.destroy');
 
         Route::post('settings/biaya-spp', [SettingsController::class, 'storeBiayaSpp'])->name('settings.biaya-spp.store');
+
+        Route::get('video', [VideoController::class, 'index'])->name('video.index');
+        Route::get('video/create', [VideoController::class, 'create'])->name('video.create');
+        Route::post('video', [VideoController::class, 'store'])->name('video.store');
+        Route::get('video/{id}/edit', [VideoController::class, 'edit'])->name('video.edit');
+        Route::put('video/{id}', [VideoController::class, 'update'])->name('video.update');
+        Route::delete('video/{id}', [VideoController::class, 'destroy'])->name('video.destroy');
     });
 });
