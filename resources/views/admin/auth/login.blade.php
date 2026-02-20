@@ -48,13 +48,7 @@
                     Masuk
                 </button>
             </form>
-            <div class="px-8 pb-6 pt-0">
-                <div class="bg-amber-50 border border-amber-200 rounded-lg p-4 text-center">
-                    <p class="text-xs font-semibold text-amber-800 mb-2">Kredensial Admin (simpan untuk login):</p>
-                    <p class="text-sm text-gray-800"><span class="font-mono font-medium">Username:</span> <strong>admin</strong></p>
-                    <p class="text-sm text-gray-800"><span class="font-mono font-medium">Password:</span> <strong>admin123</strong></p>
-                </div>
-            </div>
+
         </div>
         <p class="text-center text-gray-500 text-sm mt-4">&copy; {{ date('Y') }} SD Al-Qur'an Lantabur</p>
     </div>
