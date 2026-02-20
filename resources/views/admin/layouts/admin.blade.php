@@ -116,7 +116,7 @@
 
                 {{-- Halaman Depan (dropdown) --}}
                 <div x-data="{ open: halamanDepanOpen }" @click.away="open = false" class="relative">
-                    <button @click="open = !open" type="button" class="w-full flex items-center gap-3 px-4 py-3 rounded-lg {{ request()->routeIs('admin.news.*', 'admin.gallery.*', 'admin.slider.*') ? 'bg-[#47663D] text-white' : 'text-gray-700 hover:bg-gray-100' }}">
+                    <button @click="open = !open" type="button" class="w-full flex items-center gap-3 px-4 py-3 rounded-lg {{ request()->routeIs('admin.news.*', 'admin.gallery.*', 'admin.slider.*', 'admin.video.*') ? 'bg-[#47663D] text-white' : 'text-gray-700 hover:bg-gray-100' }}">
                         <svg class="w-5 h-5 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"/></svg>
                         <span x-show="!sidebarCollapsed" x-transition class="flex-1 text-left">Halaman Depan</span>
                         <svg x-show="!sidebarCollapsed" :class="open ? 'rotate-180' : ''" class="w-4 h-4 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/></svg>
@@ -134,6 +134,10 @@
                         <a href="{{ route('admin.slider.index') }}" class="flex items-center gap-2 px-3 py-2 rounded-lg {{ request()->routeIs('admin.slider.*') ? 'bg-[#47663D]/10 text-[#47663D]' : 'text-gray-700 hover:bg-gray-100' }}">
                             <svg class="w-4 h-4 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14M7 8h10m0 0l-2-2m2 2l2 2"/></svg>
                             <span x-show="!sidebarCollapsed">Slider</span>
+                        </a>
+                        <a href="{{ route('admin.video.index') }}" class="flex items-center gap-2 px-3 py-2 rounded-lg {{ request()->routeIs('admin.video.*') ? 'bg-[#47663D]/10 text-[#47663D]' : 'text-gray-700 hover:bg-gray-100' }}">
+                            <svg class="w-4 h-4 flex-shrink-0" fill="currentColor" viewBox="0 0 24 24"><path d="M6.827 6.175A2.31 2.31 0 015.186 7.23c-.38.054-.757.112-1.134.175C2.999 7.58 2.25 8.507 2.25 9.574V18a2.25 2.25 0 002.25 2.25h15A2.25 2.25 0 0021.75 18V9.574c0-1.067-.75-1.994-1.802-2.169a47.865 47.865 0 00-1.134-.175 2.31 2.31 0 01-1.64-1.055l-.822-1.316a2.192 2.192 0 00-1.736-1.039 48.774 48.774 0 00-5.232 0 2.192 2.192 0 00-1.736 1.039l-.821 1.316z"/><path d="M16.5 12.75a4.5 4.5 0 11-9 0 4.5 4.5 0 019 0z"/></svg>
+                            <span x-show="!sidebarCollapsed">Video YouTube</span>
                         </a>
                     </div>
                 </div>

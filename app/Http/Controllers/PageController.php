@@ -6,6 +6,7 @@ use App\Models\Berita;
 use App\Models\StaffSdm;
 use App\Models\Gallery;
 use App\Models\Slider;
+use App\Models\VideoYoutube;
 use Illuminate\Http\Request;
 
 class PageController extends Controller
@@ -65,6 +66,7 @@ class PageController extends Controller
         }
         $items = $query->get();
         $kategoris = Gallery::select('kategori')->distinct()->whereNotNull('kategori')->where('kategori', '!=', '')->pluck('kategori');
-        return view('gallery', compact('items', 'kategoris'));
+        $videos = VideoYoutube::where('aktif', true)->orderBy('urutan')->get();
+        return view('gallery', compact('items', 'kategoris', 'videos'));
     }
 }

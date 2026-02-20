@@ -13,6 +13,7 @@ use App\Http\Controllers\Admin\SliderController;
 use App\Http\Controllers\Admin\PembayaranController;
 use App\Http\Controllers\Admin\SettingsController;
 use App\Http\Controllers\Admin\MapelController;
+use App\Http\Controllers\Admin\VideoController;
 use Illuminate\Support\Facades\Route;
 
 Route::get('/', [PageController::class, 'home']);
@@ -109,5 +110,12 @@ Route::prefix('admin')->name('admin.')->group(function () {
         Route::delete('mapel/{id}', [MapelController::class, 'destroy'])->name('mapel.destroy');
 
         Route::post('settings/biaya-spp', [SettingsController::class, 'storeBiayaSpp'])->name('settings.biaya-spp.store');
+
+        Route::get('video', [VideoController::class, 'index'])->name('video.index');
+        Route::get('video/create', [VideoController::class, 'create'])->name('video.create');
+        Route::post('video', [VideoController::class, 'store'])->name('video.store');
+        Route::get('video/{id}/edit', [VideoController::class, 'edit'])->name('video.edit');
+        Route::put('video/{id}', [VideoController::class, 'update'])->name('video.update');
+        Route::delete('video/{id}', [VideoController::class, 'destroy'])->name('video.destroy');
     });
 });
