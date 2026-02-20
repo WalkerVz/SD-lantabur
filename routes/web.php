@@ -36,11 +36,8 @@ Route::prefix('admin')->name('admin.')->group(function () {
         Route::get('sdm/{id}/edit', [SdmController::class, 'edit'])->name('sdm.edit');
         Route::put('sdm/{id}', [SdmController::class, 'update'])->name('sdm.update');
         Route::delete('sdm/{id}', [SdmController::class, 'destroy'])->name('sdm.destroy');
-<<<<<<< HEAD
 
         Route::get('sdm/export/pdf', [SdmController::class, 'exportPdf'])->name('sdm.export.pdf');
-=======
->>>>>>> 181316f8c3a15389bc8238409e5a1cddc033c03f
 
         Route::get('struktur', [StrukturOrganisasiController::class, 'index'])->name('struktur.index');
         Route::get('struktur/create', [StrukturOrganisasiController::class, 'create'])->name('struktur.create');
@@ -48,10 +45,7 @@ Route::prefix('admin')->name('admin.')->group(function () {
         Route::get('struktur/{id}/edit', [StrukturOrganisasiController::class, 'edit'])->name('struktur.edit');
         Route::put('struktur/{id}', [StrukturOrganisasiController::class, 'update'])->name('struktur.update');
         Route::delete('struktur/{id}', [StrukturOrganisasiController::class, 'destroy'])->name('struktur.destroy');
-<<<<<<< HEAD
         Route::get('struktur/export/pdf', [StrukturOrganisasiController::class, 'exportPdf'])->name('struktur.export.pdf');
-=======
->>>>>>> 181316f8c3a15389bc8238409e5a1cddc033c03f
 
         Route::get('siswa', [SiswaController::class, 'index'])->name('siswa.index');
         Route::get('siswa/list-by-kelas', [SiswaController::class, 'listByKelas'])->name('siswa.list-by-kelas');
@@ -61,13 +55,7 @@ Route::prefix('admin')->name('admin.')->group(function () {
         Route::get('siswa/{id}/edit', [SiswaController::class, 'edit'])->name('siswa.edit');
         Route::put('siswa/{id}', [SiswaController::class, 'update'])->name('siswa.update');
         Route::delete('siswa/{id}', [SiswaController::class, 'destroy'])->name('siswa.destroy');
-<<<<<<< HEAD
         Route::get('siswa/export/pdf', [SiswaController::class, 'exportPdf'])->name('siswa.export.pdf');
-=======
-        Route::get('siswa/cetak-absen/kelas/{kelas}', [SiswaController::class, 'cetakAbsen'])->name('siswa.cetakAbsen');
-        Route::get('siswa-promotion', [SiswaController::class, 'promotion'])->name('siswa.promotion');
-        Route::post('siswa-promote', [SiswaController::class, 'promote'])->name('siswa.promote');
->>>>>>> 181316f8c3a15389bc8238409e5a1cddc033c03f
 
         Route::get('pembayaran', [PembayaranController::class, 'index'])->name('pembayaran.index');
         Route::post('pembayaran', [PembayaranController::class, 'store'])->name('pembayaran.store');
