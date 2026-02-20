@@ -114,12 +114,11 @@ class PembayaranController extends Controller
         $bulanNama = ['', 'Januari', 'Februari', 'Maret', 'April', 'Mei', 'Juni', 'Juli', 'Agustus', 'September', 'Oktober', 'November', 'Desember'];
         $bulanStr = $bulanNama[$p->bulan] ?? $p->bulan;
 
-        $pdf = Pdf::loadView('admin.pembayaran.kwitansi', [
+        return view('admin.pembayaran.kwitansi', [
             'p' => $p,
             'bulan_str' => $bulanStr,
             'tanggal_str' => $p->tanggal_bayar?->format('d/m/Y') ?? '-',
         ]);
-        return $pdf->stream('kwitansi-' . $p->kwitansi_no . '.pdf');
     }
 
     public function exportPdf(Request $request)
@@ -141,13 +140,12 @@ class PembayaranController extends Controller
             ->get();
         $sppBulanan = BiayaSpp::getNominal($tahunAjaran, $kelas);
 
-        $pdf = Pdf::loadView('admin.pembayaran.export-pdf', [
+        return view('admin.pembayaran.export-pdf', [
             'siswa' => $siswa,
             'riwayat' => $riwayat,
             'tahun_ajaran' => $tahunAjaran,
             'kelas' => $kelas,
             'spp_bulanan' => $sppBulanan,
         ]);
-        return $pdf->download('riwayat-pembayaran-' . $siswa->nama . '-' . $tahunAjaran . '.pdf');
     }
 }

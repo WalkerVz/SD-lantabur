@@ -12,6 +12,7 @@ use App\Http\Controllers\Admin\GalleryController;
 use App\Http\Controllers\Admin\SliderController;
 use App\Http\Controllers\Admin\PembayaranController;
 use App\Http\Controllers\Admin\SettingsController;
+use App\Http\Controllers\Admin\MapelController;
 use Illuminate\Support\Facades\Route;
 
 Route::get('/', [PageController::class, 'home']);
@@ -31,6 +32,7 @@ Route::prefix('admin')->name('admin.')->group(function () {
         Route::get('/', [DashboardController::class, 'index'])->name('dashboard');
 
         Route::get('sdm', [SdmController::class, 'index'])->name('sdm.index');
+        Route::get('sdm/export/excel', [SdmController::class, 'exportExcel'])->name('sdm.export.excel');
         Route::get('sdm/create', [SdmController::class, 'create'])->name('sdm.create');
         Route::post('sdm', [SdmController::class, 'store'])->name('sdm.store');
         Route::get('sdm/{id}/edit', [SdmController::class, 'edit'])->name('sdm.edit');
@@ -40,6 +42,7 @@ Route::prefix('admin')->name('admin.')->group(function () {
         Route::get('sdm/export/pdf', [SdmController::class, 'exportPdf'])->name('sdm.export.pdf');
 
         Route::get('struktur', [StrukturOrganisasiController::class, 'index'])->name('struktur.index');
+        Route::get('struktur/export/excel', [StrukturOrganisasiController::class, 'exportExcel'])->name('struktur.export.excel');
         Route::get('struktur/create', [StrukturOrganisasiController::class, 'create'])->name('struktur.create');
         Route::post('struktur', [StrukturOrganisasiController::class, 'store'])->name('struktur.store');
         Route::get('struktur/{id}/edit', [StrukturOrganisasiController::class, 'edit'])->name('struktur.edit');
@@ -56,11 +59,16 @@ Route::prefix('admin')->name('admin.')->group(function () {
         Route::put('siswa/{id}', [SiswaController::class, 'update'])->name('siswa.update');
         Route::delete('siswa/{id}', [SiswaController::class, 'destroy'])->name('siswa.destroy');
         Route::get('siswa/export/pdf', [SiswaController::class, 'exportPdf'])->name('siswa.export.pdf');
+=======
+        Route::get('siswa/cetak-absen/kelas/{kelas}', [SiswaController::class, 'cetakAbsen'])->name('siswa.cetakAbsen');
+        Route::get('siswa-promotion', [SiswaController::class, 'promotion'])->name('siswa.promotion');
+        Route::post('siswa-promote', [SiswaController::class, 'promote'])->name('siswa.promote');
+>>>>>>> 181316f8c3a15389bc8238409e5a1cddc033c03f
 
         Route::get('pembayaran', [PembayaranController::class, 'index'])->name('pembayaran.index');
         Route::post('pembayaran', [PembayaranController::class, 'store'])->name('pembayaran.store');
-        Route::get('pembayaran/{id}/kwitansi', [PembayaranController::class, 'kwitansi'])->name('pembayaran.kwitansi');
         Route::get('pembayaran/export/pdf', [PembayaranController::class, 'exportPdf'])->name('pembayaran.export.pdf');
+        Route::get('pembayaran/{id}/kwitansi', [PembayaranController::class, 'kwitansi'])->name('pembayaran.kwitansi');
         Route::get('raport', [RaportController::class, 'index'])->name('raport.index');
         Route::get('raport/kelas/{kelas}', [RaportController::class, 'byKelas'])->name('raport.byKelas');
         Route::get('raport/kelas/{kelas}/create', [RaportController::class, 'create'])->name('raport.create');
@@ -98,9 +106,11 @@ Route::prefix('admin')->name('admin.')->group(function () {
         Route::put('settings/password', [SettingsController::class, 'updatePassword'])->name('settings.password');
         Route::post('settings/tahun-ajaran', [SettingsController::class, 'storeTahunAjaran'])->name('settings.tahun-ajaran.store');
         Route::put('settings/tahun-ajaran/aktif', [SettingsController::class, 'setAktifTahunAjaran'])->name('settings.tahun-ajaran.aktif');
+        Route::get('mapel', [MapelController::class, 'index'])->name('mapel.index');
+        Route::post('mapel', [MapelController::class, 'store'])->name('mapel.store');
+        Route::put('mapel/{id}', [MapelController::class, 'update'])->name('mapel.update');
+        Route::delete('mapel/{id}', [MapelController::class, 'destroy'])->name('mapel.destroy');
+
         Route::post('settings/biaya-spp', [SettingsController::class, 'storeBiayaSpp'])->name('settings.biaya-spp.store');
-        Route::post('settings/mapel', [SettingsController::class, 'storeMapel'])->name('settings.mapel.store');
-        Route::put('settings/mapel/{id}', [SettingsController::class, 'updateMapel'])->name('settings.mapel.update');
-        Route::delete('settings/mapel/{id}', [SettingsController::class, 'destroyMapel'])->name('settings.mapel.destroy');
     });
 });

@@ -11,13 +11,14 @@
         </div>
         <div class="hidden md:block">
             <div class="bg-amber-50 border border-amber-100 rounded-lg px-4 py-2">
-                <span class="text-sm text-amber-800 font-medium italic">Tahun Ajaran: {{ session('selected_tahun_ajaran') ?: \App\Models\MasterTahunAjaran::getAktif() ?: date('Y').'/'.(date('Y')+1) }}</span>
+                <span class="text-sm text-amber-800 font-medium italic">Tahun Ajaran: {{ session('selected_tahun_ajaran') ?: \App\Models\MasterTahunAjaran::getAktif() ?: date('y').'/'.(date('y')+1) }}</span>
             </div>
         </div>
     </div>
 
     <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-        @for($k = 1; $k <= 2; $k++)
+        @foreach($classes as $c)
+            @php $k = $c->tingkat; @endphp
             <a href="{{ route('admin.raport.byKelas', $k) }}" class="group relative bg-white rounded-2xl shadow-sm border border-gray-100 p-8 hover:shadow-xl hover:border-[#47663D]/20 transition-all duration-300 overflow-hidden">
                 <div class="absolute top-0 right-0 -mt-4 -mr-4 w-24 h-24 bg-[#47663D]/5 rounded-full group-hover:bg-[#47663D]/10 transition-colors"></div>
                 
@@ -27,7 +28,7 @@
                     </div>
                     <div>
                         <h3 class="text-xl font-bold text-gray-800">Kelas {{ $k }}</h3>
-                        <p class="text-sm text-gray-500">Input & Cetak Nilai</p>
+                        <p class="text-sm text-gray-500">{{ $c->nama_surah }}</p>
                     </div>
                 </div>
 
@@ -36,7 +37,7 @@
                     <svg class="w-4 h-4 ml-1" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path></svg>
                 </div>
             </a>
-        @endfor
+        @endforeach
     </div>
 </div>
 @endsection

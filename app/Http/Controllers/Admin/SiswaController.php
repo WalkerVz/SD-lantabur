@@ -10,6 +10,7 @@ use App\Models\InfoPribadiSiswa;
 use App\Models\MasterTahunAjaran;
 use App\Models\Siswa;
 use App\Models\StaffSdm;
+use App\Models\TahunKelas;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
 
@@ -17,12 +18,7 @@ class SiswaController extends Controller
 {
     public static function getTahunAjaranList(): array
     {
-        $fromMaster = MasterTahunAjaran::getListForDropdown();
-        $fromEnrollment = Enrollment::select('tahun_ajaran')->distinct()->orderByDesc('tahun_ajaran')->pluck('tahun_ajaran')->all();
-        $merged = array_unique(array_merge($fromMaster, $fromEnrollment));
-        rsort($merged);
-
-        return empty($merged) ? [date('y') . '/' . (date('y') + 1)] : array_values($merged);
+        return MasterTahunAjaran::getListForDropdown();
     }
 
     public function index(Request $request)
@@ -37,18 +33,26 @@ class SiswaController extends Controller
         }
 
         if (! $tahunAjaran || ! in_array($tahunAjaran, $listTahun)) {
-            $tahunAjaran = MasterTahunAjaran::getAktif() ?? $listTahun[0] ?? (date('y') . '/' . (date('y') + 1));
+            $tahunAjaran = MasterTahunAjaran::getAktif() ?? $listTahun[0] ?? MasterTahunAjaran::getFallback();
             session(['selected_tahun_ajaran' => $tahunAjaran]);
         }
 
         $rows = [];
-        $tahunKelas = TahunKelas::where('tahun_ajaran', $tahunAjaran)->get()->keyBy('kelas_id');
-        for ($kelas = 1; $kelas <= 2; $kelas++) {
+        $masterKelas = \App\Models\MasterKelas::orderBy('tingkat')->get();
+
+        foreach ($masterKelas as $mKelas) {
+            $kelas = $mKelas->tingkat;
             $count = Enrollment::where('tahun_ajaran', $tahunAjaran)->where('kelas', $kelas)->count();
-            $wali = $tahunKelas->get($kelas)?->waliKelas;
+            
+            // Ambil Wali Kelas langsung dari MasterKelas
+            $wali = $mKelas->waliKelas;
+            
+            // Ambil nominal SPP (Fitur Teman)
             $spp = BiayaSpp::getNominal($tahunAjaran, $kelas);
+
             $rows[] = (object)[
                 'kelas' => $kelas,
+                'nama_surah' => $mKelas->nama_surah,
                 'jumlah_siswa' => $count,
                 'wali_kelas' => $wali,
                 'wali_kelas_nama' => $wali ? $wali->nama : '-',
@@ -67,7 +71,7 @@ class SiswaController extends Controller
     {
         $tahunAjaran = $request->get('tahun_ajaran');
         $kelas = (int) $request->get('kelas');
-        if ($kelas < 1 || $kelas > 2) {
+        if (!\App\Models\MasterKelas::where('tingkat', $kelas)->exists()) {
             return response()->json(['siswa' => []]);
         }
         $siswa = Enrollment::where('tahun_ajaran', $tahunAjaran)
@@ -98,7 +102,7 @@ class SiswaController extends Controller
     {
         $request->validate([
             'nama' => 'required|string|max:255',
-            'kelas' => 'required|integer|in:1,2',
+            'kelas' => 'required|integer|exists:master_kelas,tingkat',
             'nis' => 'nullable|string|max:50',
             'nisn' => 'nullable|string|max:50',
             'jenis_kelamin' => 'nullable|string|max:20',
@@ -155,7 +159,7 @@ class SiswaController extends Controller
         $item = Siswa::findOrFail($id);
         $request->validate([
             'nama' => 'required|string|max:255',
-            'kelas' => 'required|integer|in:1,2',
+            'kelas' => 'required|integer|exists:master_kelas,tingkat',
             'nis' => 'nullable|string|max:50',
             'nisn' => 'nullable|string|max:50',
             'jenis_kelamin' => 'nullable|string|max:20',
@@ -221,7 +225,7 @@ class SiswaController extends Controller
 
             if ($tahunAjaran) {
                 $query = Enrollment::where('tahun_ajaran', $tahunAjaran)->with('siswa');
-                if ($kelas >= 1 && $kelas <= 2) {
+                if ($kelas) {
                     $query->where('kelas', $kelas);
                 }
                 $enrollments = $query->get();
@@ -231,7 +235,7 @@ class SiswaController extends Controller
                     ->values();
             } else {
                 $query = Siswa::query()->orderBy('nama');
-                if ($kelas >= 1 && $kelas <= 2) {
+                if ($kelas) {
                     $query->where('kelas', $kelas);
                 }
                 $rows = $query->get()->map(fn ($s) => (object) ['siswa' => $s, 'kelas' => $s->kelas ?? null]);
@@ -278,7 +282,7 @@ class SiswaController extends Controller
         $request->validate([
             'siswa_ids' => 'required|array',
             'siswa_ids.*' => 'exists:siswa,id',
-            'target_kelas' => 'required|integer|in:1,2',
+            'target_kelas' => 'required|integer|exists:master_kelas,tingkat',
             'target_tahun_ajaran' => 'required|string|max:20',
         ]);
 
@@ -318,10 +322,9 @@ class SiswaController extends Controller
         $nama_kelas = Siswa::getNamaKelas($kelas);
         $tanggal_cetak = now()->locale('id')->translatedFormat('d F Y');
 
-        // Deteksi Wali Kelas (cocokkan dengan index)
-        $jabatanWaliKelas = 'Wali Kelas ' . $kelas;
-        $wali = StaffSdm::where('jabatan', $jabatanWaliKelas)->first();
-        $wali_kelas = $wali ? $wali->nama : '_______________________';
+        // Ambil Wali Kelas dari MasterKelas directly (New Architecture)
+        $master = \App\Models\MasterKelas::where('tingkat', $kelas)->with('waliKelas')->first();
+        $wali_kelas = $master && $master->waliKelas ? $master->waliKelas->nama : '_______________________';
 
         return view('admin.siswa.cetak_absen', compact('siswa', 'kelas', 'nama_kelas', 'tahun_ajaran', 'tanggal_cetak', 'wali_kelas'));
     }

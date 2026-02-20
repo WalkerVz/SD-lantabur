@@ -46,11 +46,11 @@ class Siswa extends Model
      */
     public static function getNamaKelas(int $kelas): string
     {
-        $mapping = [
-            1 => '1 An-Naas',
-            2 => '2 Al-Mulk',
-        ];
+        $master = \App\Models\MasterKelas::where('tingkat', $kelas)->first();
+        if ($master && $master->nama_surah) {
+            return "Kelas {$kelas} {$master->nama_surah}";
+        }
 
-        return $mapping[$kelas] ?? "Kelas $kelas";
+        return "Kelompok Belajar {$kelas}";
     }
 }

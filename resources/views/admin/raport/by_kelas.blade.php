@@ -20,10 +20,6 @@
             </select>
             <button type="submit" class="px-4 py-2 bg-gray-200 rounded-lg hover:bg-gray-300 text-sm">Filter</button>
         </form>
-        <div class="flex gap-2">
-            <a href="{{ route('admin.raport.cetak', ['kelas' => $kelas, 'semester' => $semester, 'tahun_ajaran' => $tahun]) }}" target="_blank" class="px-4 py-2 bg-amber-500 text-white rounded-lg hover:bg-amber-600 text-sm font-medium">Cetak Raport Umum</a>
-            <a href="{{ route('admin.raport.create', ['kelas' => $kelas, 'semester' => $semester, 'tahun_ajaran' => $tahun]) }}" class="px-4 py-2 bg-[#47663D] text-white rounded-lg hover:bg-[#5a7d52] text-sm font-medium">+ Isi Nilai</a>
-        </div>
     </div>
 
     <div class="bg-white rounded-xl shadow border border-gray-100 overflow-hidden">

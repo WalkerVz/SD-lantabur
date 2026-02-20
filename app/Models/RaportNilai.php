@@ -68,22 +68,16 @@ class RaportNilai extends Model
 
     public function hitungRataRata(): float
     {
-<<<<<<< HEAD
-        $nilai = [];
-        if (!empty($this->bahasa_indonesia)) $nilai[] = $this->bahasa_indonesia;
-        if (!empty($this->matematika)) $nilai[] = $this->matematika;
-        if (!empty($this->pendidikan_pancasila)) $nilai[] = $this->pendidikan_pancasila;
-        if (!empty($this->alquran_hadist)) $nilai[] = $this->alquran_hadist;
-
-        return count($nilai) > 0 ? array_sum($nilai) / count($nilai) : 0;
-=======
         $totalNilai = 0;
         $jumlahMapel = 0;
 
         // 1. Ambil dari mapel dinamis (tabel raport_mapel_nilai)
-        $dinamis = $this->mapelNilai;
+        // Pastikan load 'mapelNilai' agar tidak N+1 jika dipanggil di loop
+        $dinamis = $this->mapelNilai; 
+        
         if ($dinamis->isNotEmpty()) {
             foreach ($dinamis as $mn) {
+                // Asumsi nilai tersimpan
                 if ($mn->nilai !== null) {
                     $totalNilai += (float) $mn->nilai;
                     $jumlahMapel++;
@@ -92,6 +86,5 @@ class RaportNilai extends Model
         }
 
         return $jumlahMapel > 0 ? $totalNilai / $jumlahMapel : 0;
->>>>>>> 181316f8c3a15389bc8238409e5a1cddc033c03f
     }
 }
