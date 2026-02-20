@@ -59,11 +59,9 @@ Route::prefix('admin')->name('admin.')->group(function () {
         Route::put('siswa/{id}', [SiswaController::class, 'update'])->name('siswa.update');
         Route::delete('siswa/{id}', [SiswaController::class, 'destroy'])->name('siswa.destroy');
         Route::get('siswa/export/pdf', [SiswaController::class, 'exportPdf'])->name('siswa.export.pdf');
-=======
         Route::get('siswa/cetak-absen/kelas/{kelas}', [SiswaController::class, 'cetakAbsen'])->name('siswa.cetakAbsen');
         Route::get('siswa-promotion', [SiswaController::class, 'promotion'])->name('siswa.promotion');
         Route::post('siswa-promote', [SiswaController::class, 'promote'])->name('siswa.promote');
->>>>>>> 181316f8c3a15389bc8238409e5a1cddc033c03f
 
         Route::get('pembayaran', [PembayaranController::class, 'index'])->name('pembayaran.index');
         Route::post('pembayaran', [PembayaranController::class, 'store'])->name('pembayaran.store');
