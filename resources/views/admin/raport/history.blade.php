@@ -44,30 +44,43 @@
                                         <span class="text-xs font-bold text-[#47663D] uppercase tracking-wider bg-[#47663D]/5 px-2 py-0.5 rounded">Semester {{ $rep->semester }}</span>
                                         <div class="text-sm text-gray-500 mt-1 italic">Kelas {{ $rep->kelas }}</div>
                                     </div>
-                                    <div class="flex gap-2">
-                                        <a href="{{ route('admin.raport.edit', $rep->id) }}" class="p-1.5 text-blue-600 hover:bg-blue-50 rounded" title="Edit">
-                                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"></path></svg>
-                                        </a>
-                                    </div>
                                 </div>
 
                                 <div class="grid grid-cols-2 gap-4 mt-2 mb-4 border-t border-gray-50 pt-3">
-                                    <div class="text-center p-2 bg-gray-50 rounded-lg">
-                                        <div class="text-[10px] text-gray-400 font-bold uppercase">Rataan Umum</div>
-                                        <div class="text-lg font-bold text-gray-800">
-                                            {{ number_format($rep->hitungRataRata(), 1) }}
+                                    @php
+                                        $rataan = $rep->hitungRataRata();
+                                        if($rataan >= 85) { $bgr = 'bg-green-50 border-green-100'; $txtr = 'text-green-700'; $ltxtr = 'text-green-500'; }
+                                        elseif($rataan >= 75) { $bgr = 'bg-blue-50 border-blue-100'; $txtr = 'text-blue-700'; $ltxtr = 'text-blue-500'; }
+                                        elseif($rataan >= 65) { $bgr = 'bg-amber-50 border-amber-100'; $txtr = 'text-amber-700'; $ltxtr = 'text-amber-500'; }
+                                        else { $bgr = 'bg-red-50 border-red-100'; $txtr = 'text-red-700'; $ltxtr = 'text-red-500'; }
+                                    @endphp
+                                    <div class="text-center p-2 rounded-lg border {{ $bgr }}">
+                                        <div class="text-[10px] font-bold uppercase {{ $ltxtr }}">Rataan Umum</div>
+                                        <div class="text-xl font-extrabold {{ $txtr }}">
+                                            {{ number_format($rataan, 1) }}
                                         </div>
                                     </div>
-                                    <div class="text-center p-2 bg-gray-50 rounded-lg">
-                                        <div class="text-[10px] text-gray-400 font-bold uppercase">Kehadiran (S/I/A)</div>
-                                        <div class="text-lg font-bold text-gray-800">{{ $rep->sakit ?? 0 }}/{{ $rep->izin ?? 0 }}/{{ $rep->tanpa_keterangan ?? 0 }}</div>
+                                    
+                                    @php
+                                        $sakit = $rep->sakit ?? 0;
+                                        $izin = $rep->izin ?? 0;
+                                        $alfa = $rep->tanpa_keterangan ?? 0;
+                                        $totalKetidakhadiran = $sakit + $izin + $alfa;
+                                        
+                                        if($totalKetidakhadiran == 0) { $bgk = 'bg-green-50 border-green-100'; $txtk = 'text-green-700'; $ltxtk = 'text-green-500'; }
+                                        elseif($totalKetidakhadiran <= 5) { $bgk = 'bg-amber-50 border-amber-100'; $txtk = 'text-amber-700'; $ltxtk = 'text-amber-500'; }
+                                        else { $bgk = 'bg-red-50 border-red-100'; $txtk = 'text-red-700'; $ltxtk = 'text-red-500'; }
+                                    @endphp
+                                    <div class="text-center p-2 rounded-lg border flex flex-col justify-center {{ $bgk }}">
+                                        <div class="text-[10px] font-bold uppercase mb-1 {{ $ltxtk }}">Kehadiran (S / I / A)</div>
+                                        <div class="text-lg font-bold {{ $txtk }} leading-none">
+                                            {{ $sakit }} <span class="text-sm font-normal opacity-50">/</span> 
+                                            {{ $izin }} <span class="text-sm font-normal opacity-50">/</span> 
+                                            {{ $alfa }}
+                                        </div>
                                     </div>
                                 </div>
 
-                                <div class="flex gap-2">
-                                    <a href="{{ route('admin.raport.cetakSiswa', $rep->id) }}" target="_blank" class="flex-1 text-center py-2 bg-amber-500 hover:bg-amber-600 text-white text-xs font-bold rounded-lg uppercase transition-colors">Cetak Umum</a>
-                                    <a href="{{ route('admin.raport.cetakPraktik', $rep->id) }}" target="_blank" class="flex-1 text-center py-2 bg-green-500 hover:bg-green-600 text-white text-xs font-bold rounded-lg uppercase transition-colors">Cetak Praktik</a>
-                                </div>
                             </div>
                         @endforeach
                     </div>

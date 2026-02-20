@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Models\RaportNilai;
 use App\Models\RaportPraktik;
 use App\Models\RaportMapelNilai;
+use App\Models\RaportJilid;
 use App\Models\MasterMapel;
 use App\Models\Siswa;
 use App\Models\Enrollment;
@@ -30,13 +31,19 @@ class RaportController extends Controller
         $raport = RaportNilai::where('kelas', $kelas)
             ->where('semester', $semester)
             ->where('tahun_ajaran', $tahun)
-            ->with('siswa')
+            ->with(['siswa', 'mapelNilai', 'praktik'])
+            ->get()
+            ->keyBy('siswa_id');
+
+        $raportJilid = RaportJilid::where('tahun_ajaran', $tahun)
+            ->where('semester', $semester)
+            ->whereIn('siswa_id', $siswa->pluck('id'))
             ->get()
             ->keyBy('siswa_id');
 
         $tahunList = MasterTahunAjaran::getListForDropdown();
 
-        return view('admin.raport.by_kelas', compact('kelas', 'siswa', 'raport', 'semester', 'tahun', 'tahunList'));
+        return view('admin.raport.by_kelas', compact('kelas', 'siswa', 'raport', 'raportJilid', 'semester', 'tahun', 'tahunList'));
     }
 
     public function create(Request $request)
@@ -54,7 +61,6 @@ class RaportController extends Controller
             'semester' => $semester,
             'tahun_ajaran' => $tahun,
             'preselectSiswaId' => $preselectSiswaId,
-            'praktik_categories' => $this->getPraktikCategories(),
             'master_mapel' => MasterMapel::where('kelas', $kelas)->where('is_aktif', true)->orderBy('urutan')->get(),
         ]);
     }
@@ -122,8 +128,6 @@ class RaportController extends Controller
             'siswa' => $siswa,
             'semester' => $item->semester,
             'tahun_ajaran' => $item->tahun_ajaran,
-            'praktik_categories' => $this->getPraktikCategories(),
-            'praktik_values' => $item->praktik->groupBy('section')->map(fn($sec) => $sec->keyBy('kategori')),
             'master_mapel' => $master_mapel,
             'existing_nilai' => $existing_nilai,
             'existing_deskripsi' => $existing_deskripsi,
@@ -150,6 +154,39 @@ class RaportController extends Controller
             'tahun_ajaran' => $item->tahun_ajaran,
             'semester' => $item->semester
         ])->with('success', 'Nilai raport berhasil diubah.');
+    }
+
+    public function editPraktik(string $id)
+    {
+        $item = RaportNilai::with(['siswa', 'praktik'])->findOrFail($id);
+
+        return view('admin.raport.form_praktik', [
+            'item' => $item,
+            'praktik_categories' => $this->getPraktikCategories(),
+            'praktik_values' => $item->praktik->groupBy('section')->map(fn($sec) => $sec->keyBy('kategori')),
+        ]);
+    }
+
+    public function updatePraktik(Request $request, string $id)
+    {
+        $item = RaportNilai::findOrFail($id);
+
+        if ($request->has('praktik')) {
+            foreach ($request->praktik as $section => $categories) {
+                foreach ($categories as $kategori => $nilaiData) {
+                    RaportPraktik::updateOrCreate(
+                        ['raport_id' => $item->id, 'section' => $section, 'kategori' => $kategori],
+                        ['nilai' => $nilaiData['nilai'] ?? null, 'deskripsi' => $nilaiData['deskripsi'] ?? null]
+                    );
+                }
+            }
+        }
+
+        return redirect()->route('admin.raport.byKelas', [
+            'kelas' => $item->kelas,
+            'tahun_ajaran' => $item->tahun_ajaran,
+            'semester' => $item->semester
+        ])->with('success', 'Nilai praktik berhasil disimpan.');
     }
 
     public function cetak(int $kelas)
@@ -221,6 +258,118 @@ class RaportController extends Controller
         ];
 
         return view('admin.raport.cetak_praktik', $data);
+    }
+
+    public function editJilid(string $siswaId, Request $request)
+    {
+        $siswa = Siswa::findOrFail($siswaId);
+        [$tahun, $semester] = $this->resolveTahunSemester($request);
+        $item = RaportJilid::where('siswa_id', $siswaId)
+            ->where('tahun_ajaran', $tahun)
+            ->where('semester', $semester)
+            ->first();
+
+        return view('admin.raport.form_jilid', compact('siswa', 'item', 'tahun', 'semester'));
+    }
+
+    public function jilidStore(Request $request)
+    {
+        $request->validate([
+            'siswa_id'     => 'required|exists:siswa,id',
+            'tahun_ajaran' => 'required|string|max:20',
+            'semester'     => 'required|string|in:Ganjil,Genap',
+            'jilid'        => 'required|string|max:50',
+            'guru'         => 'nullable|string|max:100',
+            'deskripsi'    => 'nullable|string',
+            'materi'       => 'nullable|array',
+        ]);
+
+        RaportJilid::updateOrCreate(
+            [
+                'siswa_id'     => $request->siswa_id,
+                'tahun_ajaran' => $request->tahun_ajaran,
+                'semester'     => $request->semester,
+            ],
+            [
+                'jilid'     => $request->jilid,
+                'guru'      => $request->guru,
+                'deskripsi' => $request->deskripsi,
+                'materi'    => array_values(array_filter($request->materi ?? [], fn($r) => !empty($r['materi']))),
+            ]
+        );
+
+        $siswa = Siswa::findOrFail($request->siswa_id);
+        return redirect()
+            ->route('admin.raport.byKelas', [
+                'kelas'        => $siswa->kelas,
+                'tahun_ajaran' => $request->tahun_ajaran,
+                'semester'     => $request->semester,
+            ])
+            ->with('success', 'Raport jilid berhasil disimpan.');
+    }
+
+    public function jilidUpdate(Request $request, string $id)
+    {
+        $item = RaportJilid::findOrFail($id);
+        $request->validate([
+            'jilid'     => 'required|string|max:50',
+            'guru'      => 'nullable|string|max:100',
+            'deskripsi' => 'nullable|string',
+            'materi'    => 'nullable|array',
+        ]);
+
+        $item->update([
+            'jilid'     => $request->jilid,
+            'guru'      => $request->guru,
+            'deskripsi' => $request->deskripsi,
+            'materi'    => array_values(array_filter($request->materi ?? [], fn($r) => !empty($r['materi']))),
+        ]);
+
+        $siswa = $item->siswa;
+        return redirect()
+            ->route('admin.raport.byKelas', [
+                'kelas'        => $siswa->kelas,
+                'tahun_ajaran' => $item->tahun_ajaran,
+                'semester'     => $item->semester,
+            ])
+            ->with('success', 'Raport jilid berhasil diperbarui.');
+    }
+
+    public function cetakJilid(string $siswaId, Request $request)
+    {
+        $siswa = Siswa::with('infoPribadi')->findOrFail($siswaId);
+        [$tahun, $semester] = $this->resolveTahunSemester($request);
+
+        // Cari data raport jilid. Kalau belum ada, tampilkan template kosong.
+        $raportJilid = RaportJilid::where('siswa_id', $siswaId)
+            ->where('tahun_ajaran', $tahun)
+            ->where('semester', $semester)
+            ->first();
+
+        // Ambil nama wali kelas dari MasterKelas
+        $masterKelas = \App\Models\MasterKelas::where('tingkat', $siswa->kelas)->with('waliKelas')->first();
+        $guruAlQuran = $raportJilid?->guru
+            ?? ($masterKelas?->waliKelas?->nama)
+            ?? '_______________';
+
+        // Nama ortu dari info pribadi
+        $infoPribadi = $siswa->infoPribadi;
+        $namaOrtu = $infoPribadi
+            ? ($infoPribadi->nama_ibu ?: $infoPribadi->nama_ayah)
+            : '_______________';
+
+        return view('admin.raport.cetak_jilid', [
+            'tahun'    => $tahun,
+            'semester' => $semester,
+            'nama'     => $siswa->nama,
+            'kelas'    => \App\Models\Siswa::getNamaKelas($siswa->kelas),
+            'jilid'    => $raportJilid?->jilid ?? '-',
+            'deskripsi'=> $raportJilid?->deskripsi ?? '',
+            'materi'   => $raportJilid?->materi ?? [],
+            'guru'     => $guruAlQuran,
+            'ortu'     => strtoupper($namaOrtu),
+            'tanggal'  => now()->locale('id')->translatedFormat('d F Y'),
+        ]);
     }
 
     public function history(string $siswa_id, Request $request)

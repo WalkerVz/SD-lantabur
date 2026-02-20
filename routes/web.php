@@ -76,7 +76,13 @@ Route::prefix('admin')->name('admin.')->group(function () {
         Route::get('raport/cetak/kelas/{kelas}', [RaportController::class, 'cetak'])->name('raport.cetak');
         Route::get('raport/cetak/siswa/{id}', [RaportController::class, 'cetakSiswa'])->name('raport.cetakSiswa');
         Route::get('raport/cetak/praktik/{id}', [RaportController::class, 'cetakPraktik'])->name('raport.cetakPraktik');
+        Route::get('raport/cetak/jilid/{siswaId}', [RaportController::class, 'cetakJilid'])->name('raport.cetakJilid');
+        Route::get('raport/jilid/{siswaId}/edit', [RaportController::class, 'editJilid'])->name('raport.editJilid');
+        Route::post('raport/jilid', [RaportController::class, 'jilidStore'])->name('raport.jilidStore');
+        Route::put('raport/jilid/{id}', [RaportController::class, 'jilidUpdate'])->name('raport.jilidUpdate');
         Route::get('raport/history/{id}', [RaportController::class, 'history'])->name('raport.history');
+        Route::get('raport/praktik/{id}/edit', [RaportController::class, 'editPraktik'])->name('raport.editPraktik');
+        Route::put('raport/praktik/{id}', [RaportController::class, 'updatePraktik'])->name('raport.updatePraktik');
 
         Route::get('news', [NewsController::class, 'index'])->name('news.index');
         Route::get('news/create', [NewsController::class, 'create'])->name('news.create');
