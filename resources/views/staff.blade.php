@@ -51,46 +51,7 @@
             @endif
         </div>
     </section>
-
-    {{-- Kualifikasi --}}
-    <section class="py-20 px-5">
-        <div class="max-w-6xl mx-auto">
-            <div class="mt-16 bg-gray-100 p-12 rounded-lg">
-                <h3 class="text-3xl font-bold text-[#47663D] mb-8 text-center">Kualifikasi Tenaga Pendidik</h3>
-                <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
-                    <div class="flex items-start gap-4">
-                        <div class="text-3xl text-[#47663D]">✓</div>
-                        <div>
-                            <h4 class="text-xl font-bold text-[#47663D] mb-2">Pendidikan Formal</h4>
-                            <p class="text-gray-700">Minimal S1 dari universitas terakreditasi dengan sertifikasi pendidik</p>
-                        </div>
-                    </div>
-                    <div class="flex items-start gap-4">
-                        <div class="text-3xl text-[#47663D]">✓</div>
-                        <div>
-                            <h4 class="text-xl font-bold text-[#47663D] mb-2">Pengalaman Mengajar</h4>
-                            <p class="text-gray-700">Minimal 3-5 tahun pengalaman mengajar di level sekolah dasar</p>
-                        </div>
-                    </div>
-                    <div class="flex items-start gap-4">
-                        <div class="text-3xl text-[#47663D]">✓</div>
-                        <div>
-                            <h4 class="text-xl font-bold text-[#47663D] mb-2">Sertifikasi Pendidik</h4>
-                            <p class="text-gray-700">Memiliki sertifikat pendidik dari lembaga yang berwenang</p>
-                        </div>
-                    </div>
-                    <div class="flex items-start gap-4">
-                        <div class="text-3xl text-[#47663D]">✓</div>
-                        <div>
-                            <h4 class="text-xl font-bold text-[#47663D] mb-2">Komitmen Tinggi</h4>
-                            <p class="text-gray-700">Dedikasi penuh terhadap pengembangan pendidikan siswa</p>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </section>
-
+    
     {{-- CTA --}}
     <section class="bg-gradient-to-r from-[#47663D] via-[#5a7d52] to-[#47663D] py-20 px-5 text-center text-white border-t-4 border-b-4 border-white/20">
         <h2 class="text-4xl font-bold mb-6">Ingin Bergabung?</h2>

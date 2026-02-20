@@ -38,21 +38,22 @@ class RaportNilai extends Model
 
     public function isLengkap(): bool
     {
-        $activeMapelIds = MasterMapel::where('kelas', $this->kelas)
-            ->where('is_aktif', true)
-            ->pluck('id')
-            ->toArray();
-
-        if (empty($activeMapelIds)) {
-            return true;
+        // Cache active mapels per class to avoid querying for every student
+        static $activeMapelsCache = [];
+        if (!isset($activeMapelsCache[$this->kelas])) {
+            $activeMapelsCache[$this->kelas] = MasterMapel::where('kelas', $this->kelas)
+                ->where('is_aktif', true)
+                ->pluck('id')
+                ->toArray();
         }
+        $activeMapelIds = $activeMapelsCache[$this->kelas];
 
-        $filledMapelIds = $this->mapelNilai()
+        // Ensure we check mapel values only from memory (eager loaded), not repeatedly querying DB
+        $filledMapelIds = $this->mapelNilai
             ->whereNotNull('nilai')
             ->pluck('mapel_id')
             ->toArray();
 
-        // Check if all active mapels are filled
         foreach ($activeMapelIds as $id) {
             if (!in_array($id, $filledMapelIds)) {
                 return false;
@@ -60,6 +61,12 @@ class RaportNilai extends Model
         }
 
         if ($this->sakit === null || $this->izin === null || $this->tanpa_keterangan === null) {
+            return false;
+        }
+
+        // Check if all praktik attributes are filled (total 7 items: PAI 3, ADAB 4)
+        $filledPraktikCount = $this->praktik()->whereNotNull('nilai')->count();
+        if ($filledPraktikCount < 7) {
             return false;
         }
 
