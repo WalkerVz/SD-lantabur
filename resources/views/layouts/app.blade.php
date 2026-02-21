@@ -1,12 +1,21 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="id">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>SD Al-Qur'an Lantabur - Sekolah Dasar Unggul</title>
+    <title>@yield('title', "SD Al-Qur'an Lantabur - Sekolah Dasar Unggul")</title>
+    <meta name="description" content="@yield('meta_description', 'Membangun generasi cerdas, berakhlak, dan siap menghadapi masa depan melalui pendidikan berkualitas dan berbasis Al-Qur\'an di SD Al-Qur\'an Lantabur.')">
+    
+    {{-- Open Graph Meta Tags --}}
+    <meta property="og:title" content="@yield('title', 'SD Al-Qur\'an Lantabur')">
+    <meta property="og:description" content="@yield('meta_description', 'Pendidikan Sekolah Dasar terbaik berbasis nilai-nilai Al-Qur\'an.')">
+    <meta property="og:image" content="@yield('meta_image', asset('images/logo.png'))">
+    <meta property="og:url" content="{{ url()->current() }}">
+    <meta property="og:type" content="website">
+
     <link rel="icon" type="image/png" href="{{ asset('images/logo.png') }}">
     <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
-    <script src="https://cdn.tailwindcss.com"></script>
+    @vite(['resources/css/app.css', 'resources/js/app.js'])
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
     
 </head>

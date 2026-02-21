@@ -35,7 +35,7 @@
 
         {{-- Logo Background --}}
         <div class="absolute inset-0 flex items-center justify-center opacity-5 pointer-events-none">
-            <img src="{{ asset('images/logo.png') }}" alt="" class="h-80 w-auto blur-sm" loading="lazy">
+            <img src="{{ asset('images/logo.png') }}" alt="Logo Background" width="320" height="320" class="h-80 w-auto blur-sm" loading="lazy">
         </div>
 
         {{-- Content --}}
@@ -53,18 +53,18 @@
         </div>
 
         {{-- Pagination Dots --}}
-        <div class="absolute bottom-8 left-1/2 transform -translate-x-1/2 flex gap-3 z-20">
+        <div class="absolute bottom-8 left-1/2 transform -translate-x-1/2 flex gap-3 z-20" role="tablist" aria-label="Slides">
             <template x-for="(slide, index) in slides" :key="index">
-                <button @click="current = index" :class="current === index ? 'bg-white w-8 h-3' : 'bg-white/40 w-3 h-3'" class="rounded-full transition-all"></button>
+                <button @click="current = index" :class="current === index ? 'bg-white w-8 h-3' : 'bg-white/40 w-3 h-3'" class="rounded-full transition-all" :aria-label="'Go to slide ' + (index + 1)"></button>
             </template>
         </div>
 
         {{-- Navigation Buttons --}}
-        <button @click="current = (current - 1 + slides.length) % slides.length" class="absolute left-8 top-1/2 transform -translate-y-1/2 bg-white/20 hover:bg-white/40 text-white p-3 rounded-full transition z-20 shadow-lg">
-            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"></path></svg>
+        <button aria-label="Previous Slide" @click="current = (current - 1 + slides.length) % slides.length" class="absolute left-8 top-1/2 transform -translate-y-1/2 bg-white/20 hover:bg-white/40 text-white p-3 rounded-full transition z-20 shadow-lg">
+            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"></path></svg>
         </button>
-        <button @click="current = (current + 1) % slides.length" class="absolute right-8 top-1/2 transform -translate-y-1/2 bg-white/20 hover:bg-white/40 text-white p-3 rounded-full transition z-20 shadow-lg">
-            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path></svg>
+        <button aria-label="Next Slide" @click="current = (current + 1) % slides.length" class="absolute right-8 top-1/2 transform -translate-y-1/2 bg-white/20 hover:bg-white/40 text-white p-3 rounded-full transition z-20 shadow-lg">
+            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path></svg>
         </button>
     </section>
 
