@@ -7,6 +7,7 @@ use App\Models\RaportNilai;
 use App\Models\RaportPraktik;
 use App\Models\RaportMapelNilai;
 use App\Models\RaportJilid;
+use App\Models\RaportTahfidz;
 use App\Models\MasterMapel;
 use App\Models\Siswa;
 use App\Models\Enrollment;
@@ -41,9 +42,15 @@ class RaportController extends Controller
             ->get()
             ->keyBy('siswa_id');
 
+        $raportTahfidz = RaportTahfidz::where('tahun_ajaran', $tahun)
+            ->where('semester', $semester)
+            ->whereIn('siswa_id', $siswa->pluck('id'))
+            ->get()
+            ->keyBy('siswa_id');
+
         $tahunList = MasterTahunAjaran::getListForDropdown();
 
-        return view('admin.raport.by_kelas', compact('kelas', 'siswa', 'raport', 'raportJilid', 'semester', 'tahun', 'tahunList'));
+        return view('admin.raport.by_kelas', compact('kelas', 'siswa', 'raport', 'raportJilid', 'raportTahfidz', 'semester', 'tahun', 'tahunList'));
     }
 
     public function create(Request $request)
@@ -94,17 +101,24 @@ class RaportController extends Controller
             'sakit', 'izin', 'tanpa_keterangan',
         ]);
 
-        $raport = RaportNilai::updateOrCreate(
-            [
-                'siswa_id' => $data['siswa_id'],
-                'kelas' => $data['kelas'],
-                'semester' => $data['semester'],
-                'tahun_ajaran' => $data['tahun_ajaran'],
-            ],
-            $data
-        );
+        try {
+            $raport = \Illuminate\Support\Facades\DB::transaction(function () use ($data, $request) {
+                $raport = RaportNilai::updateOrCreate(
+                    [
+                        'siswa_id' => $data['siswa_id'],
+                        'kelas' => $data['kelas'],
+                        'semester' => $data['semester'],
+                        'tahun_ajaran' => $data['tahun_ajaran'],
+                    ],
+                    $data
+                );
 
-        $this->syncRaportDetails($raport, $request);
+                $this->syncRaportDetails($raport, $request);
+                return $raport;
+            });
+        } catch (\Exception $e) {
+            return back()->with('error', 'Gagal menyimpan nilai raport: ' . $e->getMessage())->withInput();
+        }
 
         return redirect()->route('admin.raport.byKelas', [
             'kelas' => $data['kelas'],
@@ -146,8 +160,14 @@ class RaportController extends Controller
             'mapel_deskripsi' => 'nullable|array',
         ]);
 
-        $item->update($request->only(['catatan_wali', 'sakit', 'izin', 'tanpa_keterangan']));
-        $this->syncRaportDetails($item, $request);
+        try {
+            \Illuminate\Support\Facades\DB::transaction(function () use ($item, $request) {
+                $item->update($request->only(['catatan_wali', 'sakit', 'izin', 'tanpa_keterangan']));
+                $this->syncRaportDetails($item, $request);
+            });
+        } catch (\Exception $e) {
+            return back()->with('error', 'Gagal merubah nilai raport: ' . $e->getMessage())->withInput();
+        }
 
         return redirect()->route('admin.raport.byKelas', [
             'kelas' => $item->kelas,
@@ -171,15 +191,21 @@ class RaportController extends Controller
     {
         $item = RaportNilai::findOrFail($id);
 
-        if ($request->has('praktik')) {
-            foreach ($request->praktik as $section => $categories) {
-                foreach ($categories as $kategori => $nilaiData) {
-                    RaportPraktik::updateOrCreate(
-                        ['raport_id' => $item->id, 'section' => $section, 'kategori' => $kategori],
-                        ['nilai' => $nilaiData['nilai'] ?? null, 'deskripsi' => $nilaiData['deskripsi'] ?? null]
-                    );
+        try {
+            \Illuminate\Support\Facades\DB::transaction(function () use ($item, $request) {
+                if ($request->has('praktik')) {
+                    foreach ($request->praktik as $section => $categories) {
+                        foreach ($categories as $kategori => $nilaiData) {
+                            RaportPraktik::updateOrCreate(
+                                ['raport_id' => $item->id, 'section' => $section, 'kategori' => $kategori],
+                                ['nilai' => $nilaiData['nilai'] ?? null, 'deskripsi' => $nilaiData['deskripsi'] ?? null]
+                            );
+                        }
+                    }
                 }
-            }
+            });
+        } catch (\Exception $e) {
+            return back()->with('error', 'Gagal menyimpan nilai praktik: ' . $e->getMessage());
         }
 
         return redirect()->route('admin.raport.byKelas', [
@@ -299,9 +325,12 @@ class RaportController extends Controller
         );
 
         $siswa = Siswa::findOrFail($request->siswa_id);
+        $enrollment = \App\Models\Enrollment::where('siswa_id', $siswa->id)
+            ->where('tahun_ajaran', $request->tahun_ajaran)
+            ->first();
         return redirect()
             ->route('admin.raport.byKelas', [
-                'kelas'        => $siswa->kelas,
+                'kelas'        => $enrollment ? $enrollment->kelas : $siswa->kelas,
                 'tahun_ajaran' => $request->tahun_ajaran,
                 'semester'     => $request->semester,
             ])
@@ -326,9 +355,12 @@ class RaportController extends Controller
         ]);
 
         $siswa = $item->siswa;
+        $enrollment = \App\Models\Enrollment::where('siswa_id', $siswa->id)
+            ->where('tahun_ajaran', $item->tahun_ajaran)
+            ->first();
         return redirect()
             ->route('admin.raport.byKelas', [
-                'kelas'        => $siswa->kelas,
+                'kelas'        => $enrollment ? $enrollment->kelas : $siswa->kelas,
                 'tahun_ajaran' => $item->tahun_ajaran,
                 'semester'     => $item->semester,
             ])
@@ -358,16 +390,145 @@ class RaportController extends Controller
             ? ($infoPribadi->nama_ibu ?: $infoPribadi->nama_ayah)
             : '_______________';
 
+        $materi = $raportJilid?->materi ?? [];
+        $jilidCounts = [];
+        foreach($materi as $item) {
+            $j = strtoupper(trim($item['jilid'] ?? '-'));
+            $jilidCounts[$j] = ($jilidCounts[$j] ?? 0) + 1;
+        }
+
         return view('admin.raport.cetak_jilid', [
+            'tahun'       => $tahun,
+            'semester'    => $semester,
+            'nama'        => $siswa->nama,
+            'kelas'       => \App\Models\Siswa::getNamaKelas($siswa->kelas),
+            'jilid'       => $raportJilid?->jilid ?? '-',
+            'deskripsi'   => $raportJilid?->deskripsi ?? '',
+            'materi'      => $materi,
+            'jilidCounts' => $jilidCounts,
+            'guru'        => $guruAlQuran,
+            'ortu'        => strtoupper($namaOrtu),
+            'tanggal'     => now()->locale('id')->translatedFormat('d F Y'),
+        ]);
+    }
+
+    public function formTahfidz(string $siswaId, Request $request)
+    {
+        $siswa = Siswa::findOrFail($siswaId);
+        [$tahun, $semester] = $this->resolveTahunSemester($request);
+        $item = RaportTahfidz::where('siswa_id', $siswaId)
+            ->where('tahun_ajaran', $tahun)
+            ->where('semester', $semester)
+            ->first();
+
+        return view('admin.raport.form_tahfidz', compact('siswa', 'item', 'tahun', 'semester'));
+    }
+
+    public function tahfidzStore(Request $request)
+    {
+        $request->validate([
+            'siswa_id'     => 'required|exists:siswa,id',
+            'tahun_ajaran' => 'required|string|max:20',
+            'semester'     => 'required|string|in:Ganjil,Genap',
+            'guru'         => 'nullable|string|max:100',
+            'deskripsi'    => 'nullable|string',
+            'materi'       => 'nullable|array',
+        ]);
+
+        RaportTahfidz::updateOrCreate(
+            [
+                'siswa_id'     => $request->siswa_id,
+                'tahun_ajaran' => $request->tahun_ajaran,
+                'semester'     => $request->semester,
+            ],
+            [
+                'guru'      => $request->guru,
+                'deskripsi' => $request->deskripsi,
+                'materi'    => array_values($request->materi ?? []),
+            ]
+        );
+
+        $siswa = Siswa::findOrFail($request->siswa_id);
+        $enrollment = \App\Models\Enrollment::where('siswa_id', $siswa->id)
+            ->where('tahun_ajaran', $request->tahun_ajaran)
+            ->first();
+        return redirect()
+            ->route('admin.raport.byKelas', [
+                'kelas'        => $enrollment ? $enrollment->kelas : $siswa->kelas,
+                'tahun_ajaran' => $request->tahun_ajaran,
+                'semester'     => $request->semester,
+            ])
+            ->with('success', 'Raport Tahfidz berhasil disimpan.');
+    }
+
+    public function tahfidzUpdate(Request $request, string $id)
+    {
+        $item = RaportTahfidz::findOrFail($id);
+        $request->validate([
+            'guru'      => 'nullable|string|max:100',
+            'deskripsi' => 'nullable|string',
+            'materi'    => 'nullable|array',
+        ]);
+
+        $item->update([
+            'guru'      => $request->guru,
+            'deskripsi' => $request->deskripsi,
+            'materi'    => array_values($request->materi ?? []),
+        ]);
+
+        $siswa = $item->siswa;
+        $enrollment = \App\Models\Enrollment::where('siswa_id', $siswa->id)
+            ->where('tahun_ajaran', $item->tahun_ajaran)
+            ->first();
+        return redirect()
+            ->route('admin.raport.byKelas', [
+                'kelas'        => $enrollment ? $enrollment->kelas : $siswa->kelas,
+                'tahun_ajaran' => $item->tahun_ajaran,
+                'semester'     => $item->semester,
+            ])
+            ->with('success', 'Raport Tahfidz berhasil diperbarui.');
+    }
+
+    public function cetakTahfidz(string $siswaId, Request $request)
+    {
+        $siswa = Siswa::with('infoPribadi')->findOrFail($siswaId);
+        [$tahun, $semester] = $this->resolveTahunSemester($request);
+
+        $tahfidz = RaportTahfidz::where('siswa_id', $siswaId)
+            ->where('tahun_ajaran', $tahun)
+            ->where('semester', $semester)
+            ->first();
+
+        $masterKelas = \App\Models\MasterKelas::where('tingkat', $siswa->kelas)->with('waliKelas')->first();
+        $guruTahfidz = $tahfidz?->guru
+            ?? ($masterKelas?->waliKelas?->nama)
+            ?? '_______________';
+
+        $infoPribadi = $siswa->infoPribadi;
+        $namaOrtu = $infoPribadi
+            ? ($infoPribadi->nama_ibu ?: $infoPribadi->nama_ayah)
+            : '_______________';
+
+        $kepalaSekolah = \App\Models\StaffSdm::where('jabatan', 'Kepala Sekolah')->first();
+        $namaKepsek = $kepalaSekolah ? $kepalaSekolah->nama : 'KASMIDAR, S.Pd';
+        $niyKepsek = $kepalaSekolah && $kepalaSekolah->niy ? $kepalaSekolah->niy : 'NIY. 2403001';
+
+        // Pastikan ada prefix "NIY. " jika belum ada
+        if ($niyKepsek && !str_starts_with(strtoupper($niyKepsek), 'NIY.')) {
+            $niyKepsek = 'NIY. ' . $niyKepsek;
+        }
+
+        return view('admin.raport.cetak_tahfidz', [
             'tahun'    => $tahun,
             'semester' => $semester,
             'nama'     => $siswa->nama,
             'kelas'    => \App\Models\Siswa::getNamaKelas($siswa->kelas),
-            'jilid'    => $raportJilid?->jilid ?? '-',
-            'deskripsi'=> $raportJilid?->deskripsi ?? '',
-            'materi'   => $raportJilid?->materi ?? [],
-            'guru'     => $guruAlQuran,
+            'deskripsi'=> $tahfidz?->deskripsi ?? '',
+            'materi'   => $tahfidz?->materi ?? [],
+            'guru'     => $guruTahfidz,
             'ortu'     => strtoupper($namaOrtu),
+            'kepala_sekolah' => strtoupper($namaKepsek),
+            'niy_kepsek' => $niyKepsek,
             'tanggal'  => now()->locale('id')->translatedFormat('d F Y'),
         ]);
     }

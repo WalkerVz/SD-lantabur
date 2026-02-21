@@ -145,20 +145,14 @@ class SdmController extends Controller
         }
     }
 
-    /**
-     * Auto-sync Wali Kelas berdasarkan jabatan
-     */
-    /**
-     * Auto-sync Wali Kelas berdasarkan jabatan
-     */
     private function syncWaliKelasFromJabatan(StaffSdm $staff): void
     {
         // 1. Hapus assignment lama untuk staff ini (dari kelas mana pun)
         \App\Models\MasterKelas::where('wali_kelas_id', $staff->id)
             ->update(['wali_kelas_id' => null]);
 
-        // 2. Deteksi kelas dari jabatan (contoh: "Wali Kelas 3" -> 3)
-        if (preg_match('/Wali Kelas (\d+)/', $staff->jabatan, $matches)) {
+        // 2. Deteksi kelas dari jabatan secara case insensitive (misal: "Wali Kelas 3" atau "wali kelas 3")
+        if (preg_match('/wali kelas (\d+)/i', $staff->jabatan, $matches)) {
             $kelas = (int) $matches[1];
             if ($kelas >= 1 && $kelas <= 6) {
                 // 3. Update MasterKelas langsung

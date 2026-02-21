@@ -47,36 +47,19 @@
                                 </div>
 
                                 <div class="grid grid-cols-2 gap-4 mt-2 mb-4 border-t border-gray-50 pt-3">
-                                    @php
-                                        $rataan = $rep->hitungRataRata();
-                                        if($rataan >= 85) { $bgr = 'bg-green-50 border-green-100'; $txtr = 'text-green-700'; $ltxtr = 'text-green-500'; }
-                                        elseif($rataan >= 75) { $bgr = 'bg-blue-50 border-blue-100'; $txtr = 'text-blue-700'; $ltxtr = 'text-blue-500'; }
-                                        elseif($rataan >= 65) { $bgr = 'bg-amber-50 border-amber-100'; $txtr = 'text-amber-700'; $ltxtr = 'text-amber-500'; }
-                                        else { $bgr = 'bg-red-50 border-red-100'; $txtr = 'text-red-700'; $ltxtr = 'text-red-500'; }
-                                    @endphp
-                                    <div class="text-center p-2 rounded-lg border {{ $bgr }}">
-                                        <div class="text-[10px] font-bold uppercase {{ $ltxtr }}">Rataan Umum</div>
-                                        <div class="text-xl font-extrabold {{ $txtr }}">
-                                            {{ number_format($rataan, 1) }}
+                                    <div class="text-center p-2 rounded-lg border {{ $rep->status_rataan['bg'] }}">
+                                        <div class="text-[10px] font-bold uppercase {{ $rep->status_rataan['label'] }}">Rataan Umum</div>
+                                        <div class="text-xl font-extrabold {{ $rep->status_rataan['text'] }}">
+                                            {{ number_format($rep->hitungRataRata(), 1) }}
                                         </div>
                                     </div>
                                     
-                                    @php
-                                        $sakit = $rep->sakit ?? 0;
-                                        $izin = $rep->izin ?? 0;
-                                        $alfa = $rep->tanpa_keterangan ?? 0;
-                                        $totalKetidakhadiran = $sakit + $izin + $alfa;
-                                        
-                                        if($totalKetidakhadiran == 0) { $bgk = 'bg-green-50 border-green-100'; $txtk = 'text-green-700'; $ltxtk = 'text-green-500'; }
-                                        elseif($totalKetidakhadiran <= 5) { $bgk = 'bg-amber-50 border-amber-100'; $txtk = 'text-amber-700'; $ltxtk = 'text-amber-500'; }
-                                        else { $bgk = 'bg-red-50 border-red-100'; $txtk = 'text-red-700'; $ltxtk = 'text-red-500'; }
-                                    @endphp
-                                    <div class="text-center p-2 rounded-lg border flex flex-col justify-center {{ $bgk }}">
-                                        <div class="text-[10px] font-bold uppercase mb-1 {{ $ltxtk }}">Kehadiran (S / I / A)</div>
-                                        <div class="text-lg font-bold {{ $txtk }} leading-none">
-                                            {{ $sakit }} <span class="text-sm font-normal opacity-50">/</span> 
-                                            {{ $izin }} <span class="text-sm font-normal opacity-50">/</span> 
-                                            {{ $alfa }}
+                                    <div class="text-center p-2 rounded-lg border flex flex-col justify-center {{ $rep->status_kehadiran['bg'] }}">
+                                        <div class="text-[10px] font-bold uppercase mb-1 {{ $rep->status_kehadiran['label'] }}">Kehadiran (S / I / A)</div>
+                                        <div class="text-lg font-bold {{ $rep->status_kehadiran['text'] }} leading-none">
+                                            {{ $rep->sakit ?? 0 }} <span class="text-sm font-normal opacity-50">/</span> 
+                                            {{ $rep->izin ?? 0 }} <span class="text-sm font-normal opacity-50">/</span> 
+                                            {{ $rep->tanpa_keterangan ?? 0 }}
                                         </div>
                                     </div>
                                 </div>

@@ -3,6 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <title>Laporan Pencapaian Kompetensi Praktik - {{ $siswa->nama }}</title>
+
     <style>
         /* Reset dan Base Styles */
         * {
@@ -12,8 +13,8 @@
         }
 
         body {
-            font-family: "Times New Roman", serif;
-            font-size: 12pt;
+            font-family: 'Times New Roman', Times, serif;
+            font-size: 11pt;
             color: #000;
             background: #fff;
             line-height: 1.4;
@@ -74,12 +75,11 @@
 
         .header-text {
             text-align: center;
-            font-family: "Times New Roman", Times, serif;
             padding-right: 50px;
         }
 
         .header h3 {
-            font-size: 16pt;
+            font-size: 15pt;
             font-weight: bold;
             text-transform: uppercase;
             letter-spacing: 0.5px;
@@ -88,7 +88,7 @@
         }
 
         .header h4 {
-            font-size: 14pt;
+            font-size: 13pt;
             font-weight: bold;
             margin: 2px 0;
             line-height: 1.2;
@@ -128,7 +128,8 @@
         }
 
         .nilai th {
-            background: #a9d18e; /* Green header as requested */
+            background: #47663D;
+            color: white;
             font-weight: bold;
             font-size: 10pt;
         }
@@ -142,10 +143,10 @@
             overflow-wrap: break-word;
         }
 
-        .nilai th:nth-child(1) { width: 120px; }
-        .nilai th:nth-child(2) { width: 50px; }
-        .nilai th:nth-child(3) { width: 50px; }
-        .nilai th:nth-child(4) { width: auto; }
+        .nilai th:nth-child(1) { width: 30%; }
+        .nilai th:nth-child(2) { width: 15%; }
+        .nilai th:nth-child(3) { width: 15%; }
+        .nilai th:nth-child(4) { width: 40%; }
 
         .section-title {
             font-weight: bold;

@@ -3,6 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <title>Laporan Pencapaian Kompetensi - {{ $siswa->nama }}</title>
+
     <style>
         /* Reset dan Base Styles */
         * {
@@ -12,8 +13,8 @@
         }
 
         body {
-            font-family: "Times New Roman", serif;
-            font-size: 12pt;
+            font-family: 'Times New Roman', Times, serif;
+            font-size: 11pt;
             color: #000;
             background: #fff;
             line-height: 1.4;
@@ -75,12 +76,11 @@
 
         .header-text {
             text-align: center;
-            font-family: "Times New Roman", Times, serif;
             padding-right: 50px; /* Balance the logo space on the left? Optional */
         }
 
         .header h3 {
-            font-size: 16pt;
+            font-size: 15pt;
             font-weight: bold;
             text-transform: uppercase;
             letter-spacing: 0.5px;
@@ -89,7 +89,7 @@
         }
 
         .header h4 {
-            font-size: 14pt;
+            font-size: 13pt;
             font-weight: bold;
             margin: 2px 0;
             line-height: 1.2;
@@ -129,7 +129,8 @@
         }
 
         .nilai th {
-            background: #e6ffe6;
+            background: #47663D;
+            color: white;
             font-weight: bold;
             font-size: 10pt;
         }
@@ -143,12 +144,12 @@
             overflow-wrap: break-word;
         }
 
-        .nilai th:nth-child(1) { width: 30px; }
-        .nilai th:nth-child(2) { width: 80px; }
-        .nilai th:nth-child(3) { width: 45px; }
-        .nilai th:nth-child(4) { width: 45px; }
-        .nilai th:nth-child(5) { width: 55px; }
-        .nilai th:nth-child(6) { width: auto; }
+        .nilai th:nth-child(1) { width: 5%; }
+        .nilai th:nth-child(2) { width: 25%; }
+        .nilai th:nth-child(3) { width: 10%; }
+        .nilai th:nth-child(4) { width: 10%; }
+        .nilai th:nth-child(5) { width: 12%; }
+        .nilai th:nth-child(6) { width: 38%; }
 
         /* Summary Table */
         .summary {
@@ -391,15 +392,15 @@
     <!-- TANDA TANGAN -->
     <div class="sign">
         <div>
-            <p>Mengetahui,<br>Orang Tua/Wali</p>
+            <p>Mengetahui,<br>Kepala Sekolah</p>
             <br><br><br>
-            <p><b>{{ strtoupper($signatures['ortu'] ?? '_______________') }}</b></p>
+            <p><b>{{ strtoupper($signatures['kepala_sekolah'] ?? 'KASMIDAR, S.Pd') }}</b><br>{{ $signatures['niy_kepala'] ?? 'NIY. 2403001' }}</p>
         </div>
 
         <div style="margin-top: 40px;">
-            <p>Kepala Sekolah</p>
+            <p>Orang Tua/Wali</p>
             <br><br><br>
-            <p><b>{{ strtoupper($signatures['kepala_sekolah'] ?? 'KASMIDAR, S.Pd') }}</b><br>{{ $signatures['niy_kepala'] ?? 'NIY. 2403001' }}</p>
+            <p><b>{{ strtoupper($signatures['ortu'] ?? '_______________') }}</b></p>
         </div>
 
         <div>

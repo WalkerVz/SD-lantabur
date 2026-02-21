@@ -4,6 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Laporan Pembelajaran Ummi - {{ $nama }}</title>
+
     <style>
         * {
             box-sizing: border-box;
@@ -12,8 +13,8 @@
         }
 
         body {
-            font-family: Arial, sans-serif;
-            font-size: 12px;
+            font-family: 'Times New Roman', Times, serif;
+            font-size: 11pt;
             background: #f5f5f5;
             color: #222;
         }
@@ -47,7 +48,6 @@
         }
         .header-text {
             text-align: center;
-            font-family: "Times New Roman", Times, serif;
         }
         .header-text h3 {
             font-size: 15pt;
@@ -101,12 +101,12 @@
             vertical-align: top;
         }
         .tabel-nilai thead tr {
-            background-color: #2d5a27;
+            background-color: #47663D;
             color: #fff;
         }
         .tabel-nilai thead th {
             text-align: center;
-            font-size: 12px;
+            font-size: 10pt;
         }
         .tabel-nilai tbody tr:nth-child(even) {
             background-color: #f7f7f7;
@@ -231,9 +231,22 @@
                 </tr>
             </thead>
             <tbody>
+                @php
+                    $printedJilids = [];
+                @endphp
+
                 @forelse($materi as $item)
+                    @php
+                        $jilid = strtoupper(trim($item['jilid'] ?? '-'));
+                        $showJilidColumn = !in_array($jilid, $printedJilids);
+                        if ($showJilidColumn) {
+                            $printedJilids[] = $jilid;
+                        }
+                    @endphp
                 <tr>
-                    <td class="center">{{ $item['jilid'] ?? '-' }}</td>
+                    @if($showJilidColumn)
+                    <td class="center" rowspan="{{ $jilidCounts[$jilid] ?? 1 }}" style="vertical-align: middle;">{{ $jilid }}</td>
+                    @endif
                     <td>{{ $item['materi'] ?? '-' }}</td>
                     <td class="center">{{ $item['nilai'] ?? '-' }}</td>
                     <td>{{ $item['keterangan'] ?? '' }}</td>

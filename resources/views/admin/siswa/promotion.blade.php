@@ -31,7 +31,7 @@
                 <label class="block text-sm font-medium text-gray-700 mb-1">Kelas Asal</label>
         <select name="source_kelas" required class="w-full px-4 py-2 rounded-lg border border-gray-300 focus:ring-2 focus:ring-[#47663D]">
             <option value="">-- Pilih Kelas --</option>
-            @foreach(\App\Models\MasterKelas::orderBy('tingkat')->get() as $mk)
+            @foreach($masterKelas as $mk)
                 <option value="{{ $mk->tingkat }}" {{ $sourceKelas == $mk->tingkat ? 'selected' : '' }}>{{ \App\Models\Siswa::getNamaKelas($mk->tingkat) }}</option>
             @endforeach
         </select>
@@ -110,7 +110,7 @@
                         <div>
                             <label class="block text-sm font-medium text-gray-700 mb-1">Kelas Tujuan</label>
                             <select name="target_kelas" required class="w-full px-4 py-2 rounded-lg border border-gray-300 focus:ring-2 focus:ring-[#47663D]">
-                                @foreach(\App\Models\MasterKelas::orderBy('tingkat')->get() as $mk)
+                                @foreach($masterKelas as $mk)
                                     <option value="{{ $mk->tingkat }}" {{ ($sourceKelas < 6 && $sourceKelas + 1 == $mk->tingkat) ? 'selected' : '' }}>
                                         {{ \App\Models\Siswa::getNamaKelas($mk->tingkat) }}
                                     </option>

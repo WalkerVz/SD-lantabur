@@ -84,6 +84,12 @@ Route::prefix('admin')->name('admin.')->group(function () {
         Route::get('raport/praktik/{id}/edit', [RaportController::class, 'editPraktik'])->name('raport.editPraktik');
         Route::put('raport/praktik/{id}', [RaportController::class, 'updatePraktik'])->name('raport.updatePraktik');
 
+        // Route Raport Tahfidz Ummi
+        Route::get('raport/tahfidz/{siswaId}', [RaportController::class, 'formTahfidz'])->name('raport.formTahfidz');
+        Route::post('raport/tahfidz', [RaportController::class, 'tahfidzStore'])->name('raport.tahfidzStore');
+        Route::put('raport/tahfidz/{id}', [RaportController::class, 'tahfidzUpdate'])->name('raport.tahfidzUpdate');
+        Route::get('raport/cetak-tahfidz/{siswaId}', [RaportController::class, 'cetakTahfidz'])->name('raport.cetakTahfidz');
+
         Route::get('news', [NewsController::class, 'index'])->name('news.index');
         Route::get('news/create', [NewsController::class, 'create'])->name('news.create');
         Route::post('news', [NewsController::class, 'store'])->name('news.store');

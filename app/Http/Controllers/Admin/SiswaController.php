@@ -40,15 +40,25 @@ class SiswaController extends Controller
         $rows = [];
         $masterKelas = \App\Models\MasterKelas::with('waliKelas')->orderBy('tingkat')->get();
 
+        // Optimize N+1: eager load count for enrollments matching the selected year
+        $enrollmentCounts = \App\Models\Enrollment::where('tahun_ajaran', $tahunAjaran)
+            ->selectRaw('kelas, count(*) as count')
+            ->groupBy('kelas')
+            ->pluck('count', 'kelas');
+
+        // Optimize N+1: fetch all relevant SPP at once
+        $sppData = \App\Models\BiayaSpp::where('tahun_ajaran', $tahunAjaran)
+            ->pluck('nominal', 'kelas');
+
         foreach ($masterKelas as $mKelas) {
             $kelas = $mKelas->tingkat;
-            $count = Enrollment::where('tahun_ajaran', $tahunAjaran)->where('kelas', $kelas)->count();
+            $count = $enrollmentCounts->get($kelas, 0);
             
             // Ambil Wali Kelas langsung dari MasterKelas
             $wali = $mKelas->waliKelas;
             
-            // Ambil nominal SPP (Fitur Teman)
-            $spp = BiayaSpp::getNominal($tahunAjaran, $kelas);
+            // Ambil nominal SPP langsung dari array
+            $spp = $sppData->get($kelas, 0);
 
             $rows[] = (object)[
                 'kelas' => $kelas,
@@ -126,23 +136,35 @@ class SiswaController extends Controller
         if ($request->hasFile('foto')) {
             $data['foto'] = $request->file('foto')->store('siswa', 'public');
         }
-        $siswa = Siswa::create($data);
 
-        Enrollment::firstOrCreate(
-            ['tahun_ajaran' => $request->tahun_ajaran, 'siswa_id' => $siswa->id],
-            ['kelas' => $request->kelas]
-        );
-        Enrollment::where('tahun_ajaran', $request->tahun_ajaran)->where('siswa_id', $siswa->id)->update(['kelas' => $request->kelas]);
+        try {
+            $siswa = \Illuminate\Support\Facades\DB::transaction(function () use ($data, $request) {
+                $siswa = Siswa::create($data);
 
-        $siswa->infoPribadi()->updateOrCreate(
-            ['siswa_id' => $siswa->id],
-            $request->only(['nama_ayah', 'nama_ibu', 'pekerjaan_ayah', 'pekerjaan_ibu', 'anak_ke', 'jumlah_saudara_kandung', 'status'])
-        );
+                Enrollment::firstOrCreate(
+                    ['tahun_ajaran' => $request->tahun_ajaran, 'siswa_id' => $siswa->id],
+                    ['kelas' => $request->kelas]
+                );
+                Enrollment::where('tahun_ajaran', $request->tahun_ajaran)->where('siswa_id', $siswa->id)->update(['kelas' => $request->kelas]);
 
-        if ($request->wantsJson()) {
-            return response()->json(['success' => true, 'siswa' => $siswa->fresh(['infoPribadi'])]);
+                $siswa->infoPribadi()->updateOrCreate(
+                    ['siswa_id' => $siswa->id],
+                    $request->only(['nama_ayah', 'nama_ibu', 'pekerjaan_ayah', 'pekerjaan_ibu', 'anak_ke', 'jumlah_saudara_kandung', 'status'])
+                );
+
+                return $siswa;
+            });
+
+            if ($request->wantsJson()) {
+                return response()->json(['success' => true, 'siswa' => $siswa->fresh(['infoPribadi'])]);
+            }
+            return redirect()->route('admin.siswa.index', ['tahun_ajaran' => $request->tahun_ajaran])->with('success', 'Siswa berhasil ditambahkan.');
+        } catch (\Exception $e) {
+            if (isset($data['foto'])) {
+                Storage::disk('public')->delete($data['foto']);
+            }
+            return back()->with('error', 'Gagal menyimpan data siswa: ' . $e->getMessage())->withInput();
         }
-        return redirect()->route('admin.siswa.index', ['tahun_ajaran' => $request->tahun_ajaran])->with('success', 'Siswa berhasil ditambahkan.');
     }
 
     public function edit(string $id)
@@ -180,27 +202,42 @@ class SiswaController extends Controller
 
         $data = $request->only(['nama', 'nis', 'nisn', 'jenis_kelamin', 'tempat_lahir', 'tanggal_lahir', 'alamat', 'agama']);
         $data['kelas'] = $request->kelas;
+        $oldFoto = null;
         if ($request->hasFile('foto')) {
             if ($item->foto) {
-                Storage::disk('public')->delete($item->foto);
+                $oldFoto = $item->foto;
             }
             $data['foto'] = $request->file('foto')->store('siswa', 'public');
         }
-        $item->update($data);
 
-        if ($request->filled('tahun_ajaran')) {
-            Enrollment::where('tahun_ajaran', $request->tahun_ajaran)->where('siswa_id', $item->id)->update(['kelas' => $request->kelas]);
+        try {
+            \Illuminate\Support\Facades\DB::transaction(function () use ($item, $data, $request, $oldFoto) {
+                $item->update($data);
+
+                if ($request->filled('tahun_ajaran')) {
+                    Enrollment::where('tahun_ajaran', $request->tahun_ajaran)->where('siswa_id', $item->id)->update(['kelas' => $request->kelas]);
+                }
+
+                $item->infoPribadi()->updateOrCreate(
+                    ['siswa_id' => $item->id],
+                    $request->only(['nama_ayah', 'nama_ibu', 'pekerjaan_ayah', 'pekerjaan_ibu', 'anak_ke', 'jumlah_saudara_kandung', 'status'])
+                );
+
+                if ($oldFoto) {
+                    Storage::disk('public')->delete($oldFoto);
+                }
+            });
+
+            if ($request->wantsJson()) {
+                return response()->json(['success' => true, 'siswa' => $item->fresh(['infoPribadi'])]);
+            }
+            return redirect()->route('admin.siswa.index', ['tahun_ajaran' => $request->tahun_ajaran])->with('success', 'Siswa berhasil diubah.');
+        } catch (\Exception $e) {
+            if (isset($data['foto'])) {
+                Storage::disk('public')->delete($data['foto']);
+            }
+            return back()->with('error', 'Gagal mengubah data siswa: ' . $e->getMessage())->withInput();
         }
-
-        $item->infoPribadi()->updateOrCreate(
-            ['siswa_id' => $item->id],
-            $request->only(['nama_ayah', 'nama_ibu', 'pekerjaan_ayah', 'pekerjaan_ibu', 'anak_ke', 'jumlah_saudara_kandung', 'status'])
-        );
-
-        if ($request->wantsJson()) {
-            return response()->json(['success' => true, 'siswa' => $item->fresh(['infoPribadi'])]);
-        }
-        return redirect()->route('admin.siswa.index', ['tahun_ajaran' => $request->tahun_ajaran])->with('success', 'Siswa berhasil diubah.');
     }
 
     public function destroy(string $id, Request $request)
@@ -274,7 +311,9 @@ class SiswaController extends Controller
                 ->values();
         }
 
-        return view('admin.siswa.promotion', compact('siswa', 'sourceTahun', 'sourceKelas', 'listTahun'));
+        $masterKelas = \App\Models\MasterKelas::orderBy('tingkat')->get();
+
+        return view('admin.siswa.promotion', compact('siswa', 'sourceTahun', 'sourceKelas', 'listTahun', 'masterKelas'));
     }
 
     public function promote(Request $request)
@@ -286,24 +325,33 @@ class SiswaController extends Controller
             'target_tahun_ajaran' => 'required|string|max:20',
         ]);
 
-        $count = 0;
-        foreach ($request->siswa_ids as $siswaId) {
-            $siswa = Siswa::find($siswaId);
-            if ($siswa) {
-                // Update current class of the student
-                $siswa->update(['kelas' => $request->target_kelas]);
+        try {
+            $count = \Illuminate\Support\Facades\DB::transaction(function () use ($request) {
+                $count = 0;
+                $siswaIds = $request->siswa_ids;
+                $targetKelas = $request->target_kelas;
+                $targetTahunAjaran = $request->target_tahun_ajaran;
+
+                // Mass update current class of the students
+                Siswa::whereIn('id', $siswaIds)->update(['kelas' => $targetKelas]);
 
                 // Record the enrollment for the target year/class
-                Enrollment::updateOrCreate(
-                    ['tahun_ajaran' => $request->target_tahun_ajaran, 'siswa_id' => $siswaId],
-                    ['kelas' => $request->target_kelas]
-                );
-                $count++;
-            }
-        }
+                foreach ($siswaIds as $siswaId) {
+                    Enrollment::updateOrCreate(
+                        ['tahun_ajaran' => $targetTahunAjaran, 'siswa_id' => $siswaId],
+                        ['kelas' => $targetKelas]
+                    );
+                    $count++;
+                }
 
-        return redirect()->route('admin.siswa.index', ['tahun_ajaran' => $request->target_tahun_ajaran])
-            ->with('success', "$count siswa berhasil dipindahkan ke Kelas {$request->target_kelas} ({$request->target_tahun_ajaran}).");
+                return $count;
+            });
+
+            return redirect()->route('admin.siswa.index', ['tahun_ajaran' => $request->target_tahun_ajaran])
+                ->with('success', "$count siswa berhasil dipindahkan ke Kelas {$request->target_kelas} ({$request->target_tahun_ajaran}).");
+        } catch (\Exception $e) {
+            return back()->with('error', 'Gagal memindahkan siswa: ' . $e->getMessage());
+        }
     }
 
     public function cetakAbsen(string $kelas)
