@@ -122,6 +122,9 @@
                                     <div x-show="open" x-transition.opacity.duration.150ms
                                          class="absolute right-0 z-[9999] mt-1 w-44 bg-white rounded-lg shadow-lg border border-gray-100 py-1 text-sm"
                                          style="display:none;">
+                                        <a href="{{ route('admin.raport.cetakSemua', $nilai->id) }}" target="_blank" class="flex items-center gap-2 px-4 py-2 text-gray-700 hover:bg-rose-50 hover:text-rose-700 font-bold border-b border-gray-100">
+                                            <span class="w-2 h-2 rounded-full bg-rose-500"></span>Cetak Semua
+                                        </a>
                                         <a href="{{ route('admin.raport.cetakSiswa', $nilai->id) }}" target="_blank" class="flex items-center gap-2 px-4 py-2 text-gray-700 hover:bg-amber-50 hover:text-amber-700">
                                             <span class="w-2 h-2 rounded-full bg-amber-400"></span>Raport Umum
                                         </a>

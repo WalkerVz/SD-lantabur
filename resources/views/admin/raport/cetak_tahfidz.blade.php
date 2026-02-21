@@ -1,9 +1,11 @@
+@if(!isset($is_cetak_semua))
 <!DOCTYPE html>
 <html lang="id">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Laporan Pembelajaran Ummi - {{ $nama }}</title>
+@endif
 
     <style>
         * {
@@ -19,7 +21,7 @@
             color: #222;
         }
 
-        .page-wrapper {
+        .tahfidz-wrapper {
             max-width: 800px;
             margin: 30px auto;
             background: #fff;
@@ -29,77 +31,78 @@
         }
 
         /* ---- Header ---- */
-        .header {
+        .tahfidz-header {
             display: grid;
             grid-template-columns: 90px 1fr 90px;
             align-items: center;
             gap: 10px;
             border-bottom: 4px double #000;
-            padding-bottom: 8px;
-            margin-bottom: 12px;
+            padding-bottom: 4px;
+            margin-bottom: 8px;
         }
-        .header-logo {
+        .tahfidz-header-logo {
             width: 80px;
             height: auto;
             display: block;
         }
-        .header-logo.right {
+        .tahfidz-header-logo.right {
             justify-self: end;
         }
-        .header-text {
+        .tahfidz-header-text {
             text-align: center;
         }
-        .header-text h3 {
-            font-size: 14pt;
+        .tahfidz-header-text h3 {
+            font-size: 13pt;
             font-weight: bold;
             text-transform: uppercase;
             letter-spacing: 0.5px;
-            margin: 0 0 4px 0;
-            line-height: 1.2;
+            margin: 0 0 2px 0;
+            line-height: 1.1;
         }
-        .header-text h4 {
+        .tahfidz-header-text h4 {
             font-size: 12pt;
             font-weight: bold;
             margin: 2px 0;
             line-height: 1.2;
         }
-        .header-text p {
+        .tahfidz-header-text p {
             font-size: 10pt;
             margin-top: 3px;
             font-weight: bold;
         }
 
         /* ---- Identitas ---- */
-        .identitas {
+        .tahfidz-identitas {
             width: 100%;
             border-collapse: collapse;
-            margin-bottom: 12px;
+            margin-bottom: 8px;
         }
-        .identitas td {
+        .tahfidz-identitas td {
             border: none;
             padding: 2px 6px;
             vertical-align: top;
             font-weight: bold;
         }
-        .identitas td:first-child {
+        .tahfidz-identitas td:first-child {
             width: 80px;
         }
 
         /* ---- Tabel Nilai ---- */
-        .tabel-nilai {
+        .tahfidz-tabel-nilai {
             width: 100%;
             border-collapse: collapse;
         }
-        .tabel-nilai thead tr {
+        .tahfidz-tabel-nilai thead tr {
             background-color: #47663D;
             color: #fff;
         }
-        .tabel-nilai td, .tabel-nilai th {
-            padding: 3px 5px;
+        .tahfidz-tabel-nilai td, .tahfidz-tabel-nilai th {
+            padding: 2px 4px;
             border: 1px solid #000;
             vertical-align: middle;
+            font-size: 10pt;
         }
-        .tabel-nilai th {
+        .tahfidz-tabel-nilai th {
             text-align: center;
         }
 
@@ -111,39 +114,40 @@
         }
 
         /* ---- Legenda ---- */
-        .tabel-legenda {
+        .tahfidz-tabel-legenda {
             width: 100%;
             border-collapse: collapse;
-            margin-top: 15px;
+            margin-top: 10px;
+            font-size: 10pt;
         }
-        .tabel-legenda th, .tabel-legenda td {
+        .tahfidz-tabel-legenda th, .tahfidz-tabel-legenda td {
             border: 1px solid #000;
-            padding: 3px 6px;
+            padding: 2px 4px;
             text-align: center;
         }
-        .tabel-legenda thead tr {
+        .tahfidz-tabel-legenda thead tr {
             background-color: #47663D;
             color: #fff;
         }
 
         /* ---- Tanda Tangan ---- */
-        .sign {
-            margin-top: 35px;
+        .tahfidz-sign {
+            margin-top: 15px;
             display: flex;
             justify-content: space-between;
             text-align: center;
             font-size: 10pt;
         }
 
-        .sign div {
+        .tahfidz-sign div {
             width: 30%;
         }
 
-        .sign p {
+        .tahfidz-sign p {
             margin: 3px 0;
         }
 
-        .sign b {
+        .tahfidz-sign b {
             text-decoration: underline;
         }
 
@@ -151,13 +155,13 @@
         @media print {
             @page {
                 size: A4 portrait;
-                margin: 10mm 15mm;
+                margin: 5mm 15mm;
             }
             body { 
                 background: #fff; 
                 font-size: 10.5pt;
             }
-            .page-wrapper {
+            .tahfidz-wrapper {
                 max-width: 100%;
                 margin: 0;
                 padding: 0;
@@ -167,10 +171,13 @@
             .no-print { display: none !important; }
         }
     </style>
+@if(!isset($is_cetak_semua))
 </head>
 <body>
+@endif
 
     {{-- Tombol cetak --}}
+    @if(!isset($is_cetak_semua))
     <div class="no-print" style="text-align:center; padding: 16px; background: #f0f0f0; border-bottom: 1px solid #ddd;">
         <button onclick="window.close()"
            style="display:inline-block; margin-right:10px; padding: 6px 16px; background:#6c757d; color:#fff; border-radius:4px; text-decoration:none; font-size:12px; cursor: pointer;">
@@ -181,22 +188,23 @@
             🖨 Cetak Laporan Ummi
         </button>
     </div>
+    @endif
 
-    <div class="page-wrapper">
+    <div class="tahfidz-wrapper">
 
         <!-- HEADER -->
-        <div class="header">
-            <img src="{{ asset('images/logo-lantabur.png') }}" alt="Logo Lantabur" class="header-logo">
-            <div class="header-text">
+        <div class="tahfidz-header">
+            <img src="{{ asset('images/logo-lantabur.png') }}" alt="Logo Lantabur" class="tahfidz-header-logo">
+            <div class="tahfidz-header-text">
                 <h3>Laporan Pembelajaran Ummi</h3>
                 <h4>SD AL QUR'AN LANTABUR</h4>
                 <p>TAHUN PELAJARAN {{ str_replace('/', '/', $tahun) }}</p>
             </div>
-            <img src="{{ asset('images/logo-ummi.png') }}" alt="Logo Ummi" class="header-logo right" style="width: 100px;">
+            <img src="{{ asset('images/logo-ummi.png') }}" alt="Logo Ummi" class="tahfidz-header-logo right" style="width: 100px;">
         </div>
 
         <!-- IDENTITAS SISWA -->
-        <table class="identitas">
+        <table class="tahfidz-identitas">
             <tr>
                 <td>NAMA</td>
                 <td style="width: 15px;">:</td>
@@ -219,7 +227,7 @@
         <div style="display: flex; justify-content: space-between; gap: 15px;">
             <!-- Tabel Kiri -->
             <div style="width: 48%;">
-                <table class="tabel-nilai">
+                <table class="tahfidz-tabel-nilai">
                     <thead>
                         <tr>
                             <th width="30px">NO</th>
@@ -262,7 +270,7 @@
 
             <!-- Tabel Kanan -->
             <div style="width: 49%;">
-                <table class="tabel-nilai">
+                <table class="tahfidz-tabel-nilai">
                     <thead>
                         <tr>
                             <th width="30px">NO</th>
@@ -303,7 +311,7 @@
 
         <!-- LEGENDA & DESKRIPSI -->
         <div style="width: 50%; margin-top: 15px;">
-            <table class="tabel-legenda">
+            <table class="tahfidz-tabel-legenda">
                 <thead>
                     <tr>
                         <th width="30px">NO</th>
@@ -327,16 +335,16 @@
         </div>
 
         <!-- TANDA TANGAN -->
-        <div class="sign">
+        <div class="tahfidz-sign">
             <div>
                 <p>Mengetahui,<br>Kepala SD Al Qur'an Lantabur</p>
-                <br><br><br>
+                <br><br>
                 <p><b>{{ $kepala_sekolah ?? 'KASMIDAR, S.PD' }}</b><br>{{ $niy_kepsek ?? 'NIY. 2403001' }}</p>
             </div>
 
-            <div style="margin-top: 40px;">
+            <div style="margin-top: 30px;">
                 <p>Orang Tua/Wali</p>
-                <br><br><br>
+                <br><br>
                 <p><b>{{ strtoupper($ortu ?? '_______________') }}</b></p>
             </div>
 
@@ -349,5 +357,7 @@
 
     </div>
 
+@if(!isset($is_cetak_semua))
 </body>
 </html>
+@endif

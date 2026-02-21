@@ -251,6 +251,48 @@ class RaportController extends Controller
         return view('admin.raport.cetak_siswa', compact('raport', 'siswa', 'attendance', 'signatures', 'tanggal_cetak', 'master_mapel', 'mapel_values'));
     }
 
+    public function cetakSemua(string $id, Request $request)
+    {
+        $raport = RaportNilai::with('siswa')->findOrFail($id);
+        $siswaId = $raport->siswa_id;
+        $tahun = $raport->tahun_ajaran;
+        $semester = $raport->semester;
+        $siswa = $raport->siswa;
+
+        \Illuminate\Support\Facades\View::share('is_cetak_semua', true);
+        $htmlPages = [];
+
+        // 1. Rapor Umum
+        $htmlPages[] = $this->cetakSiswa($id)->render();
+
+        // 2. Rapor Praktik
+        $htmlPages[] = $this->cetakPraktik($id)->render();
+
+        // 3. Rapor Jilid (Jika ada)
+        $rj = RaportJilid::where('siswa_id', $siswaId)
+            ->where('tahun_ajaran', $tahun)
+            ->where('semester', $semester)
+            ->first();
+        if ($rj) {
+            $jilidReq = new Request();
+            $jilidReq->merge(['tahun_ajaran' => $tahun, 'semester' => $semester]);
+            $htmlPages[] = $this->cetakJilid($siswaId, $jilidReq)->render();
+        }
+
+        // 4. Rapor Tahfidz (Jika ada)
+        $rt = RaportTahfidz::where('siswa_id', $siswaId)
+            ->where('tahun_ajaran', $tahun)
+            ->where('semester', $semester)
+            ->first();
+        if ($rt) {
+            $tahfidzReq = new Request();
+            $tahfidzReq->merge(['tahun_ajaran' => $tahun, 'semester' => $semester]);
+            $htmlPages[] = $this->cetakTahfidz($siswaId, $tahfidzReq)->render();
+        }
+
+        return view('admin.raport.cetak_semua', compact('htmlPages', 'siswa'));
+    }
+
     public function cetakPraktik(string $id)
     {
         $raport = RaportNilai::with(['siswa.infoPribadi', 'praktik'])->findOrFail($id);
