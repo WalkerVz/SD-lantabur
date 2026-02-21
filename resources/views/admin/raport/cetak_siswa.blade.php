@@ -199,12 +199,17 @@
             margin-top: 35px;
             display: flex;
             justify-content: space-between;
+            align-items: flex-start; 
             text-align: center;
             font-size: 10pt;
         }
 
         .umum-sign div {
             width: 30%;
+        }
+
+        .umum-sign div:nth-child(2) {
+            margin-top: 40px;
         }
 
         .umum-sign p {
@@ -392,15 +397,15 @@
     <!-- TANDA TANGAN -->
     <div class="umum-sign">
         <div>
-            <p>Mengetahui,<br>Kepala Sekolah</p>
+            <p>Mengetahui,<br>Orang Tua/Wali</p>
             <br><br><br>
-            <p><b>{{ strtoupper($signatures['kepala_sekolah'] ?? 'KASMIDAR, S.Pd') }}</b><br>{{ $signatures['niy_kepala'] ?? 'NIY. 2403001' }}</p>
+            <p><b>{{ strtoupper($signatures['ortu'] ?? '_______________') }}</b></p>
         </div>
 
         <div style="margin-top: 40px;">
-            <p>Orang Tua/Wali</p>
+            <p>Kepala Sekolah</p>
             <br><br><br>
-            <p><b>{{ strtoupper($signatures['ortu'] ?? '_______________') }}</b></p>
+            <p><b>{{ strtoupper($signatures['kepala_sekolah'] ?? 'KASMIDAR, S.Pd') }}</b><br>{{ $signatures['niy_kepala'] ?? 'NIY. 2403001' }}</p>
         </div>
 
         <div>
