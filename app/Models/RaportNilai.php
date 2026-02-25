@@ -94,4 +94,25 @@ class RaportNilai extends Model
 
         return $jumlahMapel > 0 ? $totalNilai / $jumlahMapel : 0;
     }
+
+    public function getStatusRataanAttribute(): array
+    {
+        $rataan = $this->hitungRataRata();
+        if($rataan >= 85) return ['bg' => 'bg-green-50 border-green-100', 'text' => 'text-green-700', 'label' => 'text-green-500'];
+        if($rataan >= 75) return ['bg' => 'bg-blue-50 border-blue-100', 'text' => 'text-blue-700', 'label' => 'text-blue-500'];
+        if($rataan >= 65) return ['bg' => 'bg-amber-50 border-amber-100', 'text' => 'text-amber-700', 'label' => 'text-amber-500'];
+        return ['bg' => 'bg-red-50 border-red-100', 'text' => 'text-red-700', 'label' => 'text-red-500'];
+    }
+
+    public function getStatusKehadiranAttribute(): array
+    {
+        $sakit = $this->sakit ?? 0;
+        $izin = $this->izin ?? 0;
+        $alfa = $this->tanpa_keterangan ?? 0;
+        $totalKetidakhadiran = $sakit + $izin + $alfa;
+        
+        if($totalKetidakhadiran == 0) return ['bg' => 'bg-green-50 border-green-100', 'text' => 'text-green-700', 'label' => 'text-green-500'];
+        if($totalKetidakhadiran <= 5) return ['bg' => 'bg-amber-50 border-amber-100', 'text' => 'text-amber-700', 'label' => 'text-amber-500'];
+        return ['bg' => 'bg-red-50 border-red-100', 'text' => 'text-red-700', 'label' => 'text-red-500'];
+    }
 }

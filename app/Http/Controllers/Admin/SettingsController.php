@@ -4,8 +4,10 @@ namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
 use App\Models\BiayaSpp;
+use App\Models\FeatureAccess;
 use App\Models\MasterTahunAjaran;
 use App\Models\MasterMapel;
+use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
@@ -23,6 +25,99 @@ class SettingsController extends Controller
         $biayaSpp = BiayaSpp::all()->keyBy(fn ($r) => $r->tahun_ajaran . '-' . $r->kelas);
 
         return view('admin.settings.index', compact('tahunAjaranList', 'tahunAktif', 'biayaSpp'));
+    }
+
+    public function accounts()
+    {
+        $users = User::orderBy('name')->get();
+        $roles = [
+            'admin' => 'Admin',
+            'guru' => 'Guru',
+        ];
+
+        return view('admin.settings.accounts', compact('users', 'roles'));
+    }
+
+    public function storeAccount(Request $request)
+    {
+        $request->validate([
+            'name' => 'required|string|max:255',
+            'username' => 'required|string|max:50|unique:users,username',
+            'password' => ['required', 'confirmed', Password::defaults()],
+            'role' => 'required|string|in:admin,guru',
+        ]);
+
+        User::create([
+            'name' => $request->name,
+            'username' => $request->username,
+            'email' => null,
+            'password' => Hash::make($request->password),
+            'role' => $request->role,
+        ]);
+
+        return redirect()->route('admin.settings.accounts')->with('success', 'Akun baru berhasil dibuat.');
+    }
+
+    public function accessibility()
+    {
+        $roles = [
+            'admin' => 'Admin',
+            'guru' => 'Guru',
+        ];
+
+        $features = [
+            'dashboard' => 'Dashboard',
+            'sdm' => 'Manajemen SDM',
+            'siswa' => 'Data Siswa',
+            'pembayaran' => 'Pembayaran',
+            'raport' => 'Raport',
+            'mapel' => 'Mata Pelajaran',
+            'halaman_depan' => 'Halaman Depan',
+            'settings' => 'Pengaturan',
+        ];
+
+        $existing = FeatureAccess::all()
+            ->groupBy('role')
+            ->map(fn ($group) => $group->keyBy('feature'));
+
+        return view('admin.settings.accessibility', compact('roles', 'features', 'existing'));
+    }
+
+    public function saveAccessibility(Request $request)
+    {
+        $roles = ['admin', 'guru'];
+        $features = [
+            'dashboard',
+            'sdm',
+            'siswa',
+            'pembayaran',
+            'raport',
+            'mapel',
+            'halaman_depan',
+            'settings',
+        ];
+
+        $rules = $request->input('rules', []);
+
+        foreach ($roles as $role) {
+            foreach ($features as $feature) {
+                if ($role === 'admin') {
+                    FeatureAccess::updateOrCreate(
+                        ['role' => $role, 'feature' => $feature],
+                        ['allowed' => true]
+                    );
+                    continue;
+                }
+
+                $allowed = (bool) data_get($rules, $role . '.' . $feature, false);
+                FeatureAccess::updateOrCreate(
+                    ['role' => $role, 'feature' => $feature],
+                    ['allowed' => $allowed]
+                );
+            }
+        }
+
+        return redirect()->route('admin.settings.accessibility')->with('success', 'Pengaturan akses berhasil disimpan.');
     }
 
     public function storeBiayaSpp(Request $request)

@@ -85,7 +85,14 @@
                             <td class="px-4 py-3 text-gray-600">{{ $r->tanggal_bayar?->format('d/m/Y') ?? '-' }}</td>
                             <td class="px-4 py-3 text-gray-600 text-sm">{{ $r->kwitansi_no ?? '-' }}</td>
                             <td class="px-4 py-3">
-                                <a href="{{ route('admin.pembayaran.kwitansi', $r->id) }}" target="_blank" class="text-blue-600 hover:underline text-sm">Cetak Kwitansi</a>
+                                <div class="flex items-center gap-2">
+                                    <a href="{{ route('admin.pembayaran.kwitansi', $r->id) }}" target="_blank" class="text-blue-600 hover:underline text-sm font-medium">Cetak</a>
+                                    <form action="{{ route('admin.pembayaran.destroy', $r->id) }}" method="POST" class="inline" onsubmit="return confirm('Yakin hapus pembayaran ini?')">
+                                        @csrf
+                                        @method('DELETE')
+                                        <button type="submit" class="text-red-600 hover:underline text-sm font-medium">Hapus</button>
+                                    </form>
+                                </div>
                             </td>
                         </tr>
                         @empty

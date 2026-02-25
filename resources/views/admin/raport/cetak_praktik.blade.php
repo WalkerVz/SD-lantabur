@@ -3,6 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <title>Laporan Pencapaian Kompetensi Praktik - {{ $siswa->nama }}</title>
+
     <style>
         /* Reset dan Base Styles */
         * {
@@ -12,15 +13,15 @@
         }
 
         body {
-            font-family: "Times New Roman", serif;
-            font-size: 12pt;
+            font-family: 'Times New Roman', Times, serif;
+            font-size: 11pt;
             color: #000;
             background: #fff;
             line-height: 1.4;
         }
 
         /* Container untuk A4 */
-        .container {
+        .praktik-container {
             max-width: 190mm;
             width: 100%;
             min-height: 297mm;
@@ -55,7 +56,7 @@
         }
 
         /* Header */
-        .header {
+        .praktik-header {
             position: relative;
             border-bottom: 4px double #000;
             padding: 10px 0 15px 0;
@@ -66,20 +67,19 @@
             align-items: center;
         }
 
-        .header-logo {
+        .praktik-header-logo {
             width: 90px;
             height: auto;
             justify-self: center;
         }
 
-        .header-text {
+        .praktik-header-text {
             text-align: center;
-            font-family: "Times New Roman", Times, serif;
             padding-right: 50px;
         }
 
-        .header h3 {
-            font-size: 16pt;
+        .praktik-header h3 {
+            font-size: 15pt;
             font-weight: bold;
             text-transform: uppercase;
             letter-spacing: 0.5px;
@@ -87,8 +87,8 @@
             line-height: 1.2;
         }
 
-        .header h4 {
-            font-size: 14pt;
+        .praktik-header h4 {
+            font-size: 13pt;
             font-weight: bold;
             margin: 2px 0;
             line-height: 1.2;
@@ -100,40 +100,41 @@
             border-collapse: collapse;
         }
 
-        .info td {
+        .praktik-info td {
             padding: 3px 0;
             font-size: 11pt;
         }
 
-        .info td:first-child {
+        .praktik-info td:first-child {
             width: 140px;
         }
 
-        .info td:nth-child(3) {
+        .praktik-info td:nth-child(3) {
             width: 90px;
             padding-left: 15px;
         }
 
         /* Tabel Nilai */
-        .nilai {
+        .praktik-nilai {
             margin: 10px 0;
             font-size: 10pt;
             table-layout: fixed;
         }
 
-        .nilai th, .nilai td {
+        .praktik-nilai th, .praktik-nilai td {
             border: 1px solid #000;
             padding: 8px 6px;
             text-align: center;
         }
 
-        .nilai th {
-            background: #a9d18e; /* Green header as requested */
+        .praktik-nilai th {
+            background: #47663D;
+            color: white;
             font-weight: bold;
             font-size: 10pt;
         }
 
-        .nilai td.deskripsi {
+        .praktik-nilai td.deskripsi {
             text-align: left;
             padding: 8px 8px;
             font-size: 9pt;
@@ -142,19 +143,19 @@
             overflow-wrap: break-word;
         }
 
-        .nilai th:nth-child(1) { width: 120px; }
-        .nilai th:nth-child(2) { width: 50px; }
-        .nilai th:nth-child(3) { width: 50px; }
-        .nilai th:nth-child(4) { width: auto; }
+        .praktik-nilai th:nth-child(1) { width: 30%; }
+        .praktik-nilai th:nth-child(2) { width: 15%; }
+        .praktik-nilai th:nth-child(3) { width: 15%; }
+        .praktik-nilai th:nth-child(4) { width: 40%; }
 
-        .section-title {
+        .praktik-title {
             font-weight: bold;
             margin: 15px 0 5px 0;
             text-transform: uppercase;
         }
 
         /* Signature Section */
-        .sign {
+        .praktik-sign {
             margin-top: 35px;
             display: flex;
             justify-content: space-between;
@@ -162,15 +163,15 @@
             font-size: 10pt;
         }
 
-        .sign div {
+        .praktik-sign div {
             width: 30%;
         }
 
-        .sign p {
+        .praktik-sign p {
             margin: 3px 0;
         }
 
-        .sign b {
+        .praktik-sign b {
             text-decoration: underline;
         }
 
@@ -180,7 +181,7 @@
                 background: white;
             }
 
-            .container {
+            .praktik-container {
                 width: 100%;
                 min-height: auto;
                 padding: 0;
@@ -192,7 +193,7 @@
                 display: none !important;
             }
 
-            .header, .info, .nilai, .sign {
+            .praktik-header, .praktik-info, .praktik-nilai, .praktik-sign {
                 page-break-inside: avoid;
             }
 
@@ -201,7 +202,7 @@
                 margin: 0;
             }
 
-            .container {
+            .praktik-container {
                 padding: 15mm 10mm;
                 margin: 0 auto;
             }
@@ -217,7 +218,7 @@
     </style>
 </head>
 <body>
-<div class="container">
+<div class="praktik-container">
     <!-- WATERMARK LOGO -->
     <div class="watermark">
         <img src="{{ asset('images/logo.png') }}" alt="Logo Watermark">
@@ -226,9 +227,9 @@
     <!-- CONTENT WRAPPER -->
     <div class="content">
         <!-- HEADER -->
-        <div class="header">
-            <img src="{{ asset('images/logo.png') }}" alt="Logo" class="header-logo">
-            <div class="header-text">
+        <div class="praktik-header">
+            <img src="{{ asset('images/logo.png') }}" alt="Logo" class="praktik-header-logo">
+            <div class="praktik-header-text">
                 <h3>LAPORAN PENCAPAIAN KOMPETENSI PESERTA DIDIK</h3>
                 <h4>SEKOLAH DASAR AL QUR'AN LANTABUR</h4>
                 <h4>PEKANBARU</h4>
@@ -236,7 +237,7 @@
         </div>
 
         <!-- INFO SISWA -->
-        <table class="info">
+        <table class="praktik-info">
             <tr>
                 <td>Nama Peserta Didik</td><td>: {{ strtoupper($siswa->nama) }}</td>
                 <td>Kelas</td><td>: {{ $kelas }}</td>
@@ -253,8 +254,8 @@
         <br>
 
         {{-- PRAKTIK PAI --}}
-        <div class="section-title">PRAKTIK PAI</div>
-        <table class="nilai">
+        <div class="praktik-title">PRAKTIK PAI</div>
+        <table class="praktik-nilai">
             <thead>
             <tr>
                 <th>Kategori</th>
@@ -278,8 +279,8 @@
         <br>
 
         {{-- PRAKTIK ADAB --}}
-        <div class="section-title">PRAKTIK ADAB</div>
-        <table class="nilai">
+        <div class="praktik-title">PRAKTIK ADAB</div>
+        <table class="praktik-nilai">
             <thead>
             <tr>
                 <th>Kategori</th>
@@ -303,7 +304,7 @@
         <br><br>
 
         <!-- TANDA TANGAN -->
-        <div class="sign">
+        <div class="praktik-sign">
             <div>
                 <p>Mengetahui,<br>Orang Tua/Wali</p>
                 <br><br><br>

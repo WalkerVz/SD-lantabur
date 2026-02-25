@@ -3,6 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <title>Laporan Pencapaian Kompetensi - {{ $siswa->nama }}</title>
+
     <style>
         /* Reset dan Base Styles */
         * {
@@ -12,15 +13,15 @@
         }
 
         body {
-            font-family: "Times New Roman", serif;
-            font-size: 12pt;
+            font-family: 'Times New Roman', Times, serif;
+            font-size: 11pt;
             color: #000;
             background: #fff;
             line-height: 1.4;
         }
 
         /* Container untuk A4 */
-        .container {
+        .umum-container {
             max-width: 190mm;
             width: 100%;
             min-height: 297mm;
@@ -56,7 +57,7 @@
 
         /* Header */
         /* Header */
-        .header {
+        .umum-header {
             position: relative;
             border-bottom: 4px double #000;
             padding: 10px 0 15px 0;
@@ -67,20 +68,19 @@
             align-items: center;
         }
 
-        .header-logo {
+        .umum-header-logo {
             width: 90px;
             height: auto;
             justify-self: center;
         }
 
-        .header-text {
+        .umum-header-text {
             text-align: center;
-            font-family: "Times New Roman", Times, serif;
             padding-right: 50px; /* Balance the logo space on the left? Optional */
         }
 
-        .header h3 {
-            font-size: 16pt;
+        .umum-header h3 {
+            font-size: 15pt;
             font-weight: bold;
             text-transform: uppercase;
             letter-spacing: 0.5px;
@@ -88,8 +88,8 @@
             line-height: 1.2;
         }
 
-        .header h4 {
-            font-size: 14pt;
+        .umum-header h4 {
+            font-size: 13pt;
             font-weight: bold;
             margin: 2px 0;
             line-height: 1.2;
@@ -101,40 +101,41 @@
             border-collapse: collapse;
         }
 
-        .info td {
+        .umum-info td {
             padding: 3px 0;
             font-size: 11pt;
         }
 
-        .info td:first-child {
+        .umum-info td:first-child {
             width: 140px;
         }
 
-        .info td:nth-child(3) {
+        .umum-info td:nth-child(3) {
             width: 90px;
             padding-left: 15px;
         }
 
         /* Tabel Nilai */
-        .nilai {
+        .umum-nilai {
             margin: 10px 0;
             font-size: 10pt;
             table-layout: fixed;
         }
 
-        .nilai th, .nilai td {
+        .umum-nilai th, .umum-nilai td {
             border: 1px solid #000;
             padding: 8px 6px;
             text-align: center;
         }
 
-        .nilai th {
-            background: #e6ffe6;
+        .umum-nilai th {
+            background: #47663D;
+            color: white;
             font-weight: bold;
             font-size: 10pt;
         }
 
-        .nilai td.deskripsi {
+        .umum-nilai td.deskripsi {
             text-align: left;
             padding: 8px 8px;
             font-size: 9pt;
@@ -143,26 +144,26 @@
             overflow-wrap: break-word;
         }
 
-        .nilai th:nth-child(1) { width: 30px; }
-        .nilai th:nth-child(2) { width: 80px; }
-        .nilai th:nth-child(3) { width: 45px; }
-        .nilai th:nth-child(4) { width: 45px; }
-        .nilai th:nth-child(5) { width: 55px; }
-        .nilai th:nth-child(6) { width: auto; }
+        .umum-nilai th:nth-child(1) { width: 5%; }
+        .umum-nilai th:nth-child(2) { width: 25%; }
+        .umum-nilai th:nth-child(3) { width: 10%; }
+        .umum-nilai th:nth-child(4) { width: 10%; }
+        .umum-nilai th:nth-child(5) { width: 12%; }
+        .umum-nilai th:nth-child(6) { width: 38%; }
 
         /* Summary Table */
-        .summary {
+        .umum-summary {
             margin: 10px 0;
         }
 
-        .summary td {
+        .umum-summary td {
             border: 1px solid #000;
             padding: 6px 8px;
             font-weight: bold;
             font-size: 10pt;
         }
 
-        .summary td:first-child {
+        .umum-summary td:first-child {
             width: 150px;
         }
 
@@ -194,23 +195,28 @@
         }
 
         /* Signature Section */
-        .sign {
+        .umum-sign {
             margin-top: 35px;
             display: flex;
             justify-content: space-between;
+            align-items: flex-start; 
             text-align: center;
             font-size: 10pt;
         }
 
-        .sign div {
+        .umum-sign div {
             width: 30%;
         }
 
-        .sign p {
+        .umum-sign div:nth-child(2) {
+            margin-top: 40px;
+        }
+
+        .umum-sign p {
             margin: 3px 0;
         }
 
-        .sign b {
+        .umum-sign b {
             text-decoration: underline;
         }
 
@@ -220,7 +226,7 @@
                 background: white;
             }
 
-            .container {
+            .umum-container {
                 width: 100%;
                 min-height: auto;
                 padding: 0;
@@ -233,7 +239,7 @@
             }
 
             /* Prevent page breaks inside important elements */
-            .header, .info, .nilai, .summary, .flex, .sign {
+            .umum-header, .umum-info, .umum-nilai, .umum-summary, .flex, .umum-sign {
                 page-break-inside: avoid;
             }
 
@@ -243,7 +249,7 @@
                 margin: 0; /* Menghilangkan Header/Footer bawaan browser (Tanggal, URL, dll) */
             }
 
-            .container {
+            .umum-container {
                 padding: 15mm 10mm; /* Margin dipindah ke sini supaya konten tetap aman */
                 margin: 0 auto;
             }
@@ -259,7 +265,7 @@
     </style>
 </head>
 <body>
-<div class="container">
+<div class="umum-container">
     <!-- WATERMARK LOGO -->
     <div class="watermark">
         <img src="{{ asset('images/logo.png') }}" alt="Logo Watermark">
@@ -268,9 +274,9 @@
     <!-- CONTENT WRAPPER -->
     <div class="content">
         <!-- HEADER -->
-        <div class="header">
-            <img src="{{ asset('images/logo.png') }}" alt="Logo" class="header-logo">
-            <div class="header-text">
+        <div class="umum-header">
+            <img src="{{ asset('images/logo.png') }}" alt="Logo" class="umum-header-logo">
+            <div class="umum-header-text">
                 <h3>LAPORAN PENCAPAIAN KOMPETENSI PESERTA DIDIK</h3>
                 <h4>SEKOLAH DASAR AL QUR'AN LANTABUR</h4>
                 <h4>PEKANBARU</h4>
@@ -278,7 +284,7 @@
         </div>
 
     <!-- INFO SISWA -->
-    <table class="info">
+    <table class="umum-info">
         <tr>
             <td>Nama Peserta Didik</td><td>: {{ strtoupper($siswa->nama) }}</td>
             <td>Kelas</td><td>: {{ \App\Models\Siswa::getNamaKelas($raport->kelas ?? 0) }}</td>
@@ -313,7 +319,7 @@
     @endphp
 
     <!-- TABEL NILAI -->
-    <table class="nilai">
+    <table class="umum-nilai">
         <thead>
         <tr>
             <th>No</th>
@@ -352,7 +358,7 @@
     <br>
 
     <!-- TOTAL -->
-    <table class="summary">
+    <table class="umum-summary">
         <tr>
             <td>Total Nilai</td>
             <td>{{ $jumlahMapel > 0 ? number_format($totalNilai, 0) : '-' }}</td>
@@ -389,7 +395,7 @@
     </div>
 
     <!-- TANDA TANGAN -->
-    <div class="sign">
+    <div class="umum-sign">
         <div>
             <p>Mengetahui,<br>Orang Tua/Wali</p>
             <br><br><br>

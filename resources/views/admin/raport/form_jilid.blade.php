@@ -57,14 +57,20 @@
             </div>
         </div>
 
-        {{-- Tabel Materi --}}
+        {{-- Tabel Materi & Nilai (dinamis, fleksibel) --}}
         <div class="bg-white rounded-xl shadow border border-gray-100 p-6">
             <div class="flex items-center justify-between mb-4">
-                <h2 class="font-semibold text-gray-700">Tabel Materi & Nilai</h2>
+                <div>
+                    <h2 class="font-semibold text-gray-700">Tabel Materi & Nilai</h2>
+                    <p class="text-xs text-gray-500 mt-1">
+                        Tambah baris sesuai kebutuhan. Kolom <strong>Jilid</strong> bisa diisi bebas
+                        (mis. I, II, VI, Al Qur'an, Tajwid, Ghorib, dll).
+                    </p>
+                </div>
                 <button type="button" @click="addRow()"
                         class="inline-flex items-center gap-1 px-3 py-1.5 bg-[#47663D] text-white rounded-lg text-sm hover:bg-[#5a7d52]">
                     <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"/></svg>
-                    Tambah Baris
+                    Tambah
                 </button>
             </div>
 
@@ -72,39 +78,45 @@
                 <table class="w-full text-sm">
                     <thead class="bg-[#47663D] text-white">
                         <tr>
-                            <th class="py-2.5 px-3 text-center w-14">Jilid</th>
+                            <th class="py-2.5 px-3 text-center w-20">Jilid</th>
                             <th class="py-2.5 px-3 text-left">Pokok Bahasan / Materi</th>
-                            <th class="py-2.5 px-3 text-center w-20">Nilai</th>
-                            <th class="py-2.5 px-3 text-left w-36">Keterangan</th>
+                            <th class="py-2.5 px-3 text-center w-24">Nilai</th>
+                            <th class="py-2.5 px-3 text-left w-40">Keterangan</th>
                             <th class="py-2.5 px-3 w-10"></th>
                         </tr>
                     </thead>
                     <tbody>
                         <template x-for="(row, i) in rows" :key="i">
-                            <tr class="border-t border-gray-100">
+                            <tr class="border-t border-gray-100 hover:bg-gray-50">
                                 <td class="px-2 py-1.5">
-                                    <input type="text" :name="'materi['+i+'][jilid]'" x-model="row.jilid"
-                                           placeholder="Jilid 3"
+                                    <input type="text"
+                                           :name="'materi['+i+'][jilid]'"
+                                           x-model="row.jilid"
+                                           placeholder="I / II / VI / Al Qur'an"
                                            class="w-full px-2 py-1 border border-gray-300 rounded text-center text-xs focus:ring-1 focus:ring-[#47663D]">
                                 </td>
                                 <td class="px-2 py-1.5">
-                                    <input type="text" :name="'materi['+i+'][materi]'" x-model="row.materi"
-                                           placeholder="Nama pokok bahasan"
+                                    <input type="text"
+                                           :name="'materi['+i+'][materi]'"
+                                           x-model="row.materi"
+                                           placeholder="Contoh: Pengenalan huruf tunggal (Hijaiyah) Alif-Ya."
                                            class="w-full px-2 py-1 border border-gray-300 rounded text-xs focus:ring-1 focus:ring-[#47663D]">
                                 </td>
                                 <td class="px-2 py-1.5">
-                                    <select :name="'materi['+i+'][nilai]'" x-model="row.nilai"
-                                            class="w-full px-1 py-1 border border-gray-300 rounded text-center text-xs focus:ring-1 focus:ring-[#47663D]">
-                                        <option value="">-</option>
-                                        <option>A+</option><option>A</option>
-                                        <option>B+</option><option>B</option>
-                                        <option>C+</option><option>C</option>
-                                        <option>D</option>
+                                    <select :name="'materi['+i+'][nilai]'"
+                                            x-model="row.nilai"
+                                            class="w-full px-1 py-1 border border-gray-300 rounded text-center text-xs font-semibold focus:ring-1 focus:ring-[#47663D]">
+                                        <option value="A">A (Mumtaz)</option>
+                                        <option value="B">B (Jayyid)</option>
+                                        <option value="C">C (Maqbul)</option>
+                                        <option value="D">D (Naqis)</option>
                                     </select>
                                 </td>
                                 <td class="px-2 py-1.5">
-                                    <input type="text" :name="'materi['+i+'][keterangan]'" x-model="row.keterangan"
-                                           placeholder="Keterangan"
+                                    <input type="text"
+                                           :name="'materi['+i+'][keterangan]'"
+                                           x-model="row.keterangan"
+                                           placeholder="Keterangan (opsional)"
                                            class="w-full px-2 py-1 border border-gray-300 rounded text-xs focus:ring-1 focus:ring-[#47663D]">
                                 </td>
                                 <td class="px-2 py-1.5 text-center">
@@ -139,13 +151,26 @@
 @push('scripts')
 <script>
 function jilidForm() {
-    const existing = @json(old('materi', $item?->materi ?? []));
+    const existing = @json(old('materi', $item->materi ?? []));
     return {
         rows: existing.length
-            ? existing.map(r => ({ jilid: r.jilid ?? '', materi: r.materi ?? '', nilai: r.nilai ?? '', keterangan: r.keterangan ?? '' }))
-            : [],
-        addRow() { this.rows.push({ jilid: '', materi: '', nilai: '', keterangan: '' }); },
-        removeRow(i) { this.rows.splice(i, 1); }
+            ? existing.map(r => ({
+                jilid: r.jilid ?? '',
+                materi: r.materi ?? '',
+                nilai: r.nilai ?? '',
+                keterangan: r.keterangan ?? ''
+            }))
+            : [
+                { jilid: 'I', materi: '', nilai: '', keterangan: '' },
+                { jilid: 'II', materi: '', nilai: '', keterangan: '' },
+            ],
+        addRow() {
+            const last = this.rows[this.rows.length - 1] || { jilid: '', materi: '' };
+            this.rows.push({ jilid: last.jilid, materi: '', nilai: '', keterangan: '' });
+        },
+        removeRow(i) {
+            this.rows.splice(i, 1);
+        }
     };
 }
 </script>

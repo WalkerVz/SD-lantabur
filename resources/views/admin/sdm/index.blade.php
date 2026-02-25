@@ -127,6 +127,11 @@
             </div>
         </div>
     </div>
+
+    <form id="sdm-delete-form" method="POST" class="hidden">
+        @csrf
+        @method('DELETE')
+    </form>
 </div>
 
 @push('scripts')
@@ -179,21 +184,11 @@ function sdmPage() {
 
         doDelete() {
             if (!this.deleteConfirmId) return;
-            var url = deleteUrl(this.deleteConfirmId);
-            var token = document.querySelector('meta[name="csrf-token"]')?.getAttribute('content');
-            fetch(url, {
-                method: 'DELETE',
-                headers: {
-                    'Accept': 'application/json',
-                    'X-CSRF-TOKEN': token || '',
-                    'X-Requested-With': 'XMLHttpRequest'
-                }
-            })
-                .then(function(r) { return r.json(); })
-                .then(function() {
-                    window.location.reload();
-                })
-                .catch(function() { window.location.reload(); });
+            this.deleteConfirmOpen = false;
+            var form = document.getElementById('sdm-delete-form');
+            if (!form) return;
+            form.action = deleteUrl(this.deleteConfirmId);
+            form.submit();
         }
     };
 }

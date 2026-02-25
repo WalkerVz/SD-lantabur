@@ -66,6 +66,7 @@ Route::prefix('admin')->name('admin.')->group(function () {
 
         Route::get('pembayaran', [PembayaranController::class, 'index'])->name('pembayaran.index');
         Route::post('pembayaran', [PembayaranController::class, 'store'])->name('pembayaran.store');
+        Route::delete('pembayaran/{id}', [PembayaranController::class, 'destroy'])->name('pembayaran.destroy');
         Route::get('pembayaran/export/pdf', [PembayaranController::class, 'exportPdf'])->name('pembayaran.export.pdf');
         Route::get('pembayaran/{id}/kwitansi', [PembayaranController::class, 'kwitansi'])->name('pembayaran.kwitansi');
         Route::get('raport', [RaportController::class, 'index'])->name('raport.index');
@@ -76,6 +77,7 @@ Route::prefix('admin')->name('admin.')->group(function () {
         Route::put('raport/{id}', [RaportController::class, 'update'])->name('raport.update');
         Route::get('raport/cetak/kelas/{kelas}', [RaportController::class, 'cetak'])->name('raport.cetak');
         Route::get('raport/cetak/siswa/{id}', [RaportController::class, 'cetakSiswa'])->name('raport.cetakSiswa');
+        Route::get('raport/cetak/siswa-semua/{id}', [RaportController::class, 'cetakSemua'])->name('raport.cetakSemua');
         Route::get('raport/cetak/praktik/{id}', [RaportController::class, 'cetakPraktik'])->name('raport.cetakPraktik');
         Route::get('raport/cetak/jilid/{siswaId}', [RaportController::class, 'cetakJilid'])->name('raport.cetakJilid');
         Route::get('raport/jilid/{siswaId}/edit', [RaportController::class, 'editJilid'])->name('raport.editJilid');
@@ -84,6 +86,12 @@ Route::prefix('admin')->name('admin.')->group(function () {
         Route::get('raport/history/{id}', [RaportController::class, 'history'])->name('raport.history');
         Route::get('raport/praktik/{id}/edit', [RaportController::class, 'editPraktik'])->name('raport.editPraktik');
         Route::put('raport/praktik/{id}', [RaportController::class, 'updatePraktik'])->name('raport.updatePraktik');
+
+        // Route Raport Tahfidz Ummi
+        Route::get('raport/tahfidz/{siswaId}', [RaportController::class, 'formTahfidz'])->name('raport.formTahfidz');
+        Route::post('raport/tahfidz', [RaportController::class, 'tahfidzStore'])->name('raport.tahfidzStore');
+        Route::put('raport/tahfidz/{id}', [RaportController::class, 'tahfidzUpdate'])->name('raport.tahfidzUpdate');
+        Route::get('raport/cetak-tahfidz/{siswaId}', [RaportController::class, 'cetakTahfidz'])->name('raport.cetakTahfidz');
 
         Route::get('news', [NewsController::class, 'index'])->name('news.index');
         Route::get('news/create', [NewsController::class, 'create'])->name('news.create');
@@ -107,6 +115,10 @@ Route::prefix('admin')->name('admin.')->group(function () {
         Route::delete('slider/{id}', [SliderController::class, 'destroy'])->name('slider.destroy');
 
         Route::get('settings', [SettingsController::class, 'index'])->name('settings.index');
+        Route::get('settings/accounts', [SettingsController::class, 'accounts'])->name('settings.accounts');
+        Route::post('settings/accounts', [SettingsController::class, 'storeAccount'])->name('settings.accounts.store');
+        Route::get('settings/accessibility', [SettingsController::class, 'accessibility'])->name('settings.accessibility');
+        Route::post('settings/accessibility', [SettingsController::class, 'saveAccessibility'])->name('settings.accessibility.save');
         Route::put('settings/profile', [SettingsController::class, 'updateProfile'])->name('settings.profile');
         Route::put('settings/password', [SettingsController::class, 'updatePassword'])->name('settings.password');
         Route::post('settings/tahun-ajaran', [SettingsController::class, 'storeTahunAjaran'])->name('settings.tahun-ajaran.store');

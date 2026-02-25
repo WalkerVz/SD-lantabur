@@ -114,8 +114,8 @@ class SdmController extends Controller
         $item = StaffSdm::findOrFail($id);
         
         // Cleanup assignment Wali Kelas sebelum delete
-        // Agar tidak ada orphaned foreign key di tahun_kelas
-        \App\Models\TahunKelas::where('wali_kelas_id', $item->id)
+        // Pastikan referensi wali_kelas di master_kelas tidak menggantung
+        \App\Models\MasterKelas::where('wali_kelas_id', $item->id)
             ->update(['wali_kelas_id' => null]);
         
         if ($item->foto) {
@@ -145,20 +145,14 @@ class SdmController extends Controller
         }
     }
 
-    /**
-     * Auto-sync Wali Kelas berdasarkan jabatan
-     */
-    /**
-     * Auto-sync Wali Kelas berdasarkan jabatan
-     */
     private function syncWaliKelasFromJabatan(StaffSdm $staff): void
     {
         // 1. Hapus assignment lama untuk staff ini (dari kelas mana pun)
         \App\Models\MasterKelas::where('wali_kelas_id', $staff->id)
             ->update(['wali_kelas_id' => null]);
 
-        // 2. Deteksi kelas dari jabatan (contoh: "Wali Kelas 3" -> 3)
-        if (preg_match('/Wali Kelas (\d+)/', $staff->jabatan, $matches)) {
+        // 2. Deteksi kelas dari jabatan secara case insensitive (misal: "Wali Kelas 3" atau "wali kelas 3")
+        if (preg_match('/wali kelas (\d+)/i', $staff->jabatan, $matches)) {
             $kelas = (int) $matches[1];
             if ($kelas >= 1 && $kelas <= 6) {
                 // 3. Update MasterKelas langsung

@@ -121,6 +121,25 @@ class PembayaranController extends Controller
         ]);
     }
 
+    public function destroy(int $id, Request $request)
+    {
+        $pembayaran = Pembayaran::findOrFail($id);
+        $siswaId = $pembayaran->siswa_id;
+        $kelas = $pembayaran->kelas;
+        $tahunAjaran = $pembayaran->tahun_ajaran;
+        
+        $pembayaran->delete();
+        
+        if ($request->wantsJson()) {
+            return response()->json(['success' => true]);
+        }
+        return redirect()->route('admin.pembayaran.index', [
+            'tahun_ajaran' => $tahunAjaran,
+            'kelas' => $kelas,
+            'siswa_id' => $siswaId,
+        ])->with('success', 'Pembayaran berhasil dihapus.');
+    }
+
     public function exportPdf(Request $request)
     {
         $tahunAjaran = $request->get('tahun_ajaran');
@@ -140,12 +159,16 @@ class PembayaranController extends Controller
             ->get();
         $sppBulanan = BiayaSpp::getNominal($tahunAjaran, $kelas);
 
-        return view('admin.pembayaran.export-pdf', [
+        $filename = 'laporan_pembayaran_' . str_replace('/', '-', $tahunAjaran) . '_' . $siswa->nama . '_Kelas' . $kelas . '_' . date('Y-m-d_His') . '.pdf';
+        
+        $pdf = Pdf::loadView('admin.pembayaran.export-pdf', [
             'siswa' => $siswa,
             'riwayat' => $riwayat,
             'tahun_ajaran' => $tahunAjaran,
             'kelas' => $kelas,
             'spp_bulanan' => $sppBulanan,
         ]);
+        
+        return $pdf->download($filename);
     }
 }

@@ -54,12 +54,13 @@
                         <td class="px-6 py-4 text-center">
                             @php 
                                 $rj = $raportJilid->get($s->id); 
+                                $rt = $raportTahfidz->get($s->id);
                                 $isNilaiDibuat = $nilai ? true : false;
                                 $isLengkapUmum = $nilai ? $nilai->isLengkap() : false; // sudah termasuk check tabel umum & praktik (7 nilai)
-                                $isSemuaLengkap = $isLengkapUmum && $rj; // Jilid juga harus ada datanya
+                                $isSemuaLengkap = $isLengkapUmum && $rj && $rt; // Jilid dan Tahfidz juga harus ada datanya
                             @endphp
 
-                            @if($isNilaiDibuat || $rj)
+                            @if($isNilaiDibuat || $rj || $rt)
                                 @if($isSemuaLengkap)
                                     <span class="inline-flex items-center px-3 py-1 bg-green-100 text-green-700 text-xs font-bold rounded-full border border-green-200 uppercase tracking-tighter w-full justify-center">
                                         <svg class="w-3 h-3 mr-1" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"></path></svg>
@@ -80,7 +81,10 @@
                             @endif
                         </td>
                         <td class="px-6 py-4">
-                            @php $rj = $raportJilid->get($s->id); @endphp
+                            @php 
+                                $rj = $raportJilid->get($s->id); 
+                                $rt = $raportTahfidz->get($s->id);
+                            @endphp
                             <div class="flex items-center justify-end gap-2">
                                 @if($nilai)
                                 {{-- Dropdown Edit --}}
@@ -102,6 +106,9 @@
                                         <a href="{{ route('admin.raport.editJilid', [$s->id, 'tahun_ajaran'=>$tahun, 'semester'=>$semester]) }}" class="flex items-center gap-2 px-4 py-2 text-gray-700 hover:bg-purple-50 hover:text-purple-700">
                                             <span class="w-2 h-2 rounded-full {{ $rj ? 'bg-purple-400' : 'bg-gray-300' }}"></span>{{ $rj ? 'Jilid' : 'Isi Jilid' }}
                                         </a>
+                                        <a href="{{ route('admin.raport.formTahfidz', [$s->id, 'tahun_ajaran'=>$tahun, 'semester'=>$semester]) }}" class="flex items-center gap-2 px-4 py-2 text-gray-700 hover:bg-cyan-50 hover:text-cyan-700">
+                                            <span class="w-2 h-2 rounded-full {{ $rt ? 'bg-cyan-400' : 'bg-gray-300' }}"></span>{{ $rt ? 'Tahfidz' : 'Isi Tahfidz' }}
+                                        </a>
                                     </div>
                                 </div>
 
@@ -115,6 +122,9 @@
                                     <div x-show="open" x-transition.opacity.duration.150ms
                                          class="absolute right-0 z-[9999] mt-1 w-44 bg-white rounded-lg shadow-lg border border-gray-100 py-1 text-sm"
                                          style="display:none;">
+                                        <a href="{{ route('admin.raport.cetakSemua', $nilai->id) }}" target="_blank" class="flex items-center gap-2 px-4 py-2 text-gray-700 hover:bg-rose-50 hover:text-rose-700 font-bold border-b border-gray-100">
+                                            <span class="w-2 h-2 rounded-full bg-rose-500"></span>Cetak Semua
+                                        </a>
                                         <a href="{{ route('admin.raport.cetakSiswa', $nilai->id) }}" target="_blank" class="flex items-center gap-2 px-4 py-2 text-gray-700 hover:bg-amber-50 hover:text-amber-700">
                                             <span class="w-2 h-2 rounded-full bg-amber-400"></span>Raport Umum
                                         </a>
@@ -128,6 +138,15 @@
                                         @else
                                         <span class="flex items-center gap-2 px-4 py-2 text-gray-300 text-xs italic cursor-not-allowed">
                                             <span class="w-2 h-2 rounded-full bg-gray-200"></span>Jilid (belum diisi)
+                                        </span>
+                                        @endif
+                                        @if($rt)
+                                        <a href="{{ route('admin.raport.cetakTahfidz', [$s->id, 'tahun_ajaran'=>$tahun, 'semester'=>$semester]) }}" target="_blank" class="flex items-center gap-2 px-4 py-2 text-gray-700 hover:bg-cyan-50 hover:text-cyan-700">
+                                            <span class="w-2 h-2 rounded-full bg-cyan-400"></span>Raport Tahfidz
+                                        </a>
+                                        @else
+                                        <span class="flex items-center gap-2 px-4 py-2 text-gray-300 text-xs italic cursor-not-allowed">
+                                            <span class="w-2 h-2 rounded-full bg-gray-200"></span>Tahfidz (belum diisi)
                                         </span>
                                         @endif
                                     </div>
