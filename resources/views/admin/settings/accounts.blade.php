@@ -25,15 +25,25 @@
                     @error('username')<p class="text-red-500 text-xs mt-1">{{ $message }}</p>@enderror
                 </div>
             </div>
-            <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                <div>
-                    <label class="block text-sm font-medium text-gray-700 mb-1">Password</label>
-                    <input type="password" name="password" required class="w-full px-4 py-2 rounded-lg border border-gray-300 focus:ring-2 focus:ring-[#47663D] focus:border-[#47663D]">
-                    @error('password')<p class="text-red-500 text-xs mt-1">{{ $message }}</p>@enderror
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-4">
+                <div><label class="block text-sm font-medium text-gray-700 mb-1">Password</label>
+                        <div class="relative">
+                            <input type="password" id="passwordInput" name="password" required class="w-full px-4 py-2 pr-10 rounded-lg border border-gray-300 focus:ring-2 focus:ring-[#47663D] focus:border-[#47663D]">
+                            <button type="button" onclick="toggleVisibility('passwordInput', 'iconUtama')" class="absolute right-3 top-1/2 -translate-y-1/2 text-gray-500 hover:text-green-700">
+                                <i id="iconUtama" class="fa-solid fa-eye"></i>
+                            </button>
+                        </div>
+                        @error('password')<p class="text-red-500 text-xs mt-1">{{ $message }}</p>@enderror
                 </div>
+                
                 <div>
                     <label class="block text-sm font-medium text-gray-700 mb-1">Konfirmasi Password</label>
-                    <input type="password" name="password_confirmation" required class="w-full px-4 py-2 rounded-lg border border-gray-300 focus:ring-2 focus:ring-[#47663D] focus:border-[#47663D]">
+                    <div class="relative">
+                    <input type="password" id="passwordConfirmation" name="password_confirmation" required class="w-full px-4 py-2 rounded-lg border border-gray-300 focus:ring-2 focus:ring-[#47663D] focus:border-[#47663D]">
+                    <button type="button" onclick="toggleVisibility('passwordConfirmation', 'iconConfirmation')" class="absolute right-3 top-1/2 -translate-y-1/2 text-gray-500 hover:text-green-700">
+                        <i id="iconConfirmation" class="fa-solid fa-eye"></i>
+                    </button>  
+                    </div>         
                 </div>
             </div>
             <div>
@@ -82,5 +92,27 @@
         <p class="mt-3 text-xs text-gray-500">Penghapusan atau perubahan akun bisa ditambahkan kemudian sesuai kebutuhan kebijakan sekolah.</p>
     </div>
 </div>
+
+<script>
+    function toggleVisibility(targetInputId, targetIconId) {
+        // Ambil elemen input dan ikon berdasarkan ID
+        const inputField = document.getElementById(targetInputId);
+        const eyeIcon = document.getElementById(targetIconId);
+        
+        // Cek apakah tipenya saat ini password
+        if (inputField.type === 'password') {
+            // Ubah jadi teks agar hurufnya kelihatan
+            inputField.type = 'text';
+            // Ganti ikon mata terbuka jadi mata dicoret (tertutup)
+            eyeIcon.classList.remove('fa-eye');
+            eyeIcon.classList.add('fa-eye-slash');
+        } else {
+            // Kembalikan ke titik-titik (password)
+            inputField.type = 'password';
+            eyeIcon.classList.remove('fa-eye-slash');
+            eyeIcon.classList.add('fa-eye');
+        }
+    }
+</script>
 @endsection
 
