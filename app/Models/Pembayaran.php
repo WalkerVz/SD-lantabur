@@ -11,7 +11,7 @@ class Pembayaran extends Model
 
     protected $fillable = [
         'tahun_ajaran', 'siswa_id', 'kelas', 'bulan', 'tahun',
-        'nominal', 'status', 'tanggal_bayar', 'kwitansi_no', 'keterangan',
+        'jenis_pembayaran', 'nominal', 'status', 'tanggal_bayar', 'kwitansi_no', 'keterangan',
     ];
 
     protected $casts = [

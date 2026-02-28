@@ -13,6 +13,13 @@ use Illuminate\Http\Request;
 
 class PembayaranController extends Controller
 {
+    public const JENIS_PEMBAYARAN = [
+        'spp' => 'SPP',
+        'seragam' => 'Seragam',
+        'sarana_prasarana' => 'Sarana & Prasarana',
+        'kegiatan_tahunan' => 'Kegiatan Tahunan',
+    ];
+
     public static function getTahunAjaranList(): array
     {
         $fromMaster = MasterTahunAjaran::getListForDropdown();
@@ -70,6 +77,7 @@ class PembayaranController extends Controller
             'siswa_terpilih' => $siswaTerpilih,
             'riwayat' => $riwayat,
             'spp_bulanan' => $sppBulanan,
+            'jenis_pembayaran_list' => self::JENIS_PEMBAYARAN,
         ]);
     }
 
@@ -79,6 +87,7 @@ class PembayaranController extends Controller
             'tahun_ajaran' => 'required|string|max:20',
             'siswa_id' => 'required|exists:siswa,id',
             'kelas' => 'required|integer|in:1,2,3,4,5,6',
+            'jenis_pembayaran' => 'required|string|in:spp,seragam,sarana_prasarana,kegiatan_tahunan',
             'bulan' => 'required|integer|min:1|max:12',
             'tahun' => 'required|integer|min:2020|max:2030',
             'nominal' => 'required|numeric|min:0',
@@ -89,6 +98,7 @@ class PembayaranController extends Controller
             'tahun_ajaran' => $request->tahun_ajaran,
             'siswa_id' => $request->siswa_id,
             'kelas' => $request->kelas,
+            'jenis_pembayaran' => $request->jenis_pembayaran,
             'bulan' => $request->bulan,
             'tahun' => $request->tahun,
             'nominal' => (int) round($request->nominal),
@@ -118,7 +128,53 @@ class PembayaranController extends Controller
             'p' => $p,
             'bulan_str' => $bulanStr,
             'tanggal_str' => $p->tanggal_bayar?->format('d/m/Y') ?? '-',
+            'jenis_pembayaran' => self::JENIS_PEMBAYARAN[$p->jenis_pembayaran] ?? 'SPP',
         ]);
+    }
+
+    public function edit(string $id)
+    {
+        $pembayaran = Pembayaran::findOrFail($id);
+        $jenis_pembayaran_list = self::JENIS_PEMBAYARAN;
+
+        return view('admin.pembayaran.edit', compact('pembayaran', 'jenis_pembayaran_list'));
+    }
+
+    public function update(Request $request, string $id)
+    {
+        $request->validate([
+            'nominal' => 'required|numeric|min:0',
+            'status' => 'required|in:lunas,belum_lunas',
+            'tanggal_bayar' => 'nullable|date',
+            'keterangan' => 'nullable|string',
+            'jenis_pembayaran' => 'required|in:spp,seragam,sarana_prasarana,kegiatan_tahunan',
+            'bulan' => 'required|integer|min:1|max:12',
+            'tahun' => 'required|integer|min:2020|max:2030',
+        ]);
+
+        $pembayaran = Pembayaran::findOrFail($id);
+        
+        $pembayaran->update([
+            'jenis_pembayaran' => $request->jenis_pembayaran,
+            'bulan' => $request->bulan,
+            'tahun' => $request->tahun,
+            'nominal' => $request->nominal,
+            'status' => $request->status,
+            'tanggal_bayar' => $request->tanggal_bayar,
+            'keterangan' => $request->keterangan,
+        ]);
+
+        if ($pembayaran->status === 'lunas' && empty($pembayaran->kwitansi_no)) {
+            $pembayaran->update([
+                'kwitansi_no' => Pembayaran::generateKwitansiNo()
+            ]);
+        }
+
+        return redirect()->route('admin.pembayaran.index', [
+            'tahun_ajaran' => $pembayaran->tahun_ajaran,
+            'kelas' => $pembayaran->kelas,
+            'siswa_id' => $pembayaran->siswa_id
+        ])->with('success', 'Data pembayaran berhasil diperbarui.');
     }
 
     public function destroy(int $id, Request $request)
@@ -145,21 +201,25 @@ class PembayaranController extends Controller
         $tahunAjaran = $request->get('tahun_ajaran');
         $siswaId = (int) $request->get('siswa_id');
         $kelas = (int) $request->get('kelas');
+        $jenis = $request->get('jenis_pembayaran', 'spp');
 
-        if ($siswaId < 1 || $kelas < 1 || $kelas > 6) {
-            return redirect()->route('admin.pembayaran.index')->with('error', 'Pilih siswa dan kelas terlebih dahulu.');
+        if ($siswaId < 1 || $kelas < 1 || $kelas > 6 || !array_key_exists($jenis, self::JENIS_PEMBAYARAN)) {
+            return redirect()->route('admin.pembayaran.index')->with('error', 'Parameter tidak valid.');
         }
 
         $siswa = Siswa::findOrFail($siswaId);
         $riwayat = Pembayaran::where('tahun_ajaran', $tahunAjaran)
             ->where('siswa_id', $siswaId)
             ->where('kelas', $kelas)
+            ->where('jenis_pembayaran', $jenis)
             ->orderByDesc('tahun')
             ->orderByDesc('bulan')
             ->get();
+        
         $sppBulanan = BiayaSpp::getNominal($tahunAjaran, $kelas);
-
-        $filename = 'laporan_pembayaran_' . str_replace('/', '-', $tahunAjaran) . '_' . $siswa->nama . '_Kelas' . $kelas . '_' . date('Y-m-d_His') . '.pdf';
+        
+        $namaJenis = self::JENIS_PEMBAYARAN[$jenis] ?? 'SPP';
+        $filename = 'laporan_pembayaran_' . $jenis . '_' . str_replace('/', '-', $tahunAjaran) . '_' . $siswa->nama . '_Kelas' . $kelas . '_' . date('Y-m-d_His') . '.pdf';
         
         $pdf = Pdf::loadView('admin.pembayaran.export-pdf', [
             'siswa' => $siswa,
@@ -167,8 +227,48 @@ class PembayaranController extends Controller
             'tahun_ajaran' => $tahunAjaran,
             'kelas' => $kelas,
             'spp_bulanan' => $sppBulanan,
-        ]);
+            'jenis' => $jenis,
+            'nama_jenis' => $namaJenis,
+        ])->setPaper('a4', 'landscape');
         
+        return $pdf->download($filename);
+    }
+
+    public function rekapPdfPerKelas(Request $request)
+    {
+        $tahunAjaran = $request->get('tahun_ajaran');
+        $kelas = (int) $request->get('kelas');
+        $jenis = $request->get('jenis_pembayaran', 'spp');
+
+        if (!$tahunAjaran || $kelas < 1 || $kelas > 6 || !array_key_exists($jenis, self::JENIS_PEMBAYARAN)) {
+            return redirect()->route('admin.pembayaran.index')->with('error', 'Parameter tidak valid.');
+        }
+
+        $siswaList = Enrollment::where('tahun_ajaran', $tahunAjaran)
+            ->where('kelas', $kelas)
+            ->with(['siswa.pembayaran' => function($q) use ($tahunAjaran, $kelas, $jenis) {
+                $q->where('tahun_ajaran', $tahunAjaran)
+                  ->where('kelas', $kelas)
+                  ->where('jenis_pembayaran', $jenis)
+                  ->orderBy('bulan');
+            }])
+            ->get()
+            ->pluck('siswa')
+            ->filter()
+            ->sortBy('nama')
+            ->values();
+
+        $namaJenis = self::JENIS_PEMBAYARAN[$jenis] ?? 'SPP';
+        $filename = 'rekap_pembayaran_' . $jenis . '_Kelas' . $kelas . '_' . str_replace('/', '-', $tahunAjaran) . '_' . date('Ymd_His') . '.pdf';
+
+        $pdf = Pdf::loadView('admin.pembayaran.rekap-pdf', [
+            'siswa_list' => $siswaList,
+            'tahun_ajaran' => $tahunAjaran,
+            'kelas' => $kelas,
+            'jenis' => $jenis,
+            'nama_jenis' => $namaJenis,
+        ])->setPaper('a4', 'landscape');
+
         return $pdf->download($filename);
     }
 }

@@ -314,7 +314,7 @@
 
                 <div class="receipt-box">
                     <div class="receipt-label">Bukti Pembayaran Resmi</div>
-                    <div class="receipt-title">Kwitansi Pembayaran SPP</div>
+                    <div class="receipt-title">Kwitansi Pembayaran {{ strtoupper($jenis_pembayaran) }}</div>
                     <div class="receipt-number">
                         No: <strong>{{ $p->kwitansi_no ?? '—' }}</strong><br>
                         Tanggal: <strong>{{ $tanggal_str }}</strong>
@@ -343,7 +343,7 @@
                     <div class="detail-label">Untuk pembayaran</div>
                     <div class="detail-colon">:</div>
                     <div class="detail-value">
-                        SPP Bulan {{ $bulan_str }} {{ $p->tahun }}
+                        {{ $jenis_pembayaran }} Bulan {{ $bulan_str }} {{ $p->tahun }}
                     </div>
                 </div>
                 @if($p->keterangan)

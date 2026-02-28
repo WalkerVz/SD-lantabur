@@ -46,6 +46,11 @@ class Siswa extends Model
         return $this->hasMany(RaportTahfidz::class);
     }
 
+    public function pembayaran(): HasMany
+    {
+        return $this->hasMany(Pembayaran::class);
+    }
+
     /**
      * Relationship to MasterKelas based on tingkat
      */

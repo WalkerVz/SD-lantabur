@@ -83,7 +83,7 @@
     <div class="container">
         {{-- Header --}}
         <div class="header">
-            <div class="header-title">LAPORAN PEMBAYARAN SPP</div>
+            <div class="header-title">LAPORAN PEMBAYARAN {{ strtoupper($nama_jenis) }}</div>
             <div class="header-subtitle">SD AL-QUR'AN LANTABUR</div>
             <div class="header-meta">
                 <span><strong>Tahun Ajaran:</strong> {{ $tahun_ajaran }}</span>
@@ -102,7 +102,7 @@
                 <div><span class="card-value">Kelas {{ $kelas }}</span></div>
             </div>
             <div class="student-card-row">
-                <div><span class="card-label">SPP/Bulan</span></div>
+                <div><span class="card-label">Biaya / Nominal</span></div>
                 <div><span class="card-value">Rp {{ number_format($spp_bulanan, 0, ',', '.') }}</span></div>
             </div>
         </div>
@@ -113,11 +113,12 @@
                 <thead>
                     <tr>
                         <th style="width: 5%;" class="text-center">#</th>
-                        <th style="width: 22%;">Periode</th>
-                        <th style="width: 18%;" class="text-right">Nominal</th>
-                        <th style="width: 15%;" class="text-center">Status</th>
-                        <th style="width: 16%;" class="text-center">Tanggal Bayar</th>
-                        <th style="width: 24%;" class="text-center">No. Kwitansi</th>
+                        <th style="width: 18%;">Periode</th>
+                        <th style="width: 15%;" class="text-right">Nominal</th>
+                        <th style="width: 10%;" class="text-center">Status</th>
+                        <th style="width: 15%;" class="text-center">Tanggal Bayar</th>
+                        <th style="width: 17%;" class="text-center">No. Kwitansi</th>
+                        <th style="width: 20%;">Keterangan</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -128,11 +129,12 @@
                             <td class="text-right"><strong>Rp {{ number_format($r->nominal, 0, ',', '.') }}</strong></td>
                             <td class="text-center">
                                 <span class="cell-status {{ $r->status === 'lunas' ? 'status-lunas' : 'status-belum' }}">
-                                    {{ $r->status === 'lunas' ? '✓ LUNAS' : '○ BELUM' }}
+                                    {{ strtoupper(str_replace('_', ' ', $r->status)) }}
                                 </span>
                             </td>
                             <td class="text-center">{{ $r->tanggal_bayar?->locale('id')->translatedFormat('d/m/Y') ?? '-' }}</td>
                             <td class="text-center text-num">{{ $r->kwitansi_no ?? '-' }}</td>
+                            <td>{{ $r->keterangan ?? '-' }}</td>
                         </tr>
                     @endforeach
                 </tbody>
@@ -154,12 +156,6 @@
                     $totalTerkumpul = $riwayat->sum('nominal');
                     $saldo = $totalSeharusnya - $totalTerkumpul;
                 @endphp
-                <div class="summary-row summary-total">
-                    <span class="summary-label">Saldo Pembayaran</span>
-                    <span class="summary-value" style="color: {{ $saldo <= 0 ? '#28a745' : '#dc3545' }};">
-                        Rp {{ number_format($saldo, 0, ',', '.') }}
-                    </span>
-                </div>
             </div>
         @else
             <div class="empty-state">

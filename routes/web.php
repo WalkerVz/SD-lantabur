@@ -66,8 +66,11 @@ Route::prefix('admin')->name('admin.')->group(function () {
 
         Route::get('pembayaran', [PembayaranController::class, 'index'])->name('pembayaran.index');
         Route::post('pembayaran', [PembayaranController::class, 'store'])->name('pembayaran.store');
+        Route::get('pembayaran/{id}/edit', [PembayaranController::class, 'edit'])->name('pembayaran.edit');
+        Route::put('pembayaran/{id}', [PembayaranController::class, 'update'])->name('pembayaran.update');
         Route::delete('pembayaran/{id}', [PembayaranController::class, 'destroy'])->name('pembayaran.destroy');
         Route::get('pembayaran/export/pdf', [PembayaranController::class, 'exportPdf'])->name('pembayaran.export.pdf');
+        Route::get('pembayaran/rekap-pdf', [PembayaranController::class, 'rekapPdfPerKelas'])->name('pembayaran.rekapPdf');
         Route::get('pembayaran/{id}/kwitansi', [PembayaranController::class, 'kwitansi'])->name('pembayaran.kwitansi');
         Route::get('raport', [RaportController::class, 'index'])->name('raport.index');
         Route::get('raport/kelas/{kelas}', [RaportController::class, 'byKelas'])->name('raport.byKelas');
