@@ -68,7 +68,7 @@ class DatabaseSeeder extends Seeder
         $kategoriBerita = ['Akademik', 'Kegiatan', 'Prestasi', 'Pengumuman', 'Akademik', 'Kegiatan', 'Prestasi', 'Pengumuman'];
         for ($i = 1; $i <= 8; $i++) {
             Berita::create([
-                'judul' => 'Berita SD Lantabur #' . $i,
+                'judul' => 'Berita SD Al-Qur\'an Lantabur #' . $i,
                 'kategori' => $kategoriBerita[$i - 1] ?? null,
                 'isi' => 'Lorem ipsum contoh berita untuk mengisi halaman berita sekolah. Konten berita dapat dikelola dari halaman admin.',
                 'published_at' => now()->subDays($i),

@@ -2,7 +2,7 @@
 <html lang="id">
 <head>
     <meta charset="UTF-8">
-    <title>Data Siswa - SD Lantabur</title>
+    <title>Data Siswa - SD Al-Qur'an Lantabur</title>
     <style>
         body { font-family: DejaVu Sans, sans-serif; font-size: 10px; }
         .header { text-align: center; margin-bottom: 16px; border-bottom: 2px solid #47663D; padding-bottom: 8px; }

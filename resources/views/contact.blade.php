@@ -50,9 +50,9 @@
                     </div>
 
                     <div class="bg-white p-8 rounded-xl border-l-4 border-[#FFB81C] shadow-md hover:shadow-lg transition">
-                        <h3 class="text-xl font-bold text-[#47663D] mb-3 flex items-center gap-2"><span class="text-2xl">📞</span> Telepon</h3>
+                        <h3 class="text-xl font-bold text-[#47663D] mb-3 flex items-center gap-2"><i class="fa-brands fa-whatsapp text-green-500 text-2xl"></i> Telepon / WhatsApp</h3>
                         <p class="text-gray-700 text-lg">
-                            <a href="tel:+6282288359565" class="hover:text-[#FFB81C] transition font-semibold">
+                            <a href="https://wa.me/6282288359565" target="_blank" class="hover:text-[#FFB81C] transition font-semibold">
                                 0822-8835-9565
                             </a>
                         </p>

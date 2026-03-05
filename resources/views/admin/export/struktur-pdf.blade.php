@@ -2,7 +2,7 @@
 <html lang="id">
 <head>
     <meta charset="UTF-8">
-    <title>Struktur Organisasi - SD Lantabur</title>
+    <title>Struktur Organisasi - SD Al-Qur'an Lantabur</title>
     <style>
         body { font-family: DejaVu Sans, sans-serif; font-size: 11px; }
         .header { text-align: center; margin-bottom: 20px; border-bottom: 2px solid #47663D; padding-bottom: 10px; }

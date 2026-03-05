@@ -60,8 +60,8 @@
             z-index: 1;
             opacity: 0.05;
             background-image: 
-                url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 280 40'%3E%3Ctext x='140' y='20' fill='black' font-size='10' font-weight='bold' font-family='sans-serif' text-anchor='middle' dominant-baseline='middle'%3ESD AL QUR'AN LANTABUR%3C/text%3E%3C/svg%3E"), 
-                url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 280 40'%3E%3Ctext x='140' y='20' fill='black' font-size='10' font-weight='bold' font-family='sans-serif' text-anchor='middle' dominant-baseline='middle'%3ESD AL QUR'AN LANTABUR%3C/text%3E%3C/svg%3E");
+                url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 280 40'%3E%3Ctext x='140' y='20' fill='black' font-size='10' font-weight='bold' font-family='sans-serif' text-anchor='middle' dominant-baseline='middle'%3ESD AL-QUR'AN LANTABUR%3C/text%3E%3C/svg%3E"), 
+                url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 280 40'%3E%3Ctext x='140' y='20' fill='black' font-size='10' font-weight='bold' font-family='sans-serif' text-anchor='middle' dominant-baseline='middle'%3ESD AL-QUR'AN LANTABUR%3C/text%3E%3C/svg%3E");
             background-repeat: repeat, repeat;
             background-size: 280px 40px, 280px 40px;
             background-position: 0 0, 140px 20px;
@@ -251,7 +251,7 @@
             <img src="{{ asset('images/logo.png') }}" alt="Logo" class="praktik-header-logo">
             <div class="praktik-header-text">
                 <h3>LAPORAN PENCAPAIAN KOMPETENSI PESERTA DIDIK</h3>
-                <h4>SEKOLAH DASAR AL QUR'AN LANTABUR</h4>
+                <h4>SEKOLAH DASAR AL-QUR'AN LANTABUR</h4>
                 <h4>PEKANBARU</h4>
             </div>
         </div>
@@ -263,7 +263,7 @@
                 <td>Kelas</td><td>: {{ $kelas }}</td>
             </tr>
             <tr>
-                <td>Nama Sekolah</td><td>: SD AL QUR'AN LANTABUR</td>
+                <td>Nama Sekolah</td><td>: SD AL-QUR'AN LANTABUR</td>
                 <td>Semester</td><td>: {{ strtoupper($semester) }}</td>
             </tr>
             <tr>

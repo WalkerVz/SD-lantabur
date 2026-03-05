@@ -60,8 +60,8 @@
             z-index: 1;
             opacity: 0.05;
             background-image: 
-                url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 280 40'%3E%3Ctext x='140' y='20' fill='black' font-size='10' font-weight='bold' font-family='sans-serif' text-anchor='middle' dominant-baseline='middle'%3ESD AL QUR'AN LANTABUR%3C/text%3E%3C/svg%3E"), 
-                url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 280 40'%3E%3Ctext x='140' y='20' fill='black' font-size='10' font-weight='bold' font-family='sans-serif' text-anchor='middle' dominant-baseline='middle'%3ESD AL QUR'AN LANTABUR%3C/text%3E%3C/svg%3E");
+                url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 280 40'%3E%3Ctext x='140' y='20' fill='black' font-size='10' font-weight='bold' font-family='sans-serif' text-anchor='middle' dominant-baseline='middle'%3ESD AL-QUR'AN LANTABUR%3C/text%3E%3C/svg%3E"), 
+                url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 280 40'%3E%3Ctext x='140' y='20' fill='black' font-size='10' font-weight='bold' font-family='sans-serif' text-anchor='middle' dominant-baseline='middle'%3ESD AL-QUR'AN LANTABUR%3C/text%3E%3C/svg%3E");
             background-repeat: repeat, repeat;
             background-size: 280px 40px, 280px 40px;
             background-position: 0 0, 140px 20px;
@@ -241,7 +241,7 @@
             <img src="{{ asset('images/logo-lantabur.png') }}" alt="Logo Lantabur" class="tahfidz-header-logo">
             <div class="tahfidz-header-text">
                 <h3>Laporan Pembelajaran Ummi</h3>
-                <h4>SD AL QUR'AN LANTABUR</h4>
+                <h4>SD AL-QUR'AN LANTABUR</h4>
                 <p>TAHUN PELAJARAN {{ str_replace('/', '/', $tahun) }}</p>
             </div>
             <img src="{{ asset('images/logo-ummi.png') }}" alt="Logo Ummi" class="tahfidz-header-logo right" style="width: 100px;">

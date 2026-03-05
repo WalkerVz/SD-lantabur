@@ -2,20 +2,20 @@
 <div class="bg-[#47663D]/90 text-white text-sm py-2 px-5">
     <div class="max-w-6xl mx-auto flex justify-between items-center flex-wrap gap-4">
         <div class="flex gap-6 text-xs md:text-sm">
-            <a href="tel:+6282288359565" class="flex items-center gap-2 hover:text-white/70 transition">
-                <span>📞</span>
+            <a href="https://wa.me/6282288359565" target="_blank" class="flex items-center gap-2 hover:text-white/70 transition">
+                <i class="fa-brands fa-whatsapp text-green-400"></i>
                 <span>0822-8835-9565</span>
             </a>
             <a href="mailto:sdalquranlantabur@gmail.com" class="flex items-center gap-2 hover:text-white/70 transition">
-            <i class="fa-solid fa-envelope text-purple-300 "></i>
+                <i class="fa-solid fa-envelope text-purple-300 "></i>
                 <span>sdalquranlantabur@gmail.com</span>
             </a>
         </div>
-        <div class="flex gap-3 items-center">
-            <i class = "fa-brands fa-facebook text-blue-300"></i>
-            <a href="#" class="hover:text-white/70 transition">Facebook</a>
-            <i class="fa-brands fa-instagram text-pink-300 mt-1"></i>
-            <a href="#" class="hover:text-white/70 transition">Instagram</a>
+        <div class="flex gap-4 items-center">
+            <a href="https://www.instagram.com/sdalquranlantabur/" target="_blank" class="hover:text-white/70 transition flex items-center gap-1">
+                <i class="fa-brands fa-instagram text-pink-300"></i>
+                <span class="hidden sm:inline">Instagram</span>
+            </a>
         </div>
     </div>
 </div>

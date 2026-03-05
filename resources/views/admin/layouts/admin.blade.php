@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="csrf-token" content="{{ csrf_token() }}">
-    <title>@yield('title', 'Admin') - SD Lantabur</title>
+    <title>@yield('title', 'Admin') - SD Al-Qur'an Lantabur</title>
     <link rel="icon" type="image/png" href="{{ asset('images/logo.png') }}">
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap" rel="stylesheet">
     <script src="https://cdn.tailwindcss.com"></script>
@@ -27,7 +27,7 @@
                         <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"/></svg>
                     </button>
                     <img src="{{ asset('images/logo.png') }}" alt="Logo" class="h-10" onerror="this.style.display='none'">
-                    <span class="font-bold text-lg">Admin SD Lantabur</span>
+                    <span class="font-bold text-lg">Admin SD Al-Qur'an Lantabur</span>
                 </div>
                 <div class="flex items-center gap-4">
                     <span class="text-white/90 text-sm hidden sm:block">Selamat datang, {{ Auth::user()->name ?? 'Admin' }}</span>
@@ -89,7 +89,7 @@
             <div class="flex items-center justify-between gap-2 p-4 border-b border-gray-100 min-h-[4rem]">
                 <a href="{{ route('admin.dashboard') }}" class="flex items-center gap-2 min-w-0 flex-1">
                     <img src="{{ asset('images/logo.png') }}" alt="Logo" class="h-9 flex-shrink-0" onerror="this.style.display='none'">
-                    <span x-show="!sidebarCollapsed" x-transition class="font-bold text-[#47663D] truncate">Admin Lantabur</span>
+                    <span x-show="!sidebarCollapsed" x-transition class="font-bold text-[#47663D] truncate">Admin SD Al-Qur'an Lantabur</span>
                 </a>
                 <button @click="sidebarCollapsed = !sidebarCollapsed" class="hidden lg:flex p-2 rounded-lg hover:bg-gray-100 text-gray-600 flex-shrink-0" title="Sembunyikan/Tampilkan sidebar">
                     <svg x-show="!sidebarCollapsed" class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 19l-7-7 7-7m8 14l-7-7 7-7"/></svg>

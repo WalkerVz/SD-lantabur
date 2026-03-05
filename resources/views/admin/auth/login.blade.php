@@ -19,7 +19,7 @@
         <div class="bg-white/95 backdrop-blur rounded-2xl shadow-xl border border-[#47663D]/10 overflow-hidden">
             <div class="bg-gradient-to-r from-[#47663D] to-[#5a7d52] px-8 py-6 text-center">
                 <img src="{{ asset('images/logo.png') }}" alt="Logo" class="h-16 mx-auto mb-3 drop-shadow-lg" onerror="this.style.display='none'">
-                <h1 class="text-xl font-bold text-white">Sistem Informasi SD Lantabur</h1>
+                <h1 class="text-xl font-bold text-white">Sistem Informasi SD Al-Qur'an Lantabur</h1>
                 <p class="text-white/80 text-sm mt-1">Panel Admin</p>
             </div>
             <form method="POST" action="{{ route('admin.login.submit') }}" class="p-8">
