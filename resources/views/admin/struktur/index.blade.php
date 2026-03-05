@@ -47,11 +47,15 @@
                         <td class="px-4 py-3">
                             <div class="flex items-center gap-3">
                                 @if($r->foto)
-                                    <img src="{{ asset('storage/'.$r->foto) }}" alt="" class="w-10 h-10 rounded-full object-cover">
+                                    <img src="{{ asset('storage/'.$r->foto) }}" alt="" class="w-10 h-10 rounded-full object-cover ring-2 ring-[#47663D]/20">
                                 @else
-                                    <div class="w-10 h-10 rounded-full bg-[#47663D]/20 flex items-center justify-center text-[#47663D] font-semibold">{{ strtoupper(substr($r->nama, 0, 1)) }}</div>
+                                    <div class="w-10 h-10 rounded-full bg-gradient-to-br from-[#47663D] to-[#6a9e5e] flex items-center justify-center text-white font-semibold text-sm shadow-sm">{{ strtoupper(substr($r->nama, 0, 1)) }}</div>
                                 @endif
-                                <span class="font-medium text-gray-800">{{ $r->nama }}</span>
+                                <button type="button"
+                                    @click="openDetailModal({{ json_encode(['nama' => $r->nama, 'jabatan' => $r->jabatan, 'email' => $r->email, 'nomor_hp' => $r->nomor_hp, 'level' => $r->level, 'urutan' => $r->urutan, 'aktif' => $r->aktif, 'foto' => $r->foto ? asset('storage/'.$r->foto) : null]) }})"
+                                    class="font-semibold text-[#47663D] hover:text-[#5a7d52] hover:underline underline-offset-2 text-left transition-colors cursor-pointer">
+                                    {{ $r->nama }}
+                                </button>
                             </div>
                         </td>
                         <td class="px-4 py-3 text-gray-600">{{ $r->jabatan }}</td>
@@ -68,6 +72,63 @@
                     @endforelse
                 </tbody>
             </table>
+        </div>
+    </div>
+
+    {{-- Modal Detail --}}
+    <div x-show="detailModalOpen" x-cloak class="fixed inset-0 z-[80] overflow-y-auto" role="dialog" aria-modal="true">
+        <div class="flex min-h-screen items-center justify-center p-4">
+            <div x-show="detailModalOpen" x-transition:enter="ease-out duration-300" x-transition:enter-start="opacity-0" x-transition:enter-end="opacity-100" x-transition:leave="ease-in duration-200" x-transition:leave-start="opacity-100" x-transition:leave-end="opacity-0" class="fixed inset-0 bg-gray-900/60 backdrop-blur-sm" @click="detailModalOpen = false"></div>
+            <div x-show="detailModalOpen" x-transition:enter="ease-out duration-300" x-transition:enter-start="opacity-0 scale-95" x-transition:enter-end="opacity-100 scale-100" x-transition:leave="ease-in duration-200" x-transition:leave-start="opacity-100 scale-100" x-transition:leave-end="opacity-0 scale-95" class="relative bg-white rounded-2xl shadow-2xl max-w-md w-full overflow-hidden">
+                {{-- Header gradient --}}
+                <div class="bg-gradient-to-r from-[#47663D] to-[#6a9e5e] p-6 relative">
+                    <button type="button" @click="detailModalOpen = false" class="absolute top-4 right-4 p-1.5 rounded-lg bg-white/20 hover:bg-white/30 text-white transition">
+                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/></svg>
+                    </button>
+                    <div class="flex items-center gap-4">
+                        <template x-if="detailData.foto">
+                            <img :src="detailData.foto" alt="" class="w-20 h-20 rounded-full object-cover ring-4 ring-white/40 shadow-lg">
+                        </template>
+                        <template x-if="!detailData.foto">
+                            <div class="w-20 h-20 rounded-full bg-white/20 flex items-center justify-center text-white font-bold text-3xl ring-4 ring-white/40 shadow-lg" x-text="detailData.nama ? detailData.nama.charAt(0).toUpperCase() : '?'"></div>
+                        </template>
+                        <div>
+                            <h2 class="text-xl font-bold text-white leading-tight" x-text="detailData.nama"></h2>
+                            <p class="text-green-100 mt-1 text-sm font-medium" x-text="detailData.jabatan"></p>
+                            <span class="inline-block mt-2 px-2.5 py-0.5 text-xs rounded-full" :class="detailData.aktif ? 'bg-green-200/40 text-white' : 'bg-white/20 text-white/70'" x-text="detailData.aktif ? '● Aktif' : '● Tidak Aktif'"></span>
+                        </div>
+                    </div>
+                </div>
+                {{-- Body --}}
+                <div class="p-6 space-y-3">
+                    <h3 class="text-xs font-semibold text-gray-400 uppercase tracking-wider mb-4">Informasi</h3>
+                    <template x-if="detailData.email">
+                        <div class="flex items-center gap-3">
+                            <div class="w-8 h-8 rounded-lg bg-amber-50 flex items-center justify-center flex-shrink-0">
+                                <svg class="w-4 h-4 text-amber-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"/></svg>
+                            </div>
+                            <div><p class="text-xs text-gray-500">Email</p><p class="text-sm font-medium text-gray-800 break-all" x-text="detailData.email"></p></div>
+                        </div>
+                    </template>
+                    <template x-if="detailData.nomor_hp">
+                        <div class="flex items-center gap-3">
+                            <div class="w-8 h-8 rounded-lg bg-green-50 flex items-center justify-center flex-shrink-0">
+                                <svg class="w-4 h-4 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z"/></svg>
+                            </div>
+                            <div><p class="text-xs text-gray-500">No. HP</p><p class="text-sm font-medium text-gray-800" x-text="detailData.nomor_hp"></p></div>
+                        </div>
+                    </template>
+                    <div class="flex items-center gap-3">
+                        <div class="w-8 h-8 rounded-lg bg-[#47663D]/10 flex items-center justify-center flex-shrink-0">
+                            <svg class="w-4 h-4 text-[#47663D]" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"/></svg>
+                        </div>
+                        <div><p class="text-xs text-gray-500">Level / Urutan</p><p class="text-sm font-medium text-gray-800" x-text="'Level ' + (detailData.level ?? '-') + '  ·  Urutan ke-' + (detailData.urutan ?? '-')"></p></div>
+                    </div>
+                    <div class="mt-5 pt-5 border-t border-gray-100 flex gap-3">
+                        <button type="button" @click="detailModalOpen = false" class="flex-1 px-4 py-2.5 bg-gray-100 text-gray-700 rounded-xl hover:bg-gray-200 text-sm font-semibold transition">Tutup</button>
+                    </div>
+                </div>
+            </div>
         </div>
     </div>
 
@@ -124,6 +185,13 @@ function strukturPage() {
         deleteConfirmOpen: false,
         deleteConfirmId: null,
         deleteConfirmNama: '',
+        detailModalOpen: false,
+        detailData: {},
+
+        openDetailModal(data) {
+            this.detailData = data;
+            this.detailModalOpen = true;
+        },
 
         openFormModal(id) {
             this.formModalEditId = id || null;

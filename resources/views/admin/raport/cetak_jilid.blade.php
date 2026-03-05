@@ -254,7 +254,7 @@
         <div class="jilid-header">
             <img src="{{ asset('images/logo-lantabur.png') }}" alt="Logo Lantabur" class="jilid-header-logo">
             <div class="jilid-header-text">
-                <h3>Laporan Al-Qur'an</h3>
+                <h3>Laporan Pembelajaran Ummi</h3>
                 <h4>SD Al-Qur'an Lantabur</h4>
                 <p>Tahun Pelajaran {{ $tahun }}</p>
             </div>
