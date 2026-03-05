@@ -7,7 +7,7 @@ use Illuminate\Database\Eloquent\Model;
 class VideoYoutube extends Model
 {
     protected $table = 'video_youtube';
-    protected $fillable = ['judul', 'youtube_id', 'deskripsi', 'urutan', 'aktif'];
+    protected $fillable = ['judul', 'youtube_id', 'url_asli', 'deskripsi', 'urutan', 'aktif'];
     protected $casts = ['aktif' => 'boolean'];
 
     /**
@@ -15,6 +15,8 @@ class VideoYoutube extends Model
      * - https://www.youtube.com/watch?v=VIDEO_ID
      * - https://youtu.be/VIDEO_ID
      * - https://www.youtube.com/shorts/VIDEO_ID
+     * - https://www.youtube.com/live/VIDEO_ID
+     * - https://www.youtube-nocookie.com/embed/VIDEO_ID
      * - VIDEO_ID langsung (11 karakter)
      */
     public static function extractYoutubeId(string $url): ?string
@@ -28,7 +30,10 @@ class VideoYoutube extends Model
 
         // Pola umum YouTube URL
         $patterns = [
-            '/(?:youtube\.com\/watch\?v=|youtu\.be\/|youtube\.com\/shorts\/|youtube\.com\/embed\/)([a-zA-Z0-9_-]{11})/',
+            // Handle watch?v=... (bisa di awal atau di tengah query string)
+            '/[?&]v=([a-zA-Z0-9_-]{11})/',
+            // Handle shorts, live, embed, and youtu.be
+            '/(?:youtube\.com\/(?:shorts\/|live\/|embed\/)|youtu\.be\/|youtube-nocookie\.com\/embed\/)([a-zA-Z0-9_-]{11})/',
         ];
 
         foreach ($patterns as $pattern) {
@@ -38,5 +43,15 @@ class VideoYoutube extends Model
         }
 
         return null;
+    }
+
+    public function getThumbnailUrlAttribute(): string
+    {
+        return "https://img.youtube.com/vi/{$this->youtube_id}/mqdefault.jpg";
+    }
+
+    public function getEmbedUrlAttribute(): string
+    {
+        return "https://www.youtube-nocookie.com/embed/{$this->youtube_id}?rel=0&modestbranding=1";
     }
 }

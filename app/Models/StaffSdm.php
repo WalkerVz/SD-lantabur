@@ -32,4 +32,9 @@ class StaffSdm extends Model
     {
         return $this->belongsTo(Spesialisasi::class);
     }
+
+    public function tahunKelas(): \Illuminate\Database\Eloquent\Relations\HasMany
+    {
+        return $this->hasMany(TahunKelas::class, 'wali_kelas_id');
+    }
 }

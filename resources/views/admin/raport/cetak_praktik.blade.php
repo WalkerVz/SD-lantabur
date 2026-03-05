@@ -38,8 +38,8 @@
             top: 50%;
             left: 50%;
             transform: translate(-50%, -50%);
-            opacity: 0.08;
-            z-index: 0;
+            opacity: 0.15;
+            z-index: 2;
             pointer-events: none;
         }
 
@@ -47,6 +47,24 @@
             width: 400px;
             height: auto;
             filter: blur(1px);
+        }
+
+        /* Watermark Text Brick Pattern */
+        .watermark-text {
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            pointer-events: none;
+            z-index: 1;
+            opacity: 0.05;
+            background-image: 
+                url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 280 40'%3E%3Ctext x='140' y='20' fill='black' font-size='10' font-weight='bold' font-family='sans-serif' text-anchor='middle' dominant-baseline='middle'%3ESD AL QUR'AN LANTABUR%3C/text%3E%3C/svg%3E"), 
+                url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 280 40'%3E%3Ctext x='140' y='20' fill='black' font-size='10' font-weight='bold' font-family='sans-serif' text-anchor='middle' dominant-baseline='middle'%3ESD AL QUR'AN LANTABUR%3C/text%3E%3C/svg%3E");
+            background-repeat: repeat, repeat;
+            background-size: 280px 40px, 280px 40px;
+            background-position: 0 0, 140px 20px;
         }
 
         /* Content wrapper */
@@ -59,8 +77,8 @@
         .praktik-header {
             position: relative;
             border-bottom: 4px double #000;
-            padding: 10px 0 15px 0;
-            margin-bottom: 20px;
+            padding: 5px 0 10px 0;
+            margin-bottom: 12px;
             display: grid;
             grid-template-columns: 100px 1fr;
             gap: 10px;
@@ -83,14 +101,14 @@
             font-weight: bold;
             text-transform: uppercase;
             letter-spacing: 0.5px;
-            margin: 0 0 5px 0;
-            line-height: 1.2;
+            margin: 0 0 2px 0;
+            line-height: 1.1;
         }
 
         .praktik-header h4 {
             font-size: 13pt;
             font-weight: bold;
-            margin: 2px 0;
+            margin: 1px 0;
             line-height: 1.2;
         }
 
@@ -101,7 +119,7 @@
         }
 
         .praktik-info td {
-            padding: 3px 0;
+            padding: 1px 0;
             font-size: 11pt;
         }
 
@@ -116,14 +134,14 @@
 
         /* Tabel Nilai */
         .praktik-nilai {
-            margin: 10px 0;
+            margin: 6px 0;
             font-size: 10pt;
             table-layout: fixed;
         }
 
         .praktik-nilai th, .praktik-nilai td {
             border: 1px solid #000;
-            padding: 8px 6px;
+            padding: 3px 5px;
             text-align: center;
         }
 
@@ -136,9 +154,9 @@
 
         .praktik-nilai td.deskripsi {
             text-align: left;
-            padding: 8px 8px;
-            font-size: 9pt;
-            line-height: 1.4;
+            padding: 4px 6px;
+            font-size: 8.5pt;
+            line-height: 1.2;
             word-wrap: break-word;
             overflow-wrap: break-word;
         }
@@ -150,13 +168,14 @@
 
         .praktik-title {
             font-weight: bold;
-            margin: 15px 0 5px 0;
+            margin: 10px 0 3px 0;
             text-transform: uppercase;
+            font-size: 11pt;
         }
 
         /* Signature Section */
         .praktik-sign {
-            margin-top: 35px;
+            margin-top: 20px;
             display: flex;
             justify-content: space-between;
             text-align: center;
@@ -168,7 +187,7 @@
         }
 
         .praktik-sign p {
-            margin: 3px 0;
+            margin: 2px 0;
         }
 
         .praktik-sign b {
@@ -183,7 +202,7 @@
 
             .praktik-container {
                 width: 100%;
-                min-height: auto;
+                min-height: 297mm;
                 padding: 0;
                 margin: 0;
                 box-shadow: none;
@@ -198,8 +217,8 @@
             }
 
             @page {
-                size: A4;
-                margin: 0;
+                size: A4 portrait;
+                margin: 0; /* Menghilangkan Header/Footer bawaan browser (Tanggal, URL, dll) */
             }
 
             .praktik-container {
@@ -219,7 +238,8 @@
 </head>
 <body>
 <div class="praktik-container">
-    <!-- WATERMARK LOGO -->
+    <!-- WATERMARK LOGO & TEXT -->
+    <div class="watermark-text"></div>
     <div class="watermark">
         <img src="{{ asset('images/logo.png') }}" alt="Logo Watermark">
     </div>
@@ -251,55 +271,30 @@
             </tr>
         </table>
 
-        <br>
-
-        {{-- PRAKTIK PAI --}}
-        <div class="praktik-title">PRAKTIK PAI</div>
-        <table class="praktik-nilai">
-            <thead>
-            <tr>
-                <th>Kategori</th>
-                <th>KKM</th>
-                <th>Nilai</th>
-                <th>Deskripsi</th>
-            </tr>
-            </thead>
-            <tbody>
-            @foreach ($praktik_pai as $item)
-            <tr>
-                <td>{{ $item['kategori'] }}</td>
-                <td>{{ $item['kkm'] ?? 75 }}</td>
-                <td>{{ $item['nilai'] ?? '-' }}</td>
-                <td class="deskripsi">{{ $item['deskripsi'] ?? '-' }}</td>
-            </tr>
-            @endforeach
-            </tbody>
-        </table>
-
-        <br>
-
-        {{-- PRAKTIK ADAB --}}
-        <div class="praktik-title">PRAKTIK ADAB</div>
-        <table class="praktik-nilai">
-            <thead>
-            <tr>
-                <th>Kategori</th>
-                <th>KKM</th>
-                <th>Nilai</th>
-                <th>Deskripsi</th>
-            </tr>
-            </thead>
-            <tbody>
-            @foreach ($praktik_adab as $item)
-            <tr>
-                <td>{{ $item['kategori'] }}</td>
-                <td>{{ $item['kkm'] ?? 75 }}</td>
-                <td>{{ $item['nilai'] ?? '-' }}</td>
-                <td class="deskripsi">{{ $item['deskripsi'] ?? '-' }}</td>
-            </tr>
-            @endforeach
-            </tbody>
-        </table>
+        @foreach ($praktik_groups as $section => $items)
+            <div class="praktik-title">PRAKTIK {{ strtoupper($section) }}</div>
+            <table class="praktik-nilai">
+                <thead>
+                <tr>
+                    <th>Kategori</th>
+                    <th>KKM</th>
+                    <th>Nilai</th>
+                    <th>Deskripsi</th>
+                </tr>
+                </thead>
+                <tbody>
+                @foreach ($items as $item)
+                <tr>
+                    <td>{{ $item['kategori'] }}</td>
+                    <td>{{ $item['kkm'] }}</td>
+                    <td>{{ $item['nilai'] }}</td>
+                    <td class="deskripsi">{{ $item['deskripsi'] }}</td>
+                </tr>
+                @endforeach
+                </tbody>
+            </table>
+            <br>
+        @endforeach
 
         <br><br>
 
@@ -314,13 +309,13 @@
             <div style="margin-top: 40px;">
                 <p>Kepala Sekolah</p>
                 <br><br><br>
-                <p><b>{{ strtoupper($kepala_sekolah) }}</b><br>NIY. {{ $niy_kepsek }}</p>
+                <p><b>{{ strtoupper($kepala_sekolah) }}</b><br>{{ $niy_kepsek }}</p>
             </div>
 
             <div>
                 <p>Pekanbaru, {{ $tanggal }}<br>Wali Kelas {{ $kelas }}</p>
                 <br><br>
-                <p><b>{{ strtoupper($wali_kelas) }}</b><br>{{ $niy_wali ? 'NIY. ' . $niy_wali : '' }}</p>
+                <p><b>{{ strtoupper($wali_kelas) }}</b><br>{{ $niy_wali ?? '' }}</p>
             </div>
         </div>
 

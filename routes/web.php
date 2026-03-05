@@ -79,6 +79,7 @@ Route::prefix('admin')->name('admin.')->group(function () {
         Route::get('raport/{id}/edit', [RaportController::class, 'edit'])->name('raport.edit');
         Route::put('raport/{id}', [RaportController::class, 'update'])->name('raport.update');
         Route::get('raport/cetak/kelas/{kelas}', [RaportController::class, 'cetak'])->name('raport.cetak');
+        Route::get('raport/cetak/semua-kelas/{kelas}', [RaportController::class, 'cetakSemuaKelas'])->name('raport.cetakSemuaKelas');
         Route::get('raport/cetak/siswa/{id}', [RaportController::class, 'cetakSiswa'])->name('raport.cetakSiswa');
         Route::get('raport/cetak/siswa-semua/{id}', [RaportController::class, 'cetakSemua'])->name('raport.cetakSemua');
         Route::get('raport/cetak/praktik/{id}', [RaportController::class, 'cetakPraktik'])->name('raport.cetakPraktik');
@@ -88,6 +89,7 @@ Route::prefix('admin')->name('admin.')->group(function () {
         Route::put('raport/jilid/{id}', [RaportController::class, 'jilidUpdate'])->name('raport.jilidUpdate');
         Route::get('raport/history/{id}', [RaportController::class, 'history'])->name('raport.history');
         Route::get('raport/praktik/{id}/edit', [RaportController::class, 'editPraktik'])->name('raport.editPraktik');
+        Route::get('raport/entry-praktik', [RaportController::class, 'ensureAndEditPraktik'])->name('raport.ensureAndEditPraktik');
         Route::put('raport/praktik/{id}', [RaportController::class, 'updatePraktik'])->name('raport.updatePraktik');
 
         // Route Raport Tahfidz Ummi
@@ -120,6 +122,7 @@ Route::prefix('admin')->name('admin.')->group(function () {
         Route::get('settings', [SettingsController::class, 'index'])->name('settings.index');
         Route::get('settings/accounts', [SettingsController::class, 'accounts'])->name('settings.accounts');
         Route::post('settings/accounts', [SettingsController::class, 'storeAccount'])->name('settings.accounts.store');
+        Route::post('settings/accounts/{id}/reset-password', [SettingsController::class, 'resetAccountPassword'])->name('settings.accounts.reset-password');
         Route::get('settings/accessibility', [SettingsController::class, 'accessibility'])->name('settings.accessibility');
         Route::post('settings/accessibility', [SettingsController::class, 'saveAccessibility'])->name('settings.accessibility.save');
         Route::put('settings/profile', [SettingsController::class, 'updateProfile'])->name('settings.profile');
@@ -131,7 +134,26 @@ Route::prefix('admin')->name('admin.')->group(function () {
         Route::put('mapel/{id}', [MapelController::class, 'update'])->name('mapel.update');
         Route::delete('mapel/{id}', [MapelController::class, 'destroy'])->name('mapel.destroy');
 
+        // Praktik CRUD
+        Route::get('mapel/praktik', [MapelController::class, 'indexPraktik'])->name('mapel.praktik');
+        Route::post('mapel/praktik', [MapelController::class, 'storePraktik'])->name('mapel.praktik.store');
+        Route::put('mapel/praktik/{id}', [MapelController::class, 'updatePraktik'])->name('mapel.praktik.update');
+        Route::delete('mapel/praktik/{id}', [MapelController::class, 'destroyPraktik'])->name('mapel.praktik.destroy');
+
+        // Jilid CRUD
+        Route::get('mapel/jilid', [MapelController::class, 'indexJilid'])->name('mapel.jilid');
+        Route::post('mapel/jilid', [MapelController::class, 'storeJilid'])->name('mapel.jilid.store');
+        Route::put('mapel/jilid/{id}', [MapelController::class, 'updateJilid'])->name('mapel.jilid.update');
+        Route::delete('mapel/jilid/{id}', [MapelController::class, 'destroyJilid'])->name('mapel.jilid.destroy');
+
+        // Tahfidz CRUD
+        Route::get('mapel/tahfidz', [MapelController::class, 'indexTahfidz'])->name('mapel.tahfidz');
+        Route::post('mapel/tahfidz', [MapelController::class, 'storeTahfidz'])->name('mapel.tahfidz.store');
+        Route::put('mapel/tahfidz/{id}', [MapelController::class, 'updateTahfidz'])->name('mapel.tahfidz.update');
+        Route::delete('mapel/tahfidz/{id}', [MapelController::class, 'destroyTahfidz'])->name('mapel.tahfidz.destroy');
+
         Route::post('settings/biaya-spp', [SettingsController::class, 'storeBiayaSpp'])->name('settings.biaya-spp.store');
+        Route::post('settings/wali-kelas', [SettingsController::class, 'storeWaliKelas'])->name('settings.wali-kelas.store');
 
         Route::get('video', [VideoController::class, 'index'])->name('video.index');
         Route::get('video/create', [VideoController::class, 'create'])->name('video.create');

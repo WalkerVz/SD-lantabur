@@ -17,7 +17,7 @@ class AppServiceProvider extends ServiceProvider
     {
         Paginator::useTailwind();
 
-        if (str_contains(request()->getHost(), 'ngrok-free.app')) {
+        if (config('app.env') === 'production' || str_contains(request()->getHost(), 'ngrok-free.app')) {
             URL::forceScheme('https');
         }
     }

@@ -36,6 +36,9 @@
                     <option value="Staff Administrasi" {{ old('jabatan', $item?->jabatan) == 'Staff Administrasi' ? 'selected' : '' }}>Staff Administrasi</option>
                     <option value="Staff TU" {{ old('jabatan', $item?->jabatan) == 'Staff TU' ? 'selected' : '' }}>Staff TU</option>
                 </select>
+                <p class="text-[11px] text-blue-600 mt-1 italic font-medium">
+                    * Jabatan hanya label profil. Penempatan resmi Wali Kelas diatur di menu <strong>Pengaturan</strong>.
+                </p>
                 <p id="err-jabatan" class="text-red-500 text-sm mt-1 hidden"></p>
             </div>
             <div>

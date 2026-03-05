@@ -97,13 +97,14 @@
             </div>
         </div>
 
-        <div class="flex gap-3">
-            <button type="submit" class="px-6 py-2.5 bg-blue-600 text-white rounded-lg hover:bg-blue-700 font-medium text-sm">
-                Simpan
+        <div class="mt-6 flex justify-end gap-3 pt-4 border-t border-gray-100">
+            <a href="{{ url()->previous() }}" class="px-6 py-2.5 bg-gray-100 text-gray-700 rounded-lg hover:bg-gray-200 font-bold transition-colors">Batal</a>
+            <button type="submit" class="px-8 py-2.5 bg-[#47663D] text-white rounded-lg hover:bg-[#5a7d52] font-bold shadow-lg shadow-[#47663D]/30 transition-all transform hover:-translate-y-0.5">
+                <span class="flex items-center gap-2">
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/></svg>
+                    Simpan Nilai
+                </span>
             </button>
-            <a href="{{ url()->previous() }}" class="px-6 py-2.5 bg-gray-100 text-gray-700 rounded-lg hover:bg-gray-200 font-medium text-sm">
-                Batal
-            </a>
         </div>
     </form>
 </div>
@@ -112,67 +113,36 @@
 <script>
 function tahfidzForm() {
     const existing = @json(old('materi', $item?->materi ?? []));
-    const defaultMateri = [
-        // Jilid 1
-        { jilid: '1', materi: 'An Naas', nilai: '', keterangan: '' },
-        { jilid: '1', materi: 'Al Falaq', nilai: '', keterangan: '' },
-        { jilid: '1', materi: 'Al Ikhlas', nilai: '', keterangan: '' },
-        { jilid: '1', materi: 'Al Lahab', nilai: '', keterangan: '' },
-        // Jilid 2
-        { jilid: '2', materi: 'An Nasr', nilai: '', keterangan: '' },
-        { jilid: '2', materi: 'Al Kafirun', nilai: '', keterangan: '' },
-        { jilid: '2', materi: 'Al Kautsar', nilai: '', keterangan: '' },
-        // Jilid 3
-        { jilid: '3', materi: 'Al Ma\'un', nilai: '', keterangan: '' },
-        { jilid: '3', materi: 'Al Quraisy', nilai: '', keterangan: '' },
-        { jilid: '3', materi: 'Al Fiil', nilai: '', keterangan: '' },
-        // Jilid 4
-        { jilid: '4', materi: 'Al Humazah', nilai: '', keterangan: '' },
-        { jilid: '4', materi: 'Al \'Asr', nilai: '', keterangan: '' },
-        { jilid: '4', materi: 'At Takatsur', nilai: '', keterangan: '' },
-        // Jilid 5
-        { jilid: '5', materi: 'Al Qori\'ah', nilai: '', keterangan: '' },
-        { jilid: '5', materi: 'Al \'Adiyat', nilai: '', keterangan: '' },
-        // Jilid 6
-        { jilid: '6', materi: 'Al Zalzalah', nilai: '', keterangan: '' },
-        { jilid: '6', materi: 'Al Bayyinah', nilai: '', keterangan: '' },
-        // Al Qur'an
-        { jilid: 'Al Qur\'an', materi: 'Al Qodr', nilai: '', keterangan: '' },
-        { jilid: 'Al Qur\'an', materi: 'Al \'Alaq', nilai: '', keterangan: '' },
-        // Ghorib 1
-        { jilid: 'Ghorib 1-14\n(Ghorib 1)', materi: 'At Tiin', nilai: '', keterangan: '' },
-        { jilid: 'Ghorib 1-14\n(Ghorib 1)', materi: 'Al Insyiroh', nilai: '', keterangan: '' },
-        { jilid: 'Ghorib 1-14\n(Ghorib 1)', materi: 'Adh Dhuha', nilai: '', keterangan: '' },
-        // Ghorib 2
-        { jilid: 'Ghorib 15-28\n(Ghorib 2)', materi: 'Al Lail', nilai: '', keterangan: '' },
-        { jilid: 'Ghorib 15-28\n(Ghorib 2)', materi: 'Asy Syams', nilai: '', keterangan: '' },
-        // Tajwid 1
-        { jilid: 'Ghorib-Tajwid\n(Tajwid 1)', materi: 'Al Balad', nilai: '', keterangan: '' },
-        { jilid: 'Ghorib-Tajwid\n(Tajwid 1)', materi: 'Al Fajr', nilai: '', keterangan: '' },
-        // Tajwid 2
-        { jilid: 'Ghorib-Tajwid\n(Tajwid 2)', materi: 'Al Ghosyiyah', nilai: '', keterangan: '' },
-        { jilid: 'Ghorib-Tajwid\n(Tajwid 2)', materi: 'Al A\'la', nilai: '', keterangan: '' },
-        // Pengembangan 1
-        { jilid: 'Pengembangan\n 1', materi: 'Ath Thoriq', nilai: '', keterangan: '' },
-        { jilid: 'Pengembangan\n 1', materi: 'Al Buruj', nilai: '', keterangan: '' },
-        { jilid: 'Pengembangan\n 1', materi: 'Al Insyiqoq', nilai: '', keterangan: '' },
-        { jilid: 'Pengembangan\n 1', materi: 'Al Mutoffifin', nilai: '', keterangan: '' },
-        { jilid: 'Pengembangan\n 1', materi: 'Al Infithor', nilai: '', keterangan: '' },
-        { jilid: 'Pengembangan\n 1', materi: 'At Takwir', nilai: '', keterangan: '' },
-        { jilid: 'Pengembangan\n 1', materi: 'Abasa', nilai: '', keterangan: '' },
-        { jilid: 'Pengembangan\n 1', materi: 'An Nazi\'at', nilai: '', keterangan: '' },
-        { jilid: 'Pengembangan\n 1', materi: 'An Naba\'', nilai: '', keterangan: '' },
-        // Pengembangan 2
-        { jilid: 'Pengembangan\n 2', materi: 'Pemeliharaan hafalan juz 30', nilai: '', keterangan: '' },
-        { jilid: 'Pengembangan\n 2', materi: 'Penambahan hafalan baru juz 29', nilai: '', keterangan: '' }
-    ];
+    const masterMateri = @json($masterMateriTahfidz);
+    
+    // Transform master materi to default format
+    const defaultMateri = masterMateri.map(m => ({
+        jilid: m.jilid,
+        materi: m.materi,
+        nilai: '',
+        keterangan: ''
+    }));
 
     return {
-        rows: existing.length > 0 
-            ? existing.map(r => ({ jilid: r.jilid ?? '', materi: r.materi ?? '', nilai: r.nilai ?? '', keterangan: r.keterangan ?? '' }))
-            : defaultMateri
+        rows: [],
+
+        init() {
+            if (existing.length > 0) {
+                // Merge master materi with existing values
+                this.rows = defaultMateri.map(dm => {
+                    const found = existing.find(ex => ex.materi === dm.materi && ex.jilid === dm.jilid);
+                    if (found) {
+                        return { ...dm, nilai: found.nilai || '', keterangan: found.keterangan || '' };
+                    }
+                    return dm;
+                });
+            } else {
+                this.rows = defaultMateri;
+            }
+        }
     };
 }
 </script>
 @endpush
 @endsection
+

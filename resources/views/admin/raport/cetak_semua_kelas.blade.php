@@ -2,7 +2,7 @@
 <html lang="id">
 <head>
     <meta charset="UTF-8">
-    <title>Cetak Semua Raport - {{ $siswa->nama }}</title>
+    <title>Cetak Semua Raport - Kelas {{ \App\Models\Siswa::getNamaKelas($kelas) }}</title>
     <style>
         body {
             font-family: 'Times New Roman', Times, serif;
@@ -62,7 +62,7 @@
 
     <div class="no-print">
         <button onclick="window.close()" class="btn-close">&larr; Tutup</button>
-        <button onclick="window.print()" class="btn-print">🖨 Cetak Semua Raport ({{ count($htmlPages) }} Halaman)</button>
+        <button onclick="window.print()" class="btn-print">🖨 Cetak Massal Kelas {{ \App\Models\Siswa::getNamaKelas($kelas) }} ({{ count($htmlPages) }} Halaman)</button>
     </div>
 
     @foreach($htmlPages as $idx => $html)

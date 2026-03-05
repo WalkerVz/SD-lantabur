@@ -7,7 +7,7 @@
     <h1 class="text-2xl font-bold text-gray-800 mb-2">Nilai Praktik</h1>
     <p class="mb-6 text-gray-600">Siswa: <strong>{{ $item->siswa->nama }}</strong> – Kelas {{ $item->kelas }}, {{ $item->semester }} {{ $item->tahun_ajaran }}</p>
 
-    <form action="{{ route('admin.raport.updatePraktik', $item->id) }}" method="POST" class="bg-white rounded-xl shadow border border-gray-100 p-6">
+    <form action="{{ route('admin.raport.updatePraktik', $item->id) }}" method="POST" id="raportForm" class="bg-white rounded-xl shadow border border-gray-100 p-6">
         @csrf
         @method('PUT')
 
@@ -43,10 +43,48 @@
             @endforeach
         </div>
 
-        <div class="mt-6 flex gap-3">
-            <button type="submit" class="px-6 py-2 bg-[#47663D] text-white rounded-lg hover:bg-[#5a7d52] font-medium">Simpan</button>
-            <a href="{{ route('admin.raport.byKelas', $item->kelas) }}?semester={{ $item->semester }}&tahun_ajaran={{ $item->tahun_ajaran }}" class="px-6 py-2 bg-gray-200 text-gray-700 rounded-lg hover:bg-gray-300 font-medium">Batal</a>
+        </div>
+
+        {{-- Action Buttons --}}
+        <div class="mt-8 pt-6 border-t border-gray-200 flex justify-end gap-3 flex-wrap">
+            <a href="{{ route('admin.raport.byKelas', $item->kelas) }}?semester={{ $item->semester }}&tahun_ajaran={{ $item->tahun_ajaran }}" class="px-6 py-2.5 bg-gray-100 text-gray-700 rounded-lg hover:bg-gray-200 font-bold transition-colors">Batal</a>
+            <button type="submit" class="px-8 py-2.5 bg-[#47663D] text-white rounded-lg hover:bg-[#5a7d52] font-bold shadow-lg shadow-[#47663D]/30 transition-all transform hover:-translate-y-0.5">
+                <span class="flex items-center gap-2">
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/></svg>
+                    Simpan Nilai
+                </span>
+            </button>
         </div>
     </form>
 </div>
+
+@push('scripts')
+<script>
+    let isDirty = false;
+
+    // Listen to all form inputs
+    document.querySelectorAll('#raportForm input, #raportForm textarea, #raportForm select').forEach(element => {
+        element.addEventListener('change', () => {
+            isDirty = true;
+        });
+        element.addEventListener('input', () => {
+            isDirty = true;
+        });
+    });
+
+    // Reset when actually submitting
+    document.getElementById('raportForm').addEventListener('submit', () => {
+        isDirty = false;
+    });
+
+    // Warn before leaving if dirty
+    window.addEventListener('beforeunload', (e) => {
+        if (isDirty) {
+            e.preventDefault();
+            e.returnValue = '';
+        }
+    });
+</script>
+@endpush
 @endsection
+

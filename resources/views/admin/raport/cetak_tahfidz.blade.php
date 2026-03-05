@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Laporan Pembelajaran Ummi - {{ $nama }}</title>
+    <title>Laporan Tahfidz - {{ $nama }}</title>
 @endif
 
     <style>
@@ -23,11 +23,48 @@
 
         .tahfidz-wrapper {
             max-width: 800px;
+            min-height: 297mm;
             margin: 30px auto;
             background: #fff;
             border: 1px solid #ccc;
             padding: 30px 40px;
             box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            position: relative;
+        }
+
+        /* Watermark Logo */
+        .watermark {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            opacity: 0.15;
+            z-index: 2;
+            pointer-events: none;
+        }
+
+        .watermark img {
+            width: 400px;
+            height: auto;
+            filter: blur(1px);
+        }
+
+        /* Watermark Text Brick Pattern */
+        .watermark-text {
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            pointer-events: none;
+            z-index: 1;
+            opacity: 0.05;
+            background-image: 
+                url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 280 40'%3E%3Ctext x='140' y='20' fill='black' font-size='10' font-weight='bold' font-family='sans-serif' text-anchor='middle' dominant-baseline='middle'%3ESD AL QUR'AN LANTABUR%3C/text%3E%3C/svg%3E"), 
+                url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 280 40'%3E%3Ctext x='140' y='20' fill='black' font-size='10' font-weight='bold' font-family='sans-serif' text-anchor='middle' dominant-baseline='middle'%3ESD AL QUR'AN LANTABUR%3C/text%3E%3C/svg%3E");
+            background-repeat: repeat, repeat;
+            background-size: 280px 40px, 280px 40px;
+            background-position: 0 0, 140px 20px;
         }
 
         /* ---- Header ---- */
@@ -36,12 +73,12 @@
             grid-template-columns: 90px 1fr 90px;
             align-items: center;
             gap: 10px;
-            border-bottom: 4px double #000;
-            padding-bottom: 4px;
-            margin-bottom: 8px;
+            border-bottom: 3px double #000;
+            padding-bottom: 2px;
+            margin-bottom: 6px;
         }
         .tahfidz-header-logo {
-            width: 80px;
+            width: 70px;
             height: auto;
             display: block;
         }
@@ -56,18 +93,18 @@
             font-weight: bold;
             text-transform: uppercase;
             letter-spacing: 0.5px;
-            margin: 0 0 2px 0;
+            margin: 0 0 1px 0;
             line-height: 1.1;
         }
         .tahfidz-header-text h4 {
             font-size: 12pt;
             font-weight: bold;
-            margin: 2px 0;
+            margin: 1px 0;
             line-height: 1.2;
         }
         .tahfidz-header-text p {
-            font-size: 10pt;
-            margin-top: 3px;
+            font-size: 9pt;
+            margin-top: 1px;
             font-weight: bold;
         }
 
@@ -75,13 +112,14 @@
         .tahfidz-identitas {
             width: 100%;
             border-collapse: collapse;
-            margin-bottom: 8px;
+            margin-bottom: 4px;
         }
         .tahfidz-identitas td {
             border: none;
-            padding: 2px 6px;
+            padding: 1px 6px;
             vertical-align: top;
             font-weight: bold;
+            font-size: 10pt;
         }
         .tahfidz-identitas td:first-child {
             width: 80px;
@@ -97,10 +135,10 @@
             color: #fff;
         }
         .tahfidz-tabel-nilai td, .tahfidz-tabel-nilai th {
-            padding: 2px 4px;
+            padding: 1px 4px;
             border: 1px solid #000;
             vertical-align: middle;
-            font-size: 10pt;
+            font-size: 9.5pt;
         }
         .tahfidz-tabel-nilai th {
             text-align: center;
@@ -117,12 +155,12 @@
         .tahfidz-tabel-legenda {
             width: 100%;
             border-collapse: collapse;
-            margin-top: 10px;
-            font-size: 10pt;
+            margin-top: 5px;
+            font-size: 9pt;
         }
         .tahfidz-tabel-legenda th, .tahfidz-tabel-legenda td {
             border: 1px solid #000;
-            padding: 2px 4px;
+            padding: 1px 4px;
             text-align: center;
         }
         .tahfidz-tabel-legenda thead tr {
@@ -132,7 +170,7 @@
 
         /* ---- Tanda Tangan ---- */
         .tahfidz-sign {
-            margin-top: 15px;
+            margin-top: 10px;
             display: flex;
             justify-content: space-between;
             text-align: center;
@@ -144,7 +182,7 @@
         }
 
         .tahfidz-sign p {
-            margin: 3px 0;
+            margin: 1px 0;
         }
 
         .tahfidz-sign b {
@@ -155,7 +193,7 @@
         @media print {
             @page {
                 size: A4 portrait;
-                margin: 5mm 15mm;
+                margin: 0;
             }
             body { 
                 background: #fff; 
@@ -163,8 +201,9 @@
             }
             .tahfidz-wrapper {
                 max-width: 100%;
-                margin: 0;
-                padding: 0;
+                min-height: 297mm;
+                margin: 0 auto;
+                padding: 10mm 15mm;
                 box-shadow: none;
                 border: none;
             }
@@ -191,6 +230,11 @@
     @endif
 
     <div class="tahfidz-wrapper">
+        <!-- WATERMARK LOGO & TEXT -->
+        <div class="watermark-text"></div>
+        <div class="watermark">
+            <img src="{{ asset('images/logo.png') }}" alt="Logo Watermark">
+        </div>
 
         <!-- HEADER -->
         <div class="tahfidz-header">
@@ -218,8 +262,10 @@
         </table>
 
         @php
-            function getVal($materi, $idx) {
-                return $materi[$idx]['nilai'] ?? '';
+            if (!function_exists('getVal')) {
+                function getVal($materi, $idx) {
+                    return $materi[$idx]['nilai'] ?? '';
+                }
             }
         @endphp
 
@@ -339,7 +385,7 @@
             <div>
                 <p>Mengetahui,<br>Kepala SD Al Qur'an Lantabur</p>
                 <br><br>
-                <p><b>{{ $kepala_sekolah ?? 'KASMIDAR, S.PD' }}</b><br>{{ $niy_kepsek ?? 'NIY. 2403001' }}</p>
+                <p><b>{{ $kepala_sekolah ?? 'KASMIDAR, S.PD' }}</b><br>{{ $niy_kepsek ?? '2403001' }}</p>
             </div>
 
             <div style="margin-top: 30px;">
@@ -351,7 +397,7 @@
             <div>
                 <p>Pekanbaru, {{ $tanggal }}<br>Guru Tahfidz Al Qur'an</p>
                 <br><br>
-                <p><b>{{ strtoupper($guru) }}</b></p>
+                <p><b>{{ strtoupper($guru) }}</b><br>{{ $niy_guru ?? '' }}</p>
             </div>
         </div>
 

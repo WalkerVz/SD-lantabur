@@ -7,6 +7,8 @@ use App\Models\BiayaSpp;
 use App\Models\FeatureAccess;
 use App\Models\MasterTahunAjaran;
 use App\Models\MasterMapel;
+use App\Models\TahunKelas;
+use App\Models\StaffSdm;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -24,7 +26,11 @@ class SettingsController extends Controller
         // Ambil data Biaya SPP (Fitur Teman)
         $biayaSpp = BiayaSpp::all()->keyBy(fn ($r) => $r->tahun_ajaran . '-' . $r->kelas);
 
-        return view('admin.settings.index', compact('tahunAjaranList', 'tahunAktif', 'biayaSpp'));
+        // Ambil data Wali Kelas per tahun (TahunKelas)
+        $waliKelasTahun = TahunKelas::with('waliKelas')->get()->keyBy(fn ($r) => $r->tahun_ajaran . '-' . $r->kelas);
+        $staffList = StaffSdm::orderBy('nama')->get();
+
+        return view('admin.settings.index', compact('tahunAjaranList', 'tahunAktif', 'biayaSpp', 'waliKelasTahun', 'staffList'));
     }
 
     public function accounts()
@@ -56,6 +62,20 @@ class SettingsController extends Controller
         ]);
 
         return redirect()->route('admin.settings.accounts')->with('success', 'Akun baru berhasil dibuat.');
+    }
+
+    public function resetAccountPassword(Request $request, $id)
+    {
+        $request->validate([
+            'reset_password' => ['required', 'confirmed', \Illuminate\Validation\Rules\Password::defaults()],
+        ]);
+
+        $user = User::findOrFail($id);
+        $user->update([
+            'password' => Hash::make($request->reset_password),
+        ]);
+
+        return redirect()->route('admin.settings.accounts')->with('success', 'Password akun ' . $user->name . ' berhasil direset.');
     }
 
     public function accessibility()
@@ -194,6 +214,22 @@ class SettingsController extends Controller
         session()->forget('selected_tahun_ajaran');
 
         return back()->with('success', 'Tahun ajaran aktif berhasil diubah.');
+    }
+
+    public function storeWaliKelas(Request $request)
+    {
+        $request->validate([
+            'tahun_ajaran' => 'required|string|max:20',
+            'kelas' => 'required|integer|in:1,2,3,4,5,6',
+            'wali_kelas_id' => 'nullable|exists:staff_sdm,id',
+        ]);
+
+        TahunKelas::updateOrCreate(
+            ['tahun_ajaran' => $request->tahun_ajaran, 'kelas' => $request->kelas],
+            ['wali_kelas_id' => $request->wali_kelas_id]
+        );
+
+        return back()->with('success', 'Wali kelas berhasil disimpan untuk tahun ajaran ' . $request->tahun_ajaran . '.');
     }
 }
 
