@@ -64,6 +64,20 @@ class SettingsController extends Controller
         return redirect()->route('admin.settings.accounts')->with('success', 'Akun baru berhasil dibuat.');
     }
 
+    public function resetAccountPassword(Request $request, $id)
+    {
+        $request->validate([
+            'reset_password' => ['required', 'confirmed', \Illuminate\Validation\Rules\Password::defaults()],
+        ]);
+
+        $user = User::findOrFail($id);
+        $user->update([
+            'password' => Hash::make($request->reset_password),
+        ]);
+
+        return redirect()->route('admin.settings.accounts')->with('success', 'Password akun ' . $user->name . ' berhasil direset.');
+    }
+
     public function accessibility()
     {
         $roles = [

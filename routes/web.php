@@ -122,6 +122,7 @@ Route::prefix('admin')->name('admin.')->group(function () {
         Route::get('settings', [SettingsController::class, 'index'])->name('settings.index');
         Route::get('settings/accounts', [SettingsController::class, 'accounts'])->name('settings.accounts');
         Route::post('settings/accounts', [SettingsController::class, 'storeAccount'])->name('settings.accounts.store');
+        Route::post('settings/accounts/{id}/reset-password', [SettingsController::class, 'resetAccountPassword'])->name('settings.accounts.reset-password');
         Route::get('settings/accessibility', [SettingsController::class, 'accessibility'])->name('settings.accessibility');
         Route::post('settings/accessibility', [SettingsController::class, 'saveAccessibility'])->name('settings.accessibility.save');
         Route::put('settings/profile', [SettingsController::class, 'updateProfile'])->name('settings.profile');

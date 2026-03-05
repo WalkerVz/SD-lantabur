@@ -4,8 +4,11 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Login Admin - SD Al-Qur'an Lantabur</title>
+    <link rel="icon" type="image/png" href="{{ asset('images/logo.png') }}">
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
     <script src="https://cdn.tailwindcss.com"></script>
+    <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
     <style>
         body { font-family: 'Poppins', sans-serif; }
         .bg-pattern { background-image: url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%2347663D' fill-opacity='0.06'%3E%3Cpath d='M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v2h2V6h4V4H6z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E"); }
@@ -33,11 +36,16 @@
                             class="w-full px-4 py-3 rounded-lg border border-gray-300 focus:ring-2 focus:ring-[#47663D] focus:border-[#47663D] transition"
                             placeholder="Masukkan username">
                     </div>
-                    <div>
+                    <div x-data="{ showPassword: false }">
                         <label for="password" class="block text-sm font-medium text-gray-700 mb-2">Password</label>
-                        <input type="password" name="password" id="password" required
-                            class="w-full px-4 py-3 rounded-lg border border-gray-300 focus:ring-2 focus:ring-[#47663D] focus:border-[#47663D] transition"
-                            placeholder="Masukkan password">
+                        <div class="relative">
+                            <input :type="showPassword ? 'text' : 'password'" name="password" id="password" required
+                                class="w-full px-4 py-3 pr-10 rounded-lg border border-gray-300 focus:ring-2 focus:ring-[#47663D] focus:border-[#47663D] transition"
+                                placeholder="Masukkan password">
+                            <button type="button" @click="showPassword = !showPassword" class="absolute right-3 top-1/2 -translate-y-1/2 text-gray-500 hover:text-[#47663D]">
+                                <i :class="showPassword ? 'fa-solid fa-eye-slash' : 'fa-solid fa-eye'"></i>
+                            </button>
+                        </div>
                     </div>
                     <div class="flex items-center">
                         <input type="checkbox" name="remember" id="remember" class="rounded border-gray-300 text-[#47663D] focus:ring-[#47663D]">

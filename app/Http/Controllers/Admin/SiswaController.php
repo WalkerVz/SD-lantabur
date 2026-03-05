@@ -96,7 +96,7 @@ class SiswaController extends Controller
             ->get()
             ->pluck('siswa')
             ->filter()
-            ->sortBy('nama')
+            ->sortBy(fn ($s) => strtolower($s->nama ?? ''))
             ->values();
         return response()->json(['siswa' => $siswa]);
     }
@@ -126,8 +126,12 @@ class SiswaController extends Controller
             'tanggal_lahir' => 'nullable|date',
             'alamat' => 'nullable|string',
             'agama' => 'nullable|string|max:30',
-            'foto' => 'nullable|image|max:2048',
+            'foto' => 'nullable|image|mimes:jpg,jpeg,png,webp|max:5120',
             'tahun_ajaran' => 'required|string|max:20',
+            'spp' => 'nullable|integer|min:0',
+            'biaya_seragam' => 'nullable|integer|min:0',
+            'biaya_sarana_prasarana' => 'nullable|integer|min:0',
+            'biaya_kegiatan_tahunan' => 'nullable|integer|min:0',
             'nama_ayah' => 'nullable|string|max:255',
             'nama_ibu' => 'nullable|string|max:255',
             'pekerjaan_ayah' => 'nullable|string|max:100',
@@ -137,10 +141,17 @@ class SiswaController extends Controller
             'status' => 'nullable|string|max:50',
         ]);
 
-        $data = $request->only(['nama', 'nis', 'nisn', 'jenis_kelamin', 'tempat_lahir', 'tanggal_lahir', 'alamat', 'agama']);
+        $data = $request->only(['nama', 'nis', 'nisn', 'jenis_kelamin', 'tempat_lahir', 'tanggal_lahir', 'alamat', 'agama', 'spp', 'biaya_seragam', 'biaya_sarana_prasarana', 'biaya_kegiatan_tahunan']);
         $data['kelas'] = $request->kelas;
-        if ($request->hasFile('foto')) {
-            $data['foto'] = $request->file('foto')->store('siswa', 'public');
+        // Pastikan biaya tidak null
+        foreach (['spp','biaya_seragam','biaya_sarana_prasarana','biaya_kegiatan_tahunan'] as $col) {
+            if (empty($data[$col])) $data[$col] = 0;
+        }
+        if ($request->hasFile('foto') && $request->file('foto')->isValid()) {
+            $fotoPath = $request->file('foto')->store('siswa', 'public');
+            if ($fotoPath) {
+                $data['foto'] = $fotoPath;
+            }
         }
 
         try {
@@ -169,6 +180,9 @@ class SiswaController extends Controller
             if (isset($data['foto'])) {
                 Storage::disk('public')->delete($data['foto']);
             }
+            if ($request->wantsJson()) {
+                return response()->json(['success' => false, 'message' => 'Gagal menyimpan: ' . $e->getMessage()], 500);
+            }
             return back()->with('error', 'Gagal menyimpan data siswa: ' . $e->getMessage())->withInput();
         }
     }
@@ -195,8 +209,9 @@ class SiswaController extends Controller
             'tanggal_lahir' => 'nullable|date',
             'alamat' => 'nullable|string',
             'agama' => 'nullable|string|max:30',
-            'foto' => 'nullable|image|max:2048',
+            'foto' => 'nullable|image|mimes:jpg,jpeg,png,webp|max:5120',
             'tahun_ajaran' => 'nullable|string|max:20',
+            'spp' => 'nullable|integer|min:0',
             'nama_ayah' => 'nullable|string|max:255',
             'nama_ibu' => 'nullable|string|max:255',
             'pekerjaan_ayah' => 'nullable|string|max:100',
@@ -206,14 +221,21 @@ class SiswaController extends Controller
             'status' => 'nullable|string|max:50',
         ]);
 
-        $data = $request->only(['nama', 'nis', 'nisn', 'jenis_kelamin', 'tempat_lahir', 'tanggal_lahir', 'alamat', 'agama']);
+        $data = $request->only(['nama', 'nis', 'nisn', 'jenis_kelamin', 'tempat_lahir', 'tanggal_lahir', 'alamat', 'agama', 'spp', 'biaya_seragam', 'biaya_sarana_prasarana', 'biaya_kegiatan_tahunan']);
         $data['kelas'] = $request->kelas;
+        // Pastikan biaya tidak null
+        foreach (['spp','biaya_seragam','biaya_sarana_prasarana','biaya_kegiatan_tahunan'] as $col) {
+            if (empty($data[$col])) $data[$col] = 0;
+        }
         $oldFoto = null;
-        if ($request->hasFile('foto')) {
+        if ($request->hasFile('foto') && $request->file('foto')->isValid()) {
             if ($item->foto) {
                 $oldFoto = $item->foto;
             }
-            $data['foto'] = $request->file('foto')->store('siswa', 'public');
+            $fotoPath = $request->file('foto')->store('siswa', 'public');
+            if ($fotoPath) {
+                $data['foto'] = $fotoPath;
+            }
         }
 
         try {
@@ -274,10 +296,10 @@ class SiswaController extends Controller
                 $enrollments = $query->get();
                 $rows = $enrollments->map(fn ($e) => (object) ['siswa' => $e->siswa, 'kelas' => $e->kelas])
                     ->filter(fn ($r) => $r->siswa !== null)
-                    ->sortBy(fn ($r) => $r->siswa->nama ?? '')
+                    ->sortBy(fn ($r) => sprintf('%02d_%s', (int)$r->kelas, strtolower($r->siswa->nama ?? '')))
                     ->values();
             } else {
-                $query = Siswa::query()->orderBy('nama');
+                $query = Siswa::query()->orderBy('kelas')->orderBy('nama');
                 if ($kelas) {
                     $query->where('kelas', $kelas);
                 }
@@ -313,7 +335,7 @@ class SiswaController extends Controller
                 ->get()
                 ->pluck('siswa')
                 ->filter()
-                ->sortBy('nama')
+                ->sortBy(fn ($s) => strtolower($s->nama ?? ''))
                 ->values();
         }
 
@@ -370,7 +392,7 @@ class SiswaController extends Controller
             ->get()
             ->pluck('siswa')
             ->filter()
-            ->sortBy('nama')
+            ->sortBy(fn ($s) => strtolower($s->nama ?? ''))
             ->values();
 
         $nama_kelas = Siswa::getNamaKelas($kelas);

@@ -59,37 +59,44 @@
                 </thead>
                 <tbody>
                     @forelse($staff as $idx => $s)
-                    <tr class="border-b border-gray-100 hover:bg-gray-50">
+                    <tr class="border-b border-gray-100 hover:bg-green-50/40 transition-colors">
                         <td class="px-4 py-3 text-gray-600">{{ $idx + 1 }}</td>
                         <td class="px-4 py-3">
                             <div class="flex items-center gap-3">
                                 @if($s->foto)
-                                    <img src="{{ asset('storage/'.$s->foto) }}" alt="" class="w-10 h-10 rounded-full object-cover">
+                                    <img src="{{ asset('storage/'.$s->foto) }}" alt="" class="w-10 h-10 rounded-full object-cover ring-2 ring-[#47663D]/20">
                                 @else
-                                    <div class="w-10 h-10 rounded-full bg-[#47663D]/20 flex items-center justify-center text-[#47663D] font-semibold">{{ strtoupper(substr($s->nama, 0, 1)) }}</div>
+                                    <div class="w-10 h-10 rounded-full bg-gradient-to-br from-[#47663D] to-[#6a9e5e] flex items-center justify-center text-white font-semibold text-sm shadow-sm">{{ strtoupper(substr($s->nama, 0, 1)) }}</div>
                                 @endif
-                                <span class="font-medium text-gray-800">{{ $s->nama }}</span>
+                                <button type="button"
+                                    @click="openDetailModal({{ $s->id }}, {{ json_encode([
+                                        'id' => $s->id,
+                                        'nama' => $s->nama,
+                                        'jabatan' => $s->jabatan,
+                                        'niy' => $s->niy,
+                                        'email' => $s->email,
+                                        'nomor_handphone' => $s->nomor_handphone,
+                                        'spesialisasi' => $s->spesialisasi?->nama,
+                                        'jenis_kelamin' => $s->jenis_kelamin,
+                                        'tempat_lahir' => $s->tempat_lahir,
+                                        'tanggal_lahir' => $s->tanggal_lahir?->format('d/m/Y'),
+                                        'alamat' => $s->alamat,
+                                        'agama' => $s->agama,
+                                        'foto' => $s->foto ? asset('storage/'.$s->foto) : null,
+                                    ]) }})"
+                                    class="font-semibold text-[#47663D] hover:text-[#5a7d52] hover:underline underline-offset-2 text-left transition-colors cursor-pointer">
+                                    {{ $s->nama }}
+                                </button>
                             </div>
                         </td>
-                        <td class="px-4 py-3">
-                            <div class="text-sm text-gray-900 font-medium">{{ $s->jabatan }}</div>
-                            @php
-                                $activeAssignment = $s->tahunKelas->first();
-                            @endphp
-                            @if($activeAssignment)
-                                <div class="inline-flex items-center gap-1.5 px-2 py-0.5 rounded-md bg-blue-50 text-blue-700 text-[10px] uppercase font-bold mt-1 border border-blue-100">
-                                    <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4"/></svg>
-                                    Wali Kelas {{ $activeAssignment->kelas }}
-                                </div>
-                            @endif
-                        </td>
+                        <td class="px-4 py-3 text-gray-700 text-sm">{{ $s->jabatan }}</td>
                         <td class="px-4 py-3 text-gray-600">{{ $s->niy ?? '-' }}</td>
                         <td class="px-4 py-3 text-gray-600">{{ $s->spesialisasi?->nama ?? '-' }}</td>
-                        <td class="px-4 py-3 text-gray-600">{{ $s->email ?? '-' }}</td>
+                        <td class="px-4 py-3 text-gray-600 text-sm">{{ $s->email ?? '-' }}</td>
                         <td class="px-4 py-3 text-gray-600">{{ $s->nomor_handphone ?? '-' }}</td>
-                        <td class="px-4 py-3">
-                            <button type="button" @click="openFormModal({{ $s->id }})" class="inline-block px-3 py-1.5 bg-blue-500 text-white rounded text-sm hover:bg-blue-600">Edit</button>
-                            <button type="button" @click="confirmDelete({{ $s->id }}, '{{ addslashes($s->nama) }}')" class="inline-block px-3 py-1.5 bg-red-500 text-white rounded text-sm hover:bg-red-600">Hapus</button>
+                        <td class="px-4 py-3 flex gap-1.5">
+                            <button type="button" @click="openFormModal({{ $s->id }})" class="inline-flex items-center px-3 py-1.5 bg-blue-500 text-white rounded-lg text-sm hover:bg-blue-600 transition font-medium">Edit</button>
+                            <button type="button" @click="confirmDelete({{ $s->id }}, '{{ addslashes($s->nama) }}')" class="inline-flex items-center px-3 py-1.5 bg-red-500 text-white rounded-lg text-sm hover:bg-red-600 transition font-medium">Hapus</button>
                         </td>
                     </tr>
                     @empty
@@ -97,6 +104,117 @@
                     @endforelse
                 </tbody>
             </table>
+        </div>
+    </div>
+
+    {{-- Modal Detail SDM --}}
+    <div x-show="detailModalOpen" x-cloak class="fixed inset-0 z-[80] overflow-y-auto" role="dialog" aria-modal="true">
+        <div class="flex min-h-screen items-center justify-center p-4">
+            <div x-show="detailModalOpen" x-transition:enter="ease-out duration-300" x-transition:enter-start="opacity-0" x-transition:enter-end="opacity-100" x-transition:leave="ease-in duration-200" x-transition:leave-start="opacity-100" x-transition:leave-end="opacity-0" class="fixed inset-0 bg-gray-900/60 backdrop-blur-sm" @click="detailModalOpen = false"></div>
+            <div x-show="detailModalOpen" x-transition:enter="ease-out duration-300" x-transition:enter-start="opacity-0 scale-95" x-transition:enter-end="opacity-100 scale-100" x-transition:leave="ease-in duration-200" x-transition:leave-start="opacity-100 scale-100" x-transition:leave-end="opacity-0 scale-95" class="relative bg-white rounded-2xl shadow-2xl max-w-lg w-full overflow-hidden">
+                {{-- Header dengan gradient --}}
+                <div class="bg-gradient-to-r from-[#47663D] to-[#6a9e5e] p-6 relative">
+                    <button type="button" @click="detailModalOpen = false" class="absolute top-4 right-4 p-1.5 rounded-lg bg-white/20 hover:bg-white/30 text-white transition">
+                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/></svg>
+                    </button>
+                    <div class="flex items-center gap-4">
+                        <template x-if="detailData.foto">
+                            <img :src="detailData.foto" alt="" class="w-20 h-20 rounded-full object-cover ring-4 ring-white/40 shadow-lg">
+                        </template>
+                        <template x-if="!detailData.foto">
+                            <div class="w-20 h-20 rounded-full bg-white/20 flex items-center justify-center text-white font-bold text-3xl ring-4 ring-white/40 shadow-lg" x-text="detailData.nama ? detailData.nama.charAt(0).toUpperCase() : '?'"></div>
+                        </template>
+                        <div>
+                            <h2 class="text-xl font-bold text-white leading-tight" x-text="detailData.nama"></h2>
+                            <p class="text-green-100 mt-1 text-sm font-medium" x-text="detailData.jabatan"></p>
+                            <template x-if="detailData.spesialisasi">
+                                <span class="inline-block mt-2 px-2.5 py-0.5 bg-white/20 text-white text-xs rounded-full" x-text="detailData.spesialisasi"></span>
+                            </template>
+                        </div>
+                    </div>
+                </div>
+
+                {{-- Body detail --}}
+                <div class="p-6">
+                    <h3 class="text-xs font-semibold text-gray-400 uppercase tracking-wider mb-4">Identitas Lengkap</h3>
+                    <div class="space-y-3">
+                        <div class="flex items-start gap-3">
+                            <div class="w-8 h-8 rounded-lg bg-[#47663D]/10 flex items-center justify-center flex-shrink-0">
+                                <svg class="w-4 h-4 text-[#47663D]" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H5a2 2 0 00-2 2v9a2 2 0 002 2h14a2 2 0 002-2V8a2 2 0 00-2-2h-5m-4 0V5a2 2 0 114 0v1m-4 0a2 2 0 104 0m-5 8a2 2 0 100-4 2 2 0 000 4zm0 0c1.306 0 2.417.835 2.83 2M9 14a3.001 3.001 0 00-2.83 2M15 11h3m-3 4h2"/></svg>
+                            </div>
+                            <div class="flex-1 min-w-0">
+                                <p class="text-xs text-gray-500">NIY</p>
+                                <p class="text-sm font-medium text-gray-800" x-text="detailData.niy || '-'"></p>
+                            </div>
+                        </div>
+                        <div class="flex items-start gap-3">
+                            <div class="w-8 h-8 rounded-lg bg-blue-50 flex items-center justify-center flex-shrink-0">
+                                <svg class="w-4 h-4 text-blue-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"/></svg>
+                            </div>
+                            <div class="flex-1 min-w-0">
+                                <p class="text-xs text-gray-500">Jenis Kelamin</p>
+                                <p class="text-sm font-medium text-gray-800" x-text="detailData.jenis_kelamin || '-'"></p>
+                            </div>
+                        </div>
+                        <div class="flex items-start gap-3">
+                            <div class="w-8 h-8 rounded-lg bg-purple-50 flex items-center justify-center flex-shrink-0">
+                                <svg class="w-4 h-4 text-purple-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"/></svg>
+                            </div>
+                            <div class="flex-1 min-w-0">
+                                <p class="text-xs text-gray-500">Tempat / Tanggal Lahir</p>
+                                <p class="text-sm font-medium text-gray-800">
+                                    <span x-text="(detailData.tempat_lahir || '') + (detailData.tempat_lahir && detailData.tanggal_lahir ? ', ' : '') + (detailData.tanggal_lahir || '') || '-'"></span>
+                                </p>
+                            </div>
+                        </div>
+                        <div class="flex items-start gap-3">
+                            <div class="w-8 h-8 rounded-lg bg-amber-50 flex items-center justify-center flex-shrink-0">
+                                <svg class="w-4 h-4 text-amber-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"/></svg>
+                            </div>
+                            <div class="flex-1 min-w-0">
+                                <p class="text-xs text-gray-500">Email</p>
+                                <p class="text-sm font-medium text-gray-800 break-all" x-text="detailData.email || '-'"></p>
+                            </div>
+                        </div>
+                        <div class="flex items-start gap-3">
+                            <div class="w-8 h-8 rounded-lg bg-green-50 flex items-center justify-center flex-shrink-0">
+                                <svg class="w-4 h-4 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z"/></svg>
+                            </div>
+                            <div class="flex-1 min-w-0">
+                                <p class="text-xs text-gray-500">No. HP</p>
+                                <p class="text-sm font-medium text-gray-800" x-text="detailData.nomor_handphone || '-'"></p>
+                            </div>
+                        </div>
+                        <div class="flex items-start gap-3">
+                            <div class="w-8 h-8 rounded-lg bg-orange-50 flex items-center justify-center flex-shrink-0">
+                                <svg class="w-4 h-4 text-orange-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"/></svg>
+                            </div>
+                            <div class="flex-1 min-w-0">
+                                <p class="text-xs text-gray-500">Alamat</p>
+                                <p class="text-sm font-medium text-gray-800" x-text="detailData.alamat || '-'"></p>
+                            </div>
+                        </div>
+                        <div class="flex items-start gap-3">
+                            <div class="w-8 h-8 rounded-lg bg-teal-50 flex items-center justify-center flex-shrink-0">
+                                <svg class="w-4 h-4 text-teal-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"/></svg>
+                            </div>
+                            <div class="flex-1 min-w-0">
+                                <p class="text-xs text-gray-500">Agama</p>
+                                <p class="text-sm font-medium text-gray-800" x-text="detailData.agama || '-'"></p>
+                            </div>
+                        </div>
+                    </div>
+
+                    {{-- Tombol aksi --}}
+                    <div class="mt-6 flex gap-3 border-t border-gray-100 pt-5">
+                        <button type="button" @click="detailModalOpen = false; openFormModal(detailData.id)" class="flex-1 px-4 py-2.5 bg-[#47663D] text-white rounded-xl hover:bg-[#5a7d52] text-sm font-semibold transition flex items-center justify-center gap-2">
+                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"/></svg>
+                            Edit Data
+                        </button>
+                        <button type="button" @click="detailModalOpen = false" class="px-4 py-2.5 bg-gray-100 text-gray-700 rounded-xl hover:bg-gray-200 text-sm font-semibold transition">Tutup</button>
+                    </div>
+                </div>
+            </div>
         </div>
     </div>
 
@@ -159,6 +277,13 @@ function sdmPage() {
         deleteConfirmOpen: false,
         deleteConfirmId: null,
         deleteConfirmNama: '',
+        detailModalOpen: false,
+        detailData: {},
+
+        openDetailModal(id, data) {
+            this.detailData = data;
+            this.detailModalOpen = true;
+        },
 
         openFormModal(id) {
             this.formModalEditId = id || null;
