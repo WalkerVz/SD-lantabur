@@ -17,7 +17,22 @@ class SdmController extends Controller
         if ($request->filled('spesialisasi_id')) {
             $query->where('spesialisasi_id', $request->spesialisasi_id);
         }
-        $staff = $query->orderBy('nama')->get();
+        $allStaff = $query->get();
+
+        // Sort berdasarkan prioritas jabatan: Kepala Sekolah → Wakil → lainnya (abjad)
+        $jabatanPriority = function ($jabatan) {
+            $jabatan = strtolower($jabatan ?? '');
+            if (str_contains($jabatan, 'kepala sekolah') && !str_contains($jabatan, 'wakil')) return 0;
+            if (str_contains($jabatan, 'wakil kepala') || str_contains($jabatan, 'wakil')) return 1;
+            if (str_contains($jabatan, 'wali kelas')) return 2;
+            return 3;
+        };
+
+        $staff = $allStaff->sortBy([
+            fn ($s) => $jabatanPriority($s->jabatan),
+            fn ($s) => $s->nama,
+        ])->values();
+
         $spesialisasi = Spesialisasi::orderBy('nama')->get();
         $totalAll = StaffSdm::count();
         $countBySpesialisasi = StaffSdm::selectRaw('spesialisasi_id, count(*) as total')
@@ -132,11 +147,26 @@ class SdmController extends Controller
     public function exportPdf(Request $request)
     {
         try {
-            $query = StaffSdm::with('spesialisasi')->orderBy('nama');
+            $query = StaffSdm::with('spesialisasi');
             if ($request->filled('spesialisasi_id')) {
                 $query->where('spesialisasi_id', $request->spesialisasi_id);
             }
-            $rows = $query->get();
+            $allStaff = $query->get();
+
+            // Sort berdasarkan prioritas jabatan sama seperti di halaman web
+            $jabatanPriority = function ($jabatan) {
+                $jabatan = strtolower($jabatan ?? '');
+                if (str_contains($jabatan, 'kepala sekolah') && !str_contains($jabatan, 'wakil')) return 0;
+                if (str_contains($jabatan, 'wakil kepala') || str_contains($jabatan, 'wakil')) return 1;
+                if (str_contains($jabatan, 'wali kelas')) return 2;
+                return 3;
+            };
+
+            $rows = $allStaff->sortBy([
+                fn ($s) => $jabatanPriority($s->jabatan),
+                fn ($s) => strtolower($s->nama ?? ''),
+            ])->values();
+
             $pdf = Pdf::loadView('admin.export.sdm-pdf', compact('rows'));
             return $pdf->download('data_sdm_' . date('Y-m-d_His') . '.pdf');
         } catch (\Throwable $e) {

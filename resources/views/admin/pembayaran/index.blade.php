@@ -61,6 +61,38 @@
             </div>
         </div>
 
+        {{-- Ringkasan Tagihan --}}
+        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
+            @foreach($ringkasan_tagihan as $jenis => $rt)
+            @if(in_array($jenis, ['seragam', 'sarana_prasarana']))
+            <div class="bg-white rounded-xl shadow border border-gray-100 p-4">
+                <div class="flex items-center justify-between mb-2">
+                    <h4 class="text-sm font-bold text-gray-800">{{ $rt['label'] }}</h4>
+                    @if($rt['lunas'])
+                        <span class="px-2 py-0.5 rounded-full bg-green-100 text-green-700 text-xs font-semibold">Lunas</span>
+                    @else
+                        <span class="px-2 py-0.5 rounded-full bg-amber-100 text-amber-700 text-xs font-semibold">Belum Lunas</span>
+                    @endif
+                </div>
+                <div class="space-y-1 text-sm">
+                    <div class="flex justify-between text-gray-500">
+                        <span>Total:</span>
+                        <span class="font-medium text-gray-900">Rp {{ number_format($rt['total_tagihan'], 0, ',', '.') }}</span>
+                    </div>
+                    <div class="flex justify-between text-gray-500">
+                        <span>Terbayar:</span>
+                        <span class="font-medium text-[#47663D]">Rp {{ number_format($rt['total_terbayar'], 0, ',', '.') }}</span>
+                    </div>
+                    <div class="flex justify-between border-t border-gray-100 pt-1 mt-1">
+                        <span class="font-medium text-gray-700">Sisa:</span>
+                        <span class="font-bold text-red-600">Rp {{ number_format($rt['sisa_tagihan'], 0, ',', '.') }}</span>
+                    </div>
+                </div>
+            </div>
+            @endif
+            @endforeach
+        </div>
+
         {{-- Riwayat Pembayaran --}}
         <div class="bg-white rounded-xl shadow border border-gray-100 overflow-hidden">
             <h3 class="px-4 py-3 bg-gray-50 border-b border-gray-200 font-semibold text-gray-800">Riwayat Pembayaran</h3>
@@ -80,7 +112,28 @@
                     </thead>
                     <tbody>
                         @forelse($riwayat as $idx => $r)
-                        <tr class="border-b border-gray-100 hover:bg-gray-50">
+                        @php
+                            if ($r->jenis_pembayaran === 'spp') {
+                                $tagihanSpesifik = $biaya_per_jenis['spp'] ?? 0;
+                                $terbayarSpesifik = $riwayat->where('jenis_pembayaran', 'spp')
+                                                           ->where('bulan', $r->bulan)
+                                                           ->where('tahun', $r->tahun)
+                                                           ->sum('nominal');
+                                $sisaSaatIni = max(0, $tagihanSpesifik - $terbayarSpesifik);
+                            } else {
+                                $sisaSaatIni = isset($ringkasan_tagihan[$r->jenis_pembayaran]) ? $ringkasan_tagihan[$r->jenis_pembayaran]['sisa_tagihan'] : 0;
+                            }
+                        @endphp
+                        <tr @click="openDetailModal({ 
+                                no_kwitansi: '{{ $r->kwitansi_no ?? '-' }}',
+                                jenis: '{{ $jenis_pembayaran_list[$r->jenis_pembayaran] ?? 'SPP' }}',
+                                bulan_tahun: '{{ \Carbon\Carbon::createFromDate($r->tahun, $r->bulan, 1)->locale('id')->translatedFormat('F Y') }}',
+                                nominal: '{{ number_format($r->nominal, 0, ',', '.') }}',
+                                tanggal: '{{ $r->tanggal_bayar ? $r->tanggal_bayar->format('d/m/Y') : '-' }}',
+                                status: '{{ $r->status === 'lunas' ? 'Lunas' : 'Belum Lunas' }}',
+                                sisa: '{{ number_format($sisaSaatIni, 0, ',', '.') }}'
+                            })" 
+                            class="border-b border-gray-100 hover:bg-gray-50 cursor-pointer">
                             <td class="px-4 py-3 text-gray-600">{{ $idx + 1 }}</td>
                             <td class="px-4 py-3 text-gray-800 text-sm">{{ $jenis_pembayaran_list[$r->jenis_pembayaran] ?? 'SPP' }}</td>
                             <td class="px-4 py-3 font-medium">{{ \Carbon\Carbon::createFromDate($r->tahun, $r->bulan, 1)->locale('id')->translatedFormat('F Y') }}</td>
@@ -92,9 +145,9 @@
                             <td class="px-4 py-3 text-gray-600 text-sm">{{ $r->kwitansi_no ?? '-' }}</td>
                             <td class="px-4 py-3">
                                 <div class="flex items-center gap-2">
-                                    <button type="button" @click="openEditModal({ id: {{ $r->id }}, jenis_pembayaran: '{{ $r->jenis_pembayaran }}', bulan: '{{ $r->bulan }}', tahun: '{{ $r->tahun }}', nominal: '{{ $r->nominal }}', status: '{{ $r->status }}', tanggal_bayar: '{{ $r->tanggal_bayar ? $r->tanggal_bayar->format('Y-m-d') : '' }}', keterangan: '{{ addslashes($r->keterangan ?? '') }}', actionUrl: '{{ route('admin.pembayaran.update', $r->id) }}' })" class="text-emerald-600 hover:underline text-sm font-medium">Edit</button>
-                                    <a href="{{ route('admin.pembayaran.kwitansi', $r->id) }}" target="_blank" class="text-blue-600 hover:underline text-sm font-medium">Cetak</a>
-                                    <button type="button" @click="openDeleteModal('{{ route('admin.pembayaran.destroy', $r->id) }}')" class="text-red-600 hover:underline text-sm font-medium">Hapus</button>
+                                    <button type="button" @click.stop="openEditModal({ id: {{ $r->id }}, jenis_pembayaran: '{{ $r->jenis_pembayaran }}', bulan: '{{ $r->bulan }}', tahun: '{{ $r->tahun }}', nominal: '{{ $r->nominal }}', status: '{{ $r->status }}', tanggal_bayar: '{{ $r->tanggal_bayar ? $r->tanggal_bayar->format('Y-m-d') : '' }}', keterangan: '{{ addslashes($r->keterangan ?? '') }}', actionUrl: '{{ route('admin.pembayaran.update', $r->id) }}' })" class="text-emerald-600 hover:underline text-sm font-medium">Edit</button>
+                                    <a href="{{ route('admin.pembayaran.kwitansi', $r->id) }}" target="_blank" @click.stop class="text-blue-600 hover:underline text-sm font-medium">Cetak</a>
+                                    <button type="button" @click.stop="openDeleteModal('{{ route('admin.pembayaran.destroy', $r->id) }}')" class="text-red-600 hover:underline text-sm font-medium">Hapus</button>
                                 </div>
                             </td>
                         </tr>
@@ -117,14 +170,39 @@
                         <input type="hidden" name="tahun_ajaran" value="{{ $tahun_ajaran }}">
                         <input type="hidden" name="siswa_id" value="{{ $siswa_id }}">
                         <input type="hidden" name="kelas" value="{{ $kelas }}">
-                        <div class="space-y-4">
+                        <div class="space-y-4" x-data="{ 
+                            jenis: 'spp', 
+                            ringkasan: {{ json_encode($ringkasan_tagihan) }},
+                            nominal: 0,
+                            status: 'belum_lunas',
+                            get sisa() { return this.ringkasan[this.jenis] ? this.ringkasan[this.jenis].sisa_tagihan : 0; },
+                            get total() { return this.ringkasan[this.jenis] ? this.ringkasan[this.jenis].total_tagihan : 0; },
+                            updateSisa() {
+                                this.nominal = this.jenis === 'spp' ? this.total : this.sisa;
+                                this.checkStatus();
+                            },
+                            checkStatus() {
+                                if (this.nominal >= this.sisa && this.sisa > 0) {
+                                    this.status = 'lunas';
+                                } else {
+                                    this.status = 'belum_lunas';
+                                }
+                            },
+                            init() {
+                                this.updateSisa();
+                            }
+                        }">
                             <div>
                                 <label class="block text-sm font-medium text-gray-700 mb-1">Jenis Pembayaran</label>
-                                <select name="jenis_pembayaran" required class="w-full px-3 py-2 rounded-lg border border-gray-300 focus:ring-2 focus:ring-[#47663D] focus:border-[#47663D]">
+                                <select name="jenis_pembayaran" x-model="jenis" @change="updateSisa()" required class="w-full px-3 py-2 rounded-lg border border-gray-300 focus:ring-2 focus:ring-[#47663D] focus:border-[#47663D]">
                                     @foreach($jenis_pembayaran_list as $k => $v)
                                         <option value="{{ $k }}">{{ $v }}</option>
                                     @endforeach
                                 </select>
+                                <div class="mt-1 flex items-center gap-4 text-xs" x-show="jenis !== 'spp'">
+                                    <span class="text-gray-500">Total Tagihan: <strong class="text-gray-800" x-text="'Rp ' + new Intl.NumberFormat('id-ID').format(total)"></strong></span>
+                                    <span class="text-red-500 font-medium">Sisa: <strong x-text="'Rp ' + new Intl.NumberFormat('id-ID').format(sisa)"></strong></span>
+                                </div>
                             </div>
                             <div>
                                 <label class="block text-sm font-medium text-gray-700 mb-1">Bulan</label>
@@ -140,14 +218,11 @@
                             </div>
                             <div>
                                 <label class="block text-sm font-medium text-gray-700 mb-1">Nominal (Rp)</label>
-                                <input type="number" name="nominal" value="{{ (int)$spp_bulanan }}" min="0" required class="w-full px-3 py-2 rounded-lg border border-gray-300 focus:ring-2 focus:ring-[#47663D] focus:border-[#47663D]">
-                            </div>
-                            <div>
-                                <label class="block text-sm font-medium text-gray-700 mb-1">Status</label>
-                                <select name="status" class="w-full px-3 py-2 rounded-lg border border-gray-300 focus:ring-2 focus:ring-[#47663D] focus:border-[#47663D]">
-                                    <option value="lunas">Lunas</option>
-                                    <option value="belum_lunas">Belum Lunas</option>
-                                </select>
+                                <input type="number" name="nominal" x-model.number="nominal" min="0" required
+                                    @input="checkStatus()"
+                                    @focus="if ($event.target.value == 0 || $event.target.value === '0') { $event.target.value = ''; $event.target.select(); }"
+                                    @blur="if ($event.target.value === '') { nominal = 0; checkStatus(); }"
+                                    class="w-full px-3 py-2 rounded-lg border border-gray-300 focus:ring-2 focus:ring-[#47663D] focus:border-[#47663D]">
                             </div>
                             <div>
                                 <label class="block text-sm font-medium text-gray-700 mb-1">Tanggal Bayar</label>
@@ -237,17 +312,39 @@
                 <div x-show="editModalOpen" x-transition.opacity class="fixed inset-0 bg-gray-900/60" @click="editModalOpen = false"></div>
                 <div x-show="editModalOpen" x-transition class="relative bg-white rounded-2xl shadow-2xl max-w-md w-full p-6">
                     <h3 class="text-lg font-bold text-gray-900 mb-4">Edit Pembayaran</h3>
-                    <form :action="editData.actionUrl" method="POST">
+                    <form :action="editData.actionUrl" method="POST" x-data="{ 
+                        get sisa() { 
+                            if(!this.$parent.ringkasan[this.$parent.editData.jenis_pembayaran]) return 0;
+                            // Sisa saat ini harus memperhitungkan nominal yang sedang diedit agar total terbayar valid
+                            let o = this.$parent.ringkasan[this.$parent.editData.jenis_pembayaran];
+                            return o.total_tagihan - (o.total_terbayar - this.$parent.editData._original_nominal);
+                        },
+                        get total() { 
+                            return this.$parent.ringkasan[this.$parent.editData.jenis_pembayaran] ? this.$parent.ringkasan[this.$parent.editData.jenis_pembayaran].total_tagihan : 0; 
+                        },
+                        checkStatus() {
+                            let sisaSekarang = Math.max(0, this.sisa);
+                            if (this.$parent.editData.nominal >= sisaSekarang && sisaSekarang > 0) {
+                                this.$parent.editData.status = 'lunas';
+                            } else {
+                                this.$parent.editData.status = 'belum_lunas';
+                            }
+                        }
+                    }">
                         @csrf
                         @method('PUT')
                         <div class="space-y-4">
                             <div>
                                 <label class="block text-sm font-medium text-gray-700 mb-1">Jenis Pembayaran</label>
-                                <select name="jenis_pembayaran" x-model="editData.jenis_pembayaran" required class="w-full px-3 py-2 rounded-lg border border-gray-300 focus:ring-2 focus:ring-[#47663D] focus:border-[#47663D]">
+                                <select name="jenis_pembayaran" x-model="editData.jenis_pembayaran" @change="checkStatus()" required class="w-full px-3 py-2 rounded-lg border border-gray-300 focus:ring-2 focus:ring-[#47663D] focus:border-[#47663D]">
                                     @foreach($jenis_pembayaran_list as $k => $v)
                                         <option value="{{ $k }}">{{ $v }}</option>
                                     @endforeach
                                 </select>
+                                <div class="mt-1 flex items-center gap-4 text-xs" x-show="editData.jenis_pembayaran !== 'spp'">
+                                    <span class="text-gray-500">Total Tagihan: <strong class="text-gray-800" x-text="'Rp ' + new Intl.NumberFormat('id-ID').format(total)"></strong></span>
+                                    <span class="text-red-500 font-medium">Sisa (sebelum edit): <strong x-text="'Rp ' + new Intl.NumberFormat('id-ID').format(Math.max(0, sisa))"></strong></span>
+                                </div>
                             </div>
                             <div>
                                 <label class="block text-sm font-medium text-gray-700 mb-1">Bulan</label>
@@ -263,14 +360,11 @@
                             </div>
                             <div>
                                 <label class="block text-sm font-medium text-gray-700 mb-1">Nominal (Rp)</label>
-                                <input type="number" name="nominal" x-model="editData.nominal" min="0" required class="w-full px-3 py-2 rounded-lg border border-gray-300 focus:ring-2 focus:ring-[#47663D] focus:border-[#47663D]">
-                            </div>
-                            <div>
-                                <label class="block text-sm font-medium text-gray-700 mb-1">Status</label>
-                                <select name="status" x-model="editData.status" class="w-full px-3 py-2 rounded-lg border border-gray-300 focus:ring-2 focus:ring-[#47663D] focus:border-[#47663D]">
-                                    <option value="lunas">Lunas</option>
-                                    <option value="belum_lunas">Belum Lunas</option>
-                                </select>
+                                <input type="number" name="nominal" x-model.number="editData.nominal" min="0" required
+                                    @input="checkStatus()"
+                                    @focus="if ($event.target.value == 0 || $event.target.value === '0') { $event.target.value = ''; $event.target.select(); }"
+                                    @blur="if ($event.target.value === '') { editData.nominal = 0; checkStatus(); }"
+                                    class="w-full px-3 py-2 rounded-lg border border-gray-300 focus:ring-2 focus:ring-[#47663D] focus:border-[#47663D]">
                             </div>
                             <div>
                                 <label class="block text-sm font-medium text-gray-700 mb-1">Tanggal Bayar</label>
@@ -310,11 +404,61 @@
             </div>
         </div>
 
+        {{-- Modal Detail Pembayaran --}}
+        <div x-show="detailModalOpen" x-cloak class="fixed inset-0 z-50 overflow-y-auto" role="dialog">
+            <div class="flex min-h-screen items-center justify-center p-4">
+                <div x-show="detailModalOpen" x-transition.opacity class="fixed inset-0 bg-gray-900/60" @click="detailModalOpen = false"></div>
+                <div x-show="detailModalOpen" x-transition class="relative bg-white rounded-2xl shadow-2xl max-w-sm w-full p-6">
+                    <div class="flex justify-between items-center mb-4 pb-3 border-b border-gray-100">
+                        <h3 class="text-lg font-bold text-gray-900">Detail Pembayaran</h3>
+                        <button @click="detailModalOpen = false" class="text-gray-400 hover:text-gray-600">
+                            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/></svg>
+                        </button>
+                    </div>
+                    <div class="space-y-4 text-sm">
+                        <div class="flex justify-between">
+                            <span class="text-gray-500">No. Kwitansi</span>
+                            <span class="font-medium text-gray-900" x-text="detailData.no_kwitansi"></span>
+                        </div>
+                        <div class="flex justify-between">
+                            <span class="text-gray-500">Jenis Pembayaran</span>
+                            <span class="font-medium text-gray-900" x-text="detailData.jenis"></span>
+                        </div>
+                        <div class="flex justify-between">
+                            <span class="text-gray-500">Bulan/Tahun</span>
+                            <span class="font-medium text-gray-900" x-text="detailData.bulan_tahun"></span>
+                        </div>
+                        <div class="flex justify-between">
+                            <span class="text-gray-500">Tanggal Bayar</span>
+                            <span class="font-medium text-gray-900" x-text="detailData.tanggal"></span>
+                        </div>
+                        <div class="flex justify-between items-center p-3 bg-gray-50 rounded-lg mt-2">
+                            <span class="text-gray-600 font-medium">Nominal Dibayar</span>
+                            <span class="font-bold text-[#47663D] text-base" x-text="'Rp ' + detailData.nominal"></span>
+                        </div>
+                        <div class="flex justify-between items-center pt-2">
+                            <span class="text-gray-500">Status</span>
+                            <span class="px-2.5 py-1 rounded text-xs font-bold" 
+                                :class="detailData.status === 'Lunas' ? 'bg-green-100 text-green-800' : 'bg-amber-100 text-amber-800'"
+                                x-text="detailData.status">
+                            </span>
+                        </div>
+                        <div class="flex justify-between items-center pt-1" x-show="detailData.status !== 'Lunas'">
+                            <span class="text-gray-500">Sisa Tagihan Saat Ini</span>
+                            <span class="font-bold text-red-600" x-text="'Rp ' + detailData.sisa"></span>
+                        </div>
+                    </div>
+                    <div class="mt-6">
+                        <button type="button" @click="detailModalOpen = false" class="w-full px-4 py-2 bg-gray-100 text-gray-700 rounded-lg hover:bg-gray-200 font-medium">Tutup</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
         <style>[x-cloak]{display:none!important}</style>
     @else
         <div class="bg-white rounded-xl shadow border border-gray-100 p-8 text-center text-gray-500">
             <p>Pilih kelas dan siswa di atas untuk melihat riwayat pembayaran.</p>
-            <p class="text-sm mt-2">Atur biaya SPP per kelas di <a href="{{ route('admin.settings.index') }}#biaya-spp" class="text-[#47663D] hover:underline">Pengaturan → Biaya SPP</a>.</p>
         </div>
     @endif
 </div>
@@ -337,12 +481,19 @@ function pembayaranPage() {
         exportSiswaModalOpen: false, 
         editModalOpen: false,
         deleteModalOpen: false,
+        detailModalOpen: false,
         deleteUrl: '',
+        ringkasan: @if(isset($ringkasan_tagihan)) {!! json_encode($ringkasan_tagihan) !!} @else {} @endif,
         editData: {},
+        detailData: {},
         openFormModal() { this.formModalOpen = true; },
         openEditModal(data) {
-            this.editData = data;
+            this.editData = { ...data, _original_nominal: parseInt(data.nominal) || 0 };
             this.editModalOpen = true;
+        },
+        openDetailModal(data) {
+            this.detailData = data;
+            this.detailModalOpen = true;
         },
         openDeleteModal(url) {
             this.deleteUrl = url;

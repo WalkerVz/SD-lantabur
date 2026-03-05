@@ -328,7 +328,7 @@
             <div class="section">
                 <div class="section-title">Identitas Pembayaran</div>
                 <div class="detail-row">
-                    <div class="detail-label">Telah diterima dari</div>
+                    <div class="detail-label">Nama Siswa</div>
                     <div class="detail-colon">:</div>
                     <div class="detail-value"><strong>{{ $p->siswa?->nama ?? 'Siswa' }}</strong></div>
                 </div>

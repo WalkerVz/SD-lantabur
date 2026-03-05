@@ -51,7 +51,7 @@ class PembayaranController extends Controller
                 ->get()
                 ->pluck('siswa')
                 ->filter()
-                ->sortBy('nama')
+                ->sortBy(fn ($s) => strtolower($s->nama ?? ''))
                 ->values();
             $sppBulanan = BiayaSpp::getNominal($tahunAjaran, $kelas);
 
@@ -64,19 +64,53 @@ class PembayaranController extends Controller
                         ->orderByDesc('tahun')
                         ->orderByDesc('bulan')
                         ->get();
+                    // Gunakan SPP dari data siswa jika sudah diisi, jika tidak gunakan dari BiayaSpp
+                    if ($siswaTerpilih->spp > 0) {
+                        $sppBulanan = $siswaTerpilih->spp;
+                    }
                 }
             }
         }
 
+        // Hitung biaya per jenis dari data siswa
+        $biayaPerJenis = [];
+        $ringkasanTagihan = [];
+        if ($siswaTerpilih) {
+            foreach (self::JENIS_PEMBAYARAN as $jenis => $label) {
+                $totalTagihan = $siswaTerpilih->getTotalTagihan($jenis);
+                
+                if (in_array($jenis, ['seragam', 'sarana_prasarana'])) {
+                    // Lintas tahun ajaran
+                    $totalTerbayar = Pembayaran::where('siswa_id', $siswaId)
+                                               ->where('jenis_pembayaran', $jenis)
+                                               ->sum('nominal');
+                } else {
+                    $totalTerbayar = $riwayat->where('jenis_pembayaran', $jenis)->sum('nominal');
+                }
+                
+                $sisaTagihan = max(0, $totalTagihan - $totalTerbayar);
+                $biayaPerJenis[$jenis] = $totalTagihan;
+                $ringkasanTagihan[$jenis] = [
+                    'label'          => $label,
+                    'total_tagihan'  => $totalTagihan,
+                    'total_terbayar' => (int) $totalTerbayar,
+                    'sisa_tagihan'   => $sisaTagihan,
+                    'lunas'          => $totalTagihan > 0 && $sisaTagihan <= 0,
+                ];
+            }
+        }
+
         return view('admin.pembayaran.index', [
-            'tahun_ajaran' => $tahunAjaran,
-            'list_tahun' => $listTahun,
-            'kelas' => $kelas,
-            'siswa_id' => $siswaId,
-            'siswa_list' => $siswaList,
-            'siswa_terpilih' => $siswaTerpilih,
-            'riwayat' => $riwayat,
-            'spp_bulanan' => $sppBulanan,
+            'tahun_ajaran'        => $tahunAjaran,
+            'list_tahun'          => $listTahun,
+            'kelas'               => $kelas,
+            'siswa_id'            => $siswaId,
+            'siswa_list'          => $siswaList,
+            'siswa_terpilih'      => $siswaTerpilih,
+            'riwayat'             => $riwayat,
+            'spp_bulanan'         => $sppBulanan,
+            'biaya_per_jenis'     => $biayaPerJenis,
+            'ringkasan_tagihan'   => $ringkasanTagihan,
             'jenis_pembayaran_list' => self::JENIS_PEMBAYARAN,
         ]);
     }
@@ -91,8 +125,29 @@ class PembayaranController extends Controller
             'bulan' => 'required|integer|min:1|max:12',
             'tahun' => 'required|integer|min:2020|max:2030',
             'nominal' => 'required|numeric|min:0',
-            'status' => 'required|in:lunas,belum_lunas',
         ]);
+
+        $siswa = Siswa::findOrFail($request->siswa_id);
+        $totalTagihan = $siswa->getTotalTagihan($request->jenis_pembayaran);
+        
+        $query = Pembayaran::where('siswa_id', $request->siswa_id)
+                           ->where('jenis_pembayaran', $request->jenis_pembayaran);
+                           
+        if (!in_array($request->jenis_pembayaran, ['seragam', 'sarana_prasarana'])) {
+            $query->where('tahun_ajaran', $request->tahun_ajaran)
+                  ->where('kelas', $request->kelas);
+        }
+        
+        if ($request->jenis_pembayaran === 'spp') {
+            $query->where('bulan', $request->bulan)
+                  ->where('tahun', $request->tahun);
+        }
+        
+        $terbayarSebelumnya = $query->sum('nominal');
+        $sisaTagihan = max(0, $totalTagihan - $terbayarSebelumnya);
+        
+        $nominalDiinput = (int) round($request->nominal);
+        $autoStatus = ($nominalDiinput >= $sisaTagihan && $sisaTagihan > 0) ? 'lunas' : 'belum_lunas';
 
         $p = Pembayaran::create([
             'tahun_ajaran' => $request->tahun_ajaran,
@@ -101,8 +156,8 @@ class PembayaranController extends Controller
             'jenis_pembayaran' => $request->jenis_pembayaran,
             'bulan' => $request->bulan,
             'tahun' => $request->tahun,
-            'nominal' => (int) round($request->nominal),
-            'status' => $request->status,
+            'nominal' => $nominalDiinput,
+            'status' => $autoStatus,
             'tanggal_bayar' => $request->filled('tanggal_bayar') ? $request->tanggal_bayar : now(),
             'kwitansi_no' => Pembayaran::generateKwitansiNo(),
             'keterangan' => $request->keterangan,
@@ -144,7 +199,6 @@ class PembayaranController extends Controller
     {
         $request->validate([
             'nominal' => 'required|numeric|min:0',
-            'status' => 'required|in:lunas,belum_lunas',
             'tanggal_bayar' => 'nullable|date',
             'keterangan' => 'nullable|string',
             'jenis_pembayaran' => 'required|in:spp,seragam,sarana_prasarana,kegiatan_tahunan',
@@ -153,13 +207,36 @@ class PembayaranController extends Controller
         ]);
 
         $pembayaran = Pembayaran::findOrFail($id);
+        $siswa = Siswa::findOrFail($pembayaran->siswa_id);
         
+        $totalTagihan = $siswa->getTotalTagihan($request->jenis_pembayaran);
+        
+        $query = Pembayaran::where('siswa_id', $pembayaran->siswa_id)
+                           ->where('jenis_pembayaran', $request->jenis_pembayaran)
+                           ->where('id', '!=', $pembayaran->id);
+                           
+        if (!in_array($request->jenis_pembayaran, ['seragam', 'sarana_prasarana'])) {
+            $query->where('tahun_ajaran', $pembayaran->tahun_ajaran)
+                  ->where('kelas', $pembayaran->kelas);
+        }
+        
+        if ($request->jenis_pembayaran === 'spp') {
+            $query->where('bulan', $request->bulan)
+                  ->where('tahun', $request->tahun);
+        }
+        
+        $terbayarSebelumnya = $query->sum('nominal');
+        $sisaTagihan = max(0, $totalTagihan - $terbayarSebelumnya);
+        
+        $nominalDiinput = (int) round($request->nominal);
+        $autoStatus = ($nominalDiinput >= $sisaTagihan && $sisaTagihan > 0) ? 'lunas' : 'belum_lunas';
+
         $pembayaran->update([
             'jenis_pembayaran' => $request->jenis_pembayaran,
             'bulan' => $request->bulan,
             'tahun' => $request->tahun,
-            'nominal' => $request->nominal,
-            'status' => $request->status,
+            'nominal' => $nominalDiinput,
+            'status' => $autoStatus,
             'tanggal_bayar' => $request->tanggal_bayar,
             'keterangan' => $request->keterangan,
         ]);
@@ -215,12 +292,12 @@ class PembayaranController extends Controller
             ->orderByDesc('tahun')
             ->orderByDesc('bulan')
             ->get();
-        
-        $sppBulanan = BiayaSpp::getNominal($tahunAjaran, $kelas);
-        
+
+        // Gunakan total tagihan dari data siswa berdasarkan jenis pembayaran
+        $sppBulanan = $siswa->getTotalTagihan($jenis);
         $namaJenis = self::JENIS_PEMBAYARAN[$jenis] ?? 'SPP';
         $filename = 'laporan_pembayaran_' . $jenis . '_' . str_replace('/', '-', $tahunAjaran) . '_' . $siswa->nama . '_Kelas' . $kelas . '_' . date('Y-m-d_His') . '.pdf';
-        
+
         $pdf = Pdf::loadView('admin.pembayaran.export-pdf', [
             'siswa' => $siswa,
             'riwayat' => $riwayat,
@@ -230,7 +307,7 @@ class PembayaranController extends Controller
             'jenis' => $jenis,
             'nama_jenis' => $namaJenis,
         ])->setPaper('a4', 'landscape');
-        
+
         return $pdf->download($filename);
     }
 
@@ -255,7 +332,7 @@ class PembayaranController extends Controller
             ->get()
             ->pluck('siswa')
             ->filter()
-            ->sortBy('nama')
+            ->sortBy(fn ($s) => strtolower($s->nama ?? ''))
             ->values();
 
         $namaJenis = self::JENIS_PEMBAYARAN[$jenis] ?? 'SPP';

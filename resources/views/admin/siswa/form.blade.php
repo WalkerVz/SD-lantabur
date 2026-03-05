@@ -49,6 +49,52 @@
                     <input type="text" name="nisn" value="{{ old('nisn', $item?->nisn) }}" class="w-full px-4 py-2 rounded-lg border border-gray-300 focus:ring-2 focus:ring-[#47663D] focus:border-[#47663D]">
                 </div>
             </div>
+            <div>
+                <label class="block text-sm font-medium text-gray-700 mb-1">SPP / Bulan (Rp)</label>
+                <div class="relative">
+                    <span class="absolute left-3 top-1/2 -translate-y-1/2 text-gray-500 text-sm font-medium">Rp</span>
+                    <input type="number" name="spp" min="0" step="1" value="{{ old('spp', $item?->spp ?? 0) }}" placeholder="0" class="w-full pl-10 pr-4 py-2 rounded-lg border border-gray-300 focus:ring-2 focus:ring-[#47663D] focus:border-[#47663D]">
+                </div>
+                <p class="text-xs text-gray-500 mt-1">Biaya SPP per bulan. Digunakan sebagai total tagihan di menu Pembayaran.</p>
+            </div>
+
+            {{-- Biaya per Jenis Pembayaran Lainnya --}}
+            <div class="border border-gray-200 rounded-xl p-4 bg-gray-50">
+                <h4 class="text-sm font-semibold text-gray-700 mb-3">Biaya per Jenis Pembayaran</h4>
+                <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
+                    <div>
+                        <label class="block text-xs font-medium text-gray-600 mb-1">Seragam (Rp)</label>
+                        <div class="relative">
+                            <span class="absolute left-2.5 top-1/2 -translate-y-1/2 text-gray-400 text-xs">Rp</span>
+                            <input type="number" name="biaya_seragam" min="0" step="1" value="{{ old('biaya_seragam', $item?->biaya_seragam ?? 0) }}" placeholder="0"
+                                onfocus="if(this.value=='0'||this.value===0){this.value='';}"
+                                onblur="if(this.value===''){this.value='0';}"
+                                class="w-full pl-8 pr-3 py-2 text-sm rounded-lg border border-gray-300 focus:ring-2 focus:ring-[#47663D] focus:border-[#47663D]">
+                        </div>
+                    </div>
+                    <div>
+                        <label class="block text-xs font-medium text-gray-600 mb-1">Sarana &amp; Prasarana (Rp)</label>
+                        <div class="relative">
+                            <span class="absolute left-2.5 top-1/2 -translate-y-1/2 text-gray-400 text-xs">Rp</span>
+                            <input type="number" name="biaya_sarana_prasarana" min="0" step="1" value="{{ old('biaya_sarana_prasarana', $item?->biaya_sarana_prasarana ?? 0) }}" placeholder="0"
+                                onfocus="if(this.value=='0'||this.value===0){this.value='';}"
+                                onblur="if(this.value===''){this.value='0';}"
+                                class="w-full pl-8 pr-3 py-2 text-sm rounded-lg border border-gray-300 focus:ring-2 focus:ring-[#47663D] focus:border-[#47663D]">
+                        </div>
+                    </div>
+                    <div>
+                        <label class="block text-xs font-medium text-gray-600 mb-1">Kegiatan Tahunan (Rp)</label>
+                        <div class="relative">
+                            <span class="absolute left-2.5 top-1/2 -translate-y-1/2 text-gray-400 text-xs">Rp</span>
+                            <input type="number" name="biaya_kegiatan_tahunan" min="0" step="1" value="{{ old('biaya_kegiatan_tahunan', $item?->biaya_kegiatan_tahunan ?? 0) }}" placeholder="0"
+                                onfocus="if(this.value=='0'||this.value===0){this.value='';}"
+                                onblur="if(this.value===''){this.value='0';}"
+                                class="w-full pl-8 pr-3 py-2 text-sm rounded-lg border border-gray-300 focus:ring-2 focus:ring-[#47663D] focus:border-[#47663D]">
+                        </div>
+                    </div>
+                </div>
+                <p class="text-xs text-gray-400 mt-2">Nilai ini digunakan sebagai <strong>total tagihan</strong> di menu Pembayaran untuk masing-masing jenis.</p>
+            </div>
             <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
                 <div>
                     <label class="block text-sm font-medium text-gray-700 mb-1">Tempat Lahir</label>
@@ -104,7 +150,7 @@
                     </div>
                     <div class="sm:col-span-2">
                         <label class="block text-sm font-medium text-gray-700 mb-1">Status</label>
-                        <input type="text" name="status" value="{{ old('status', $info?->status) }}" placeholder="Contoh: Aktif" class="w-full px-4 py-2 rounded-lg border border-gray-300 focus:ring-2 focus:ring-[#47663D] focus:border-[#47663D]">
+                        <input type="text" name="status" value="{{ old('status', $info?->status) }}" placeholder="Contoh: Kandung" class="w-full px-4 py-2 rounded-lg border border-gray-300 focus:ring-2 focus:ring-[#47663D] focus:border-[#47663D]">
                     </div>
                 </div>
             </div>
