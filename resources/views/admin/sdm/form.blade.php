@@ -24,12 +24,7 @@
                 <select name="jabatan" required class="w-full px-4 py-2 rounded-lg border border-gray-300 focus:ring-2 focus:ring-[#47663D] focus:border-[#47663D]">
                     <option value="">-- Pilih Jabatan --</option>
                     <option value="Kepala Sekolah" {{ old('jabatan', $item?->jabatan) == 'Kepala Sekolah' ? 'selected' : '' }}>Kepala Sekolah</option>
-                    <option value="Wali Kelas 1" {{ old('jabatan', $item?->jabatan) == 'Wali Kelas 1' ? 'selected' : '' }}>Wali Kelas 1</option>
-                    <option value="Wali Kelas 2" {{ old('jabatan', $item?->jabatan) == 'Wali Kelas 2' ? 'selected' : '' }}>Wali Kelas 2</option>
-                    <option value="Wali Kelas 3" {{ old('jabatan', $item?->jabatan) == 'Wali Kelas 3' ? 'selected' : '' }}>Wali Kelas 3</option>
-                    <option value="Wali Kelas 4" {{ old('jabatan', $item?->jabatan) == 'Wali Kelas 4' ? 'selected' : '' }}>Wali Kelas 4</option>
-                    <option value="Wali Kelas 5" {{ old('jabatan', $item?->jabatan) == 'Wali Kelas 5' ? 'selected' : '' }}>Wali Kelas 5</option>
-                    <option value="Wali Kelas 6" {{ old('jabatan', $item?->jabatan) == 'Wali Kelas 6' ? 'selected' : '' }}>Wali Kelas 6</option>
+                    <option value="Guru Kelas" {{ old('jabatan', $item?->jabatan) == 'Guru Kelas' ? 'selected' : '' }}>Guru Kelas</option>
                     <option value="Guru Mata Pelajaran" {{ old('jabatan', $item?->jabatan) == 'Guru Mata Pelajaran' ? 'selected' : '' }}>Guru Mata Pelajaran</option>
                     <option value="Guru Tahfiz" {{ old('jabatan', $item?->jabatan) == 'Guru Tahfiz' ? 'selected' : '' }}>Guru Tahfiz</option>
                     <option value="Guru Olahraga" {{ old('jabatan', $item?->jabatan) == 'Guru Olahraga' ? 'selected' : '' }}>Guru Olahraga</option>
@@ -37,7 +32,7 @@
                     <option value="Staff TU" {{ old('jabatan', $item?->jabatan) == 'Staff TU' ? 'selected' : '' }}>Staff TU</option>
                 </select>
                 <p class="text-[11px] text-blue-600 mt-1 italic font-medium">
-                    * Jabatan hanya label profil. Penempatan resmi Wali Kelas diatur di menu <strong>Pengaturan</strong>.
+                    * Jabatan adalah label profil. Penempatan Wali Kelas per kelas diatur di menu <strong>Pengaturan → Wali Kelas</strong>.
                 </p>
                 <p id="err-jabatan" class="text-red-500 text-sm mt-1 hidden"></p>
             </div>

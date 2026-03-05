@@ -54,6 +54,7 @@
                         <th class="px-4 py-3 text-sm font-semibold text-gray-700">Spesialisasi</th>
                         <th class="px-4 py-3 text-sm font-semibold text-gray-700">Email</th>
                         <th class="px-4 py-3 text-sm font-semibold text-gray-700">No. HP</th>
+                        <th class="px-4 py-3 text-sm font-semibold text-gray-700">Wali Kelas</th>
                         <th class="px-4 py-3 text-sm font-semibold text-gray-700 w-36">Aksi</th>
                     </tr>
                 </thead>
@@ -94,13 +95,25 @@
                         <td class="px-4 py-3 text-gray-600">{{ $s->spesialisasi?->nama ?? '-' }}</td>
                         <td class="px-4 py-3 text-gray-600 text-sm">{{ $s->email ?? '-' }}</td>
                         <td class="px-4 py-3 text-gray-600">{{ $s->nomor_handphone ?? '-' }}</td>
+                        <td class="px-4 py-3">
+                            @if($s->tahunKelas->isNotEmpty())
+                                @foreach($s->tahunKelas as $tk)
+                                    <span class="inline-flex items-center gap-1 px-2 py-0.5 rounded-full bg-[#47663D]/10 text-[#47663D] text-xs font-semibold">
+                                        <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4"/></svg>
+                                        Kelas {{ $tk->kelas }}
+                                    </span>
+                                @endforeach
+                            @else
+                                <span class="text-xs text-gray-400">—</span>
+                            @endif
+                        </td>
                         <td class="px-4 py-3 flex gap-1.5">
                             <button type="button" @click="openFormModal({{ $s->id }})" class="inline-flex items-center px-3 py-1.5 bg-blue-500 text-white rounded-lg text-sm hover:bg-blue-600 transition font-medium">Edit</button>
                             <button type="button" @click="confirmDelete({{ $s->id }}, '{{ addslashes($s->nama) }}')" class="inline-flex items-center px-3 py-1.5 bg-red-500 text-white rounded-lg text-sm hover:bg-red-600 transition font-medium">Hapus</button>
                         </td>
                     </tr>
                     @empty
-                    <tr><td colspan="8" class="px-4 py-8 text-center text-gray-500">Belum ada data SDM.</td></tr>
+                    <tr><td colspan="9" class="px-4 py-8 text-center text-gray-500">Belum ada data SDM.</td></tr>
                     @endforelse
                 </tbody>
             </table>

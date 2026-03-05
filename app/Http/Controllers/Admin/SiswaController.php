@@ -405,10 +405,6 @@ class SiswaController extends Controller
             ->first();
 
         $wali_kelas = $tahunKelas && $tahunKelas->waliKelas ? $tahunKelas->waliKelas->nama : '_______________________';
-        if ($wali_kelas === '_______________________') {
-            // Fallback: Jika tidak di set di TahunKelas, coba ambil dari Master Sdm yang jabatannya mirip (Opsional)
-            $wali_kelas = \App\Models\StaffSdm::where('jabatan', 'like', "%Wali Kelas $kelas%")->first()?->nama ?? '_______________________';
-        }
 
         return view('admin.siswa.cetak_absen', compact('siswa', 'kelas', 'nama_kelas', 'tahun_ajaran', 'tanggal_cetak', 'wali_kelas'));
     }
