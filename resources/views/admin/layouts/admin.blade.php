@@ -125,7 +125,7 @@
                 @if(\App\Models\FeatureAccess::can($currentRole, 'pembayaran'))
                 <a href="{{ route('admin.pembayaran.index') }}" class="flex items-center gap-3 px-4 py-3 rounded-lg {{ request()->routeIs('admin.pembayaran.*') ? 'bg-[#47663D] text-white' : 'text-gray-700 hover:bg-gray-100' }}">
                     <svg class="w-5 h-5 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 9V7a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2m2 4h10a2 2 0 002-2v-6a2 2 0 00-2-2H9a2 2 0 00-2 2v6a2 2 0 002 2zm7-5a2 2 0 11-4 0 2 2 0 014 0z"/></svg>
-                    <span x-show="!sidebarCollapsed" x-transition class="hidden lg:inline">Pembayaran</span>
+                    <span x-show="!sidebarCollapsed" x-transition>Pembayaran</span>
                 </a>
                 @endif
 
