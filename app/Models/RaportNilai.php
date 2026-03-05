@@ -38,7 +38,12 @@ class RaportNilai extends Model
 
     public function isLengkap(): bool
     {
-        // Cache active mapels per class to avoid querying for every student
+        return $this->isLengkapUmum() && $this->isLengkapPraktik();
+    }
+
+    public function isLengkapUmum(): bool
+    {
+        // Cache active mapels per class
         static $activeMapelsCache = [];
         if (!isset($activeMapelsCache[$this->kelas])) {
             $activeMapelsCache[$this->kelas] = MasterMapel::where('kelas', $this->kelas)
@@ -48,9 +53,8 @@ class RaportNilai extends Model
         }
         $activeMapelIds = $activeMapelsCache[$this->kelas];
 
-        // Ensure we check mapel values only from memory (eager loaded), not repeatedly querying DB
         $filledMapelIds = $this->mapelNilai
-            ->whereNotNull('nilai')
+            ->filter(fn($m) => !is_null($m->nilai) && $m->nilai !== '')
             ->pluck('mapel_id')
             ->toArray();
 
@@ -64,10 +68,26 @@ class RaportNilai extends Model
             return false;
         }
 
-        // Check if all praktik attributes are filled (total 7 items: PAI 3, ADAB 4)
-        $filledPraktikCount = $this->praktik()->whereNotNull('nilai')->count();
-        if ($filledPraktikCount < 7) {
-            return false;
+        return true;
+    }
+
+    public function isLengkapPraktik(): bool
+    {
+        // Cache master subjects to avoid repeated queries
+        static $masterPraktikCache = null;
+        if ($masterPraktikCache === null) {
+            $masterPraktikCache = MasterPraktik::all(['section', 'kategori']);
+        }
+
+        foreach ($masterPraktikCache as $master) {
+            $filled = $this->praktik->where('section', $master->section)
+                ->where('kategori', $master->kategori)
+                ->filter(fn($p) => !is_null($p->nilai) && $p->nilai !== '')
+                ->first();
+
+            if (!$filled) {
+                return false;
+            }
         }
 
         return true;
@@ -85,7 +105,7 @@ class RaportNilai extends Model
         if ($dinamis->isNotEmpty()) {
             foreach ($dinamis as $mn) {
                 // Asumsi nilai tersimpan
-                if ($mn->nilai !== null) {
+                if ($mn->nilai !== null && $mn->nilai !== '') {
                     $totalNilai += (float) $mn->nilai;
                     $jumlahMapel++;
                 }

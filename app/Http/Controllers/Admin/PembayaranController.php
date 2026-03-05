@@ -94,6 +94,27 @@ class PembayaranController extends Controller
             'status' => 'required|in:lunas,belum_lunas',
         ]);
 
+        // Check for existing payment
+        $exists = Pembayaran::where('siswa_id', $request->siswa_id)
+            ->where('tahun_ajaran', $request->tahun_ajaran)
+            ->where('jenis_pembayaran', $request->jenis_pembayaran)
+            ->where('bulan', $request->bulan)
+            ->where('tahun', $request->tahun)
+            ->exists();
+
+        if ($exists) {
+            $jenisLabel = self::JENIS_PEMBAYARAN[$request->jenis_pembayaran] ?? 'Pembayaran';
+            $bulanNama = ['', 'Januari', 'Februari', 'Maret', 'April', 'Mei', 'Juni', 'Juli', 'Agustus', 'September', 'Oktober', 'November', 'Desember'];
+            $bulanStr = $bulanNama[$request->bulan] ?? $request->bulan;
+            
+            $msg = "Data $jenisLabel untuk periode $bulanStr $request->tahun sudah ada.";
+            
+            if ($request->wantsJson()) {
+                return response()->json(['success' => false, 'message' => $msg], 422);
+            }
+            return back()->withInput()->with('error', $msg);
+        }
+
         $p = Pembayaran::create([
             'tahun_ajaran' => $request->tahun_ajaran,
             'siswa_id' => $request->siswa_id,
@@ -153,6 +174,23 @@ class PembayaranController extends Controller
         ]);
 
         $pembayaran = Pembayaran::findOrFail($id);
+
+        // Check for duplicate (excluding current record)
+        $exists = Pembayaran::where('siswa_id', $pembayaran->siswa_id)
+            ->where('tahun_ajaran', $pembayaran->tahun_ajaran)
+            ->where('jenis_pembayaran', $request->jenis_pembayaran)
+            ->where('bulan', $request->bulan)
+            ->where('tahun', $request->tahun)
+            ->where('id', '!=', $id)
+            ->exists();
+
+        if ($exists) {
+            $jenisLabel = self::JENIS_PEMBAYARAN[$request->jenis_pembayaran] ?? 'Pembayaran';
+            $bulanNama = ['', 'Januari', 'Februari', 'Maret', 'April', 'Mei', 'Juni', 'Juli', 'Agustus', 'September', 'Oktober', 'November', 'Desember'];
+            $bulanStr = $bulanNama[$request->bulan] ?? $request->bulan;
+            
+            return back()->withInput()->with('error', "Gagal update: Data $jenisLabel untuk periode $bulanStr $request->tahun sudah ada.");
+        }
         
         $pembayaran->update([
             'jenis_pembayaran' => $request->jenis_pembayaran,

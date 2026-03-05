@@ -14,6 +14,21 @@
             Tambah Mapel
         </button>
     </div>
+    {{-- Tab Navigasi Tipe Raport --}}
+    <div class="bg-white rounded-2xl shadow-sm border border-gray-100 p-2 mb-6 inline-flex gap-1">
+        <a href="{{ route('admin.mapel.index') }}" class="px-6 py-2.5 rounded-xl text-sm font-bold transition-all bg-[#47663D] text-white shadow-md">
+            Mapel Umum
+        </a>
+        <a href="{{ route('admin.mapel.praktik') }}" class="px-6 py-2.5 rounded-xl text-sm font-bold transition-all text-gray-500 hover:bg-gray-50">
+            Praktik
+        </a>
+        <a href="{{ route('admin.mapel.jilid') }}" class="px-6 py-2.5 rounded-xl text-sm font-bold transition-all text-gray-500 hover:bg-gray-50">
+            Al-Qur'an
+        </a>
+        <a href="{{ route('admin.mapel.tahfidz') }}" class="px-6 py-2.5 rounded-xl text-sm font-bold transition-all text-gray-500 hover:bg-gray-50">
+            Materi Tahfidz
+        </a>
+    </div>
 
     {{-- Filter Kelas --}}
     <div class="bg-white rounded-2xl shadow-sm border border-gray-100 p-2 mb-8 inline-flex gap-1">

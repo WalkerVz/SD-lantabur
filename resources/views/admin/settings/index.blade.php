@@ -68,7 +68,7 @@
                 <button type="submit" class="px-4 py-2 bg-[#47663D] text-white rounded-lg hover:bg-[#5a7d52] font-medium text-sm">Simpan</button>
             </div>
         </form>
-        <div class="mt-4 overflow-x-auto">
+        <div class="mt-4 overflow-x-auto max-h-[300px] overflow-y-auto border border-gray-100 rounded-lg">
             <table class="w-full text-sm">
                 <thead class="bg-gray-50">
                     <tr>
@@ -88,6 +88,67 @@
                         @endforeach
                     @else
                         <tr><td colspan="3" class="px-3 py-4 text-gray-500 text-center">Belum ada data biaya SPP.</td></tr>
+                    @endif
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    {{-- Wali Kelas per Tahun --}}
+    <div id="wali-kelas" class="bg-white rounded-xl shadow border border-gray-100 p-6 scroll-mt-4 mt-6">
+        <h2 class="text-lg font-semibold text-gray-800 mb-2">Penempatan Wali Kelas</h2>
+        <p class="text-sm text-gray-600 mb-4">Tentukan wali kelas untuk setiap tingkat di tahun ajaran tertentu agar sejarah raport tetap akurat.</p>
+        <form action="{{ route('admin.settings.wali-kelas.store') }}" method="POST" class="space-y-4">
+            @csrf
+            <div class="flex flex-wrap items-end gap-4">
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-1">Tahun Ajaran</label>
+                    <select name="tahun_ajaran" required class="px-3 py-2 rounded-lg border border-gray-300 focus:ring-2 focus:ring-[#47663D] focus:border-[#47663D]">
+                        @foreach($tahunAjaranList as $t)
+                            <option value="{{ $t->nama }}" {{ $t->is_aktif ? 'selected' : '' }}>{{ $t->nama }}</option>
+                        @endforeach
+                    </select>
+                </div>
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-1">Kelas</label>
+                    <select name="kelas" required class="px-3 py-2 rounded-lg border border-gray-300 focus:ring-2 focus:ring-[#47663D] focus:border-[#47663D]">
+                        @for($k = 1; $k <= 6; $k++)
+                            <option value="{{ $k }}">Kelas {{ $k }}</option>
+                        @endfor
+                    </select>
+                </div>
+                <div class="flex-1 min-w-[200px]">
+                    <label class="block text-sm font-medium text-gray-700 mb-1">Pilih Guru</label>
+                    <select name="wali_kelas_id" class="w-full px-3 py-2 rounded-lg border border-gray-300 focus:ring-2 focus:ring-[#47663D] focus:border-[#47663D]">
+                        <option value="">-- Pilih Guru --</option>
+                        @foreach($staffList as $s)
+                            <option value="{{ $s->id }}">{{ $s->nama }} ({{ $s->jabatan }})</option>
+                        @endforeach
+                    </select>
+                </div>
+                <button type="submit" class="px-4 py-2 bg-[#47663D] text-white rounded-lg hover:bg-[#5a7d52] font-medium text-sm">Simpan</button>
+            </div>
+        </form>
+        <div class="mt-4 overflow-x-auto max-h-[400px] overflow-y-auto border border-gray-100 rounded-lg">
+            <table class="w-full text-sm">
+                <thead class="bg-gray-50">
+                    <tr>
+                        <th class="px-3 py-2 text-left font-semibold text-gray-700">Tahun Ajaran</th>
+                        <th class="px-3 py-2 text-left font-semibold text-gray-700">Kelas</th>
+                        <th class="px-3 py-2 text-left font-semibold text-gray-700">Wali Kelas</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @if(isset($waliKelasTahun) && $waliKelasTahun->count() > 0)
+                        @foreach($waliKelasTahun->values()->sortBy(fn($w) => $w->tahun_ajaran . '-' . $w->kelas) as $w)
+                            <tr class="border-b border-gray-100">
+                                <td class="px-3 py-2">{{ $w->tahun_ajaran }}</td>
+                                <td class="px-3 py-2">Kelas {{ $w->kelas }}</td>
+                                <td class="px-3 py-2 font-medium text-[#47663D]">{{ $w->waliKelas->nama ?? 'Bukan Guru' }}</td>
+                            </tr>
+                        @endforeach
+                    @else
+                        <tr><td colspan="3" class="px-3 py-4 text-gray-500 text-center">Belum ada data penempatan wali kelas.</td></tr>
                     @endif
                 </tbody>
             </table>

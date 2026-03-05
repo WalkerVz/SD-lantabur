@@ -20,6 +20,10 @@
             </select>
             <button type="submit" class="px-4 py-2 bg-gray-200 rounded-lg hover:bg-gray-300 text-sm">Filter</button>
         </form>
+        <a href="{{ route('admin.raport.cetakSemuaKelas', ['kelas' => $kelas, 'semester' => $semester, 'tahun_ajaran' => $tahun]) }}" target="_blank" class="inline-flex items-center gap-2 px-4 py-2 bg-[#47663D] text-white rounded-lg text-sm font-semibold hover:bg-[#5a7d52] transition shadow-md">
+            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 17h2a2 2 0 002-2v-4a2 2 0 00-2-2H5a2 2 0 00-2 2v4a2 2 0 002 2h2m2 4h6a2 2 0 002-2v-4a2 2 0 00-2-2H9a2 2 0 00-2 2v4a2 2 0 002 2zm8-12V5a2 2 0 00-2-2H9a2 2 0 00-2 2v4h10z"/></svg>
+            Cetak Semua Rapor
+        </a>
     </div>
 
     <div class="bg-white rounded-xl shadow border border-gray-100">
@@ -56,8 +60,8 @@
                                 $rj = $raportJilid->get($s->id); 
                                 $rt = $raportTahfidz->get($s->id);
                                 $isNilaiDibuat = $nilai ? true : false;
-                                $isLengkapUmum = $nilai ? $nilai->isLengkap() : false; // sudah termasuk check tabel umum & praktik (7 nilai)
-                                $isSemuaLengkap = $isLengkapUmum && $rj && $rt; // Jilid dan Tahfidz juga harus ada datanya
+                                $isLengkap = $nilai ? $nilai->isLengkap() : false; // sudah termasuk check tabel umum & praktik secara dinamis
+                                $isSemuaLengkap = $isLengkap && $rj && $rt; // Jilid dan Tahfidz juga harus ada datanya
                             @endphp
 
                             @if($isNilaiDibuat || $rj || $rt)
@@ -98,13 +102,13 @@
                                          class="absolute right-0 z-[9999] mt-1 w-44 bg-white rounded-lg shadow-lg border border-gray-100 py-1 text-sm"
                                          style="display:none;">
                                         <a href="{{ route('admin.raport.edit', $nilai->id) }}" class="flex items-center gap-2 px-4 py-2 text-gray-700 hover:bg-blue-50 hover:text-blue-700">
-                                            <span class="w-2 h-2 rounded-full bg-blue-400"></span>Nilai Umum
+                                            <span class="w-2 h-2 rounded-full {{ $nilai->isLengkapUmum() ? 'bg-blue-400' : 'bg-gray-300' }}"></span>Nilai Umum
                                         </a>
                                         <a href="{{ route('admin.raport.editPraktik', $nilai->id) }}" class="flex items-center gap-2 px-4 py-2 text-gray-700 hover:bg-green-50 hover:text-green-700">
-                                            <span class="w-2 h-2 rounded-full bg-green-400"></span>Praktik
+                                            <span class="w-2 h-2 rounded-full {{ $nilai->isLengkapPraktik() ? 'bg-green-400' : 'bg-gray-300' }}"></span>Praktik
                                         </a>
                                         <a href="{{ route('admin.raport.editJilid', [$s->id, 'tahun_ajaran'=>$tahun, 'semester'=>$semester]) }}" class="flex items-center gap-2 px-4 py-2 text-gray-700 hover:bg-purple-50 hover:text-purple-700">
-                                            <span class="w-2 h-2 rounded-full {{ $rj ? 'bg-purple-400' : 'bg-gray-300' }}"></span>{{ $rj ? 'Jilid' : 'Isi Jilid' }}
+                                            <span class="w-2 h-2 rounded-full {{ $rj ? 'bg-purple-400' : 'bg-gray-300' }}"></span>{{ $rj ? "Al-Qur'an" : "Isi Al-Qur'an" }}
                                         </a>
                                         <a href="{{ route('admin.raport.formTahfidz', [$s->id, 'tahun_ajaran'=>$tahun, 'semester'=>$semester]) }}" class="flex items-center gap-2 px-4 py-2 text-gray-700 hover:bg-cyan-50 hover:text-cyan-700">
                                             <span class="w-2 h-2 rounded-full {{ $rt ? 'bg-cyan-400' : 'bg-gray-300' }}"></span>{{ $rt ? 'Tahfidz' : 'Isi Tahfidz' }}
@@ -133,11 +137,11 @@
                                         </a>
                                         @if($rj)
                                         <a href="{{ route('admin.raport.cetakJilid', [$s->id, 'tahun_ajaran'=>$tahun, 'semester'=>$semester]) }}" target="_blank" class="flex items-center gap-2 px-4 py-2 text-gray-700 hover:bg-purple-50 hover:text-purple-700">
-                                            <span class="w-2 h-2 rounded-full bg-purple-400"></span>Raport Jilid
+                                            <span class="w-2 h-2 rounded-full bg-purple-400"></span>Al-Qur'an
                                         </a>
                                         @else
                                         <span class="flex items-center gap-2 px-4 py-2 text-gray-300 text-xs italic cursor-not-allowed">
-                                            <span class="w-2 h-2 rounded-full bg-gray-200"></span>Jilid (belum diisi)
+                                            <span class="w-2 h-2 rounded-full bg-gray-200"></span>Al-Qur'an (belum diisi)
                                         </span>
                                         @endif
                                         @if($rt)
@@ -152,10 +156,30 @@
                                     </div>
                                 </div>
                                 @else
-                                    <a href="{{ route('admin.raport.create', ['kelas'=>$kelas,'semester'=>$semester,'tahun_ajaran'=>$tahun,'siswa_id'=>$s->id]) }}" class="inline-flex items-center gap-1.5 px-4 py-2 bg-gray-100 hover:bg-[#47663D] hover:text-white text-gray-700 rounded-lg transition-all text-xs font-bold uppercase tracking-widest">
-                                        <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"/></svg>
-                                        Isi Nilai
-                                    </a>
+                                    {{-- Dropdown Isi Nilai --}}
+                                    <div class="relative" x-data="{ open: false }" @click.outside="open = false">
+                                        <button @click="open = !open" class="inline-flex items-center gap-1.5 px-4 py-2 bg-gray-100 hover:bg-[#47663D] hover:text-white text-gray-700 rounded-lg transition-all text-xs font-bold uppercase tracking-widest">
+                                            <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"/></svg>
+                                            Isi Nilai
+                                            <svg class="w-3 h-3 ml-1" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/></svg>
+                                        </button>
+                                        <div x-show="open" x-transition.opacity.duration.150ms
+                                             class="absolute right-0 z-[9999] mt-1 w-44 bg-white rounded-lg shadow-lg border border-gray-100 py-1 text-sm font-normal normal-case tracking-normal"
+                                             style="display:none;">
+                                            <a href="{{ route('admin.raport.create', ['kelas'=>$kelas,'semester'=>$semester,'tahun_ajaran'=>$tahun,'siswa_id'=>$s->id]) }}" class="flex items-center gap-2 px-4 py-2 text-gray-700 hover:bg-blue-50 hover:text-blue-700">
+                                                <span class="w-2 h-2 rounded-full bg-gray-300"></span>Raport Umum
+                                            </a>
+                                            <a href="{{ route('admin.raport.ensureAndEditPraktik', ['siswa_id'=>$s->id, 'kelas'=>$kelas, 'tahun_ajaran'=>$tahun, 'semester'=>$semester]) }}" class="flex items-center gap-2 px-4 py-2 text-gray-700 hover:bg-green-50 hover:text-green-700">
+                                                <span class="w-2 h-2 rounded-full bg-gray-300"></span>Raport Praktik
+                                            </a>
+                                            <a href="{{ route('admin.raport.editJilid', [$s->id, 'tahun_ajaran'=>$tahun, 'semester'=>$semester]) }}" class="flex items-center gap-2 px-4 py-2 text-gray-700 hover:bg-purple-50 hover:text-purple-700">
+                                                <span class="w-2 h-2 rounded-full bg-gray-300"></span>Al-Qur'an (Jilid)
+                                            </a>
+                                            <a href="{{ route('admin.raport.formTahfidz', [$s->id, 'tahun_ajaran'=>$tahun, 'semester'=>$semester]) }}" class="flex items-center gap-2 px-4 py-2 text-gray-700 hover:bg-cyan-50 hover:text-cyan-700">
+                                                <span class="w-2 h-2 rounded-full bg-gray-300"></span>Tahfidz
+                                            </a>
+                                        </div>
+                                    </div>
                                 @endif
                             </div>
                         </td>

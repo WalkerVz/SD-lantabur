@@ -37,6 +37,7 @@ class VideoController extends Controller
         VideoYoutube::create([
             'judul'      => $request->judul,
             'youtube_id' => $youtubeId,
+            'url_asli'   => $request->url_youtube,
             'deskripsi'  => $request->deskripsi,
             'urutan'     => $request->urutan ?? 0,
             'aktif'      => $request->boolean('aktif', true),
@@ -73,6 +74,7 @@ class VideoController extends Controller
         $item->update([
             'judul'      => $request->judul,
             'youtube_id' => $youtubeId,
+            'url_asli'   => $request->url_youtube,
             'deskripsi'  => $request->deskripsi,
             'urutan'     => $request->urutan ?? 0,
             'aktif'      => $request->boolean('aktif'),

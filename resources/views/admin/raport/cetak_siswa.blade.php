@@ -38,8 +38,8 @@
             top: 50%;
             left: 50%;
             transform: translate(-50%, -50%);
-            opacity: 0.08;
-            z-index: 0;
+            opacity: 0.15;
+            z-index: 2;
             pointer-events: none;
         }
 
@@ -47,6 +47,24 @@
             width: 400px;
             height: auto;
             filter: blur(1px);
+        }
+
+        /* Watermark Text Brick Pattern */
+        .watermark-text {
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            pointer-events: none;
+            z-index: 1;
+            opacity: 0.05;
+            background-image: 
+                url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 280 40'%3E%3Ctext x='140' y='20' fill='black' font-size='10' font-weight='bold' font-family='sans-serif' text-anchor='middle' dominant-baseline='middle'%3ESD AL QUR'AN LANTABUR%3C/text%3E%3C/svg%3E"), 
+                url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 280 40'%3E%3Ctext x='140' y='20' fill='black' font-size='10' font-weight='bold' font-family='sans-serif' text-anchor='middle' dominant-baseline='middle'%3ESD AL QUR'AN LANTABUR%3C/text%3E%3C/svg%3E");
+            background-repeat: repeat, repeat;
+            background-size: 280px 40px, 280px 40px;
+            background-position: 0 0, 140px 20px;
         }
 
         /* Content wrapper */
@@ -57,11 +75,12 @@
 
         /* Header */
         /* Header */
+        /* Header */
         .umum-header {
             position: relative;
             border-bottom: 4px double #000;
-            padding: 10px 0 15px 0;
-            margin-bottom: 20px;
+            padding: 5px 0 10px 0;
+            margin-bottom: 12px;
             display: grid;
             grid-template-columns: 100px 1fr; /* Logo | Text */
             gap: 10px;
@@ -84,14 +103,14 @@
             font-weight: bold;
             text-transform: uppercase;
             letter-spacing: 0.5px;
-            margin: 0 0 5px 0;
-            line-height: 1.2;
+            margin: 0 0 2px 0;
+            line-height: 1.1;
         }
 
         .umum-header h4 {
             font-size: 13pt;
             font-weight: bold;
-            margin: 2px 0;
+            margin: 1px 0;
             line-height: 1.2;
         }
 
@@ -102,7 +121,7 @@
         }
 
         .umum-info td {
-            padding: 3px 0;
+            padding: 1px 0;
             font-size: 11pt;
         }
 
@@ -117,14 +136,14 @@
 
         /* Tabel Nilai */
         .umum-nilai {
-            margin: 10px 0;
+            margin: 6px 0;
             font-size: 10pt;
             table-layout: fixed;
         }
 
         .umum-nilai th, .umum-nilai td {
             border: 1px solid #000;
-            padding: 8px 6px;
+            padding: 3px 5px;
             text-align: center;
         }
 
@@ -137,9 +156,9 @@
 
         .umum-nilai td.deskripsi {
             text-align: left;
-            padding: 8px 8px;
-            font-size: 9pt;
-            line-height: 1.4;
+            padding: 4px 6px;
+            font-size: 8.5pt;
+            line-height: 1.2;
             word-wrap: break-word;
             overflow-wrap: break-word;
         }
@@ -153,12 +172,12 @@
 
         /* Summary Table */
         .umum-summary {
-            margin: 10px 0;
+            margin: 6px 0;
         }
 
         .umum-summary td {
             border: 1px solid #000;
-            padding: 6px 8px;
+            padding: 3px 5px;
             font-weight: bold;
             font-size: 10pt;
         }
@@ -171,7 +190,7 @@
         .flex {
             display: flex;
             justify-content: space-between;
-            margin-top: 15px;
+            margin-top: 10px;
             gap: 10px;
         }
 
@@ -185,7 +204,7 @@
 
         .box table td, .box table th {
             border: 1px solid #000;
-            padding: 4px;
+            padding: 2px 4px;
             text-align: center;
         }
 
@@ -196,7 +215,7 @@
 
         /* Signature Section */
         .umum-sign {
-            margin-top: 35px;
+            margin-top: 20px;
             display: flex;
             justify-content: space-between;
             align-items: flex-start; 
@@ -209,11 +228,11 @@
         }
 
         .umum-sign div:nth-child(2) {
-            margin-top: 40px;
+            margin-top: 30px;
         }
 
         .umum-sign p {
-            margin: 3px 0;
+            margin: 2px 0;
         }
 
         .umum-sign b {
@@ -228,7 +247,7 @@
 
             .umum-container {
                 width: 100%;
-                min-height: auto;
+                min-height: 297mm;
                 padding: 0;
                 margin: 0;
                 box-shadow: none;
@@ -245,7 +264,7 @@
 
             /* A4 Page Setup */
             @page {
-                size: A4;
+                size: A4 portrait;
                 margin: 0; /* Menghilangkan Header/Footer bawaan browser (Tanggal, URL, dll) */
             }
 
@@ -266,7 +285,8 @@
 </head>
 <body>
 <div class="umum-container">
-    <!-- WATERMARK LOGO -->
+    <!-- WATERMARK LOGO & TEXT -->
+    <div class="watermark-text"></div>
     <div class="watermark">
         <img src="{{ asset('images/logo.png') }}" alt="Logo Watermark">
     </div>
@@ -299,11 +319,13 @@
 
     @php
         // Fungsi untuk menghitung predikat
-        function getPredikat($nilai) {
-            if ($nilai >= 91) return 'A';
-            if ($nilai >= 83) return 'B';
-            if ($nilai >= 75) return 'C';
-            return '-';
+        if (!function_exists('getPredikat')) {
+            function getPredikat($nilai) {
+                if ($nilai >= 91) return 'A';
+                if ($nilai >= 83) return 'B';
+                if ($nilai >= 75) return 'C';
+                return '-';
+            }
         }
 
         $totalNilai = 0;

@@ -8,11 +8,9 @@ class MasterKelas extends Model
 {
     protected $table = 'master_kelas';
     
-    // Hanya tingkat dan nama_surah - wali_kelas_id sudah dipindah ke TahunKelas
-    protected $fillable = ['tingkat', 'nama_surah', 'wali_kelas_id'];
+    protected $fillable = ['tingkat', 'nama_surah'];
 
-    public function waliKelas(): \Illuminate\Database\Eloquent\Relations\BelongsTo
-    {
-        return $this->belongsTo(StaffSdm::class, 'wali_kelas_id');
-    }
+    /**
+     * Wali kelas sekarang dikelola per tahun ajaran di model TahunKelas
+     */
 }

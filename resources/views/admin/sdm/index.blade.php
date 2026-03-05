@@ -71,7 +71,18 @@
                                 <span class="font-medium text-gray-800">{{ $s->nama }}</span>
                             </div>
                         </td>
-                        <td class="px-4 py-3 text-gray-600">{{ $s->jabatan }}</td>
+                        <td class="px-4 py-3">
+                            <div class="text-sm text-gray-900 font-medium">{{ $s->jabatan }}</div>
+                            @php
+                                $activeAssignment = $s->tahunKelas->first();
+                            @endphp
+                            @if($activeAssignment)
+                                <div class="inline-flex items-center gap-1.5 px-2 py-0.5 rounded-md bg-blue-50 text-blue-700 text-[10px] uppercase font-bold mt-1 border border-blue-100">
+                                    <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4"/></svg>
+                                    Wali Kelas {{ $activeAssignment->kelas }}
+                                </div>
+                            @endif
+                        </td>
                         <td class="px-4 py-3 text-gray-600">{{ $s->niy ?? '-' }}</td>
                         <td class="px-4 py-3 text-gray-600">{{ $s->spesialisasi?->nama ?? '-' }}</td>
                         <td class="px-4 py-3 text-gray-600">{{ $s->email ?? '-' }}</td>

@@ -29,7 +29,7 @@
         <div>
             <label class="block text-sm font-medium text-gray-700 mb-1">URL YouTube <span class="text-red-500">*</span></label>
             <input type="text" name="url_youtube" id="url_youtube"
-                   value="{{ old('url_youtube', $item ? 'https://www.youtube.com/watch?v='.$item->youtube_id : '') }}"
+                   value="{{ old('url_youtube', $item ? ($item->url_asli ?? 'https://www.youtube.com/watch?v='.$item->youtube_id) : '') }}"
                    required x-on:input.debounce.500ms="previewThumbnail($event.target.value)"
                    class="w-full px-4 py-2 rounded-lg border border-gray-300 focus:ring-2 focus:ring-[#47663D] focus:border-[#47663D]"
                    placeholder="https://www.youtube.com/watch?v=...">

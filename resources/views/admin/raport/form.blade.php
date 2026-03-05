@@ -79,10 +79,16 @@
             </div>
         </div>
 
-        <div class="mt-6 flex gap-3">
-            <button type="submit" class="px-6 py-2 bg-[#47663D] text-white rounded-lg hover:bg-[#5a7d52] font-medium">Simpan</button>
-            <a href="{{ route('admin.raport.byKelas', $item?->kelas ?? $kelas) }}?semester={{ $item?->semester ?? $semester }}&tahun_ajaran={{ $item?->tahun_ajaran ?? $tahun_ajaran }}" class="px-6 py-2 bg-gray-200 text-gray-700 rounded-lg hover:bg-gray-300 font-medium">Batal</a>
+        <div class="mt-8 pt-6 border-t border-gray-200 flex justify-end gap-3 flex-wrap">
+            <a href="{{ route('admin.raport.byKelas', $item?->kelas ?? $kelas) }}?semester={{ $item?->semester ?? $semester }}&tahun_ajaran={{ $item?->tahun_ajaran ?? $tahun_ajaran }}" class="px-6 py-2.5 bg-gray-100 text-gray-700 rounded-lg hover:bg-gray-200 font-bold transition-colors">Batal</a>
+            <button type="submit" class="px-8 py-2.5 bg-[#47663D] text-white rounded-lg hover:bg-[#5a7d52] font-bold shadow-lg shadow-[#47663D]/30 transition-all transform hover:-translate-y-0.5">
+                <span class="flex items-center gap-2">
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/></svg>
+                    Simpan Nilai
+                </span>
+            </button>
         </div>
     </form>
 </div>
 @endsection
+

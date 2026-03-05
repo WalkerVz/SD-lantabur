@@ -38,7 +38,13 @@ class SiswaController extends Controller
         }
 
         $rows = [];
-        $masterKelas = \App\Models\MasterKelas::with('waliKelas')->orderBy('tingkat')->get();
+        $masterKelas = \App\Models\MasterKelas::orderBy('tingkat')->get();
+
+        // Ambil data Wali Kelas dari TahunKelas untuk tahun yang dipilih
+        $waliKelasList = \App\Models\TahunKelas::where('tahun_ajaran', $tahunAjaran)
+            ->with('waliKelas')
+            ->get()
+            ->keyBy('kelas');
 
         // Optimize N+1: eager load count for enrollments matching the selected year
         $enrollmentCounts = \App\Models\Enrollment::where('tahun_ajaran', $tahunAjaran)
@@ -54,8 +60,8 @@ class SiswaController extends Controller
             $kelas = $mKelas->tingkat;
             $count = $enrollmentCounts->get($kelas, 0);
             
-            // Ambil Wali Kelas langsung dari MasterKelas
-            $wali = $mKelas->waliKelas;
+            // Ambil Wali Kelas dari TahunKelas (Historis)
+            $wali = $waliKelasList->get($kelas)?->waliKelas;
             
             // Ambil nominal SPP langsung dari array
             $spp = $sppData->get($kelas, 0);
@@ -370,9 +376,17 @@ class SiswaController extends Controller
         $nama_kelas = Siswa::getNamaKelas($kelas);
         $tanggal_cetak = now()->locale('id')->translatedFormat('d F Y');
 
-        // Ambil Wali Kelas dari MasterKelas directly (New Architecture)
-        $master = \App\Models\MasterKelas::where('tingkat', $kelas)->with('waliKelas')->first();
-        $wali_kelas = $master && $master->waliKelas ? $master->waliKelas->nama : '_______________________';
+        // Ambil Wali Kelas dari TahunKelas (Historis)
+        $tahunKelas = \App\Models\TahunKelas::where('tahun_ajaran', $tahun_ajaran)
+            ->where('kelas', $kelas)
+            ->with('waliKelas')
+            ->first();
+
+        $wali_kelas = $tahunKelas && $tahunKelas->waliKelas ? $tahunKelas->waliKelas->nama : '_______________________';
+        if ($wali_kelas === '_______________________') {
+            // Fallback: Jika tidak di set di TahunKelas, coba ambil dari Master Sdm yang jabatannya mirip (Opsional)
+            $wali_kelas = \App\Models\StaffSdm::where('jabatan', 'like', "%Wali Kelas $kelas%")->first()?->nama ?? '_______________________';
+        }
 
         return view('admin.siswa.cetak_absen', compact('siswa', 'kelas', 'nama_kelas', 'tahun_ajaran', 'tanggal_cetak', 'wali_kelas'));
     }
