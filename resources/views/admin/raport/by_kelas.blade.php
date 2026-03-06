@@ -27,14 +27,14 @@
     </div>
 
     <div class="bg-white rounded-xl shadow border border-gray-100">
-        <div class="pb-24 sm:pb-0 overflow-visible">
-            <table class="w-full text-left text-sm">
+        <div class="pb-24 sm:pb-0 overflow-x-auto">
+            <table class="w-full text-left text-sm min-w-[600px] sm:min-w-0">
                 <thead class="bg-gray-50 border-b border-gray-200">
                     <tr>
-                        <th class="px-6 py-4 font-semibold text-gray-700">No</th>
-                        <th class="px-6 py-4 font-semibold text-gray-700">Nama Siswa</th>
-                        <th class="px-6 py-4 font-semibold text-gray-700 text-center">Status Raport</th>
-                        <th class="px-6 py-4 font-semibold text-gray-700 text-right">Aksi</th>
+                        <th class="px-3 sm:px-6 py-4 font-semibold text-gray-700">No</th>
+                        <th class="px-3 sm:px-6 py-4 font-semibold text-gray-700 text-center sm:text-left">Nama Siswa</th>
+                        <th class="px-3 sm:px-6 py-4 font-semibold text-gray-700 text-center">Status</th>
+                        <th class="px-3 sm:px-6 py-4 font-semibold text-gray-700 text-right">Aksi</th>
                     </tr>
                 </thead>
                 <tbody class="divide-y divide-gray-100">
@@ -43,8 +43,8 @@
                         $nilai = $raport->get($s->id);
                     @endphp
                     <tr class="hover:bg-gray-50 transition-colors">
-                        <td class="px-6 py-4 text-gray-500">{{ $idx + 1 }}</td>
-                        <td class="px-6 py-4">
+                        <td class="px-3 sm:px-6 py-4 text-gray-500">{{ $idx + 1 }}</td>
+                        <td class="px-3 sm:px-6 py-4">
                             <div class="flex items-center justify-between">
                                 <div>
                                     <div class="font-bold text-gray-900 leading-tight">{{ $s->nama }}</div>
@@ -55,7 +55,7 @@
                                 </a>
                             </div>
                         </td>
-                        <td class="px-6 py-4 text-center">
+                        <td class="px-3 sm:px-6 py-4 text-center">
                             @php 
                                 $rj = $raportJilid->get($s->id); 
                                 $rt = $raportTahfidz->get($s->id);
@@ -84,7 +84,7 @@
                                 </span>
                             @endif
                         </td>
-                        <td class="px-6 py-4">
+                        <td class="px-3 sm:px-6 py-4">
                             @php 
                                 $rj = $raportJilid->get($s->id); 
                                 $rt = $raportTahfidz->get($s->id);

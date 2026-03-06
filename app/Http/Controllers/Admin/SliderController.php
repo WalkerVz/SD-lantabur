@@ -6,9 +6,11 @@ use App\Http\Controllers\Controller;
 use App\Models\Slider;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
+use App\Traits\ImageOptimization;
 
 class SliderController extends Controller
 {
+    use ImageOptimization;
     public function index()
     {
         $items = Slider::orderBy('urutan')->get();
@@ -29,7 +31,7 @@ class SliderController extends Controller
             'urutan' => 'nullable|integer|min:0',
         ]);
 
-        $path = $request->file('gambar')->store('sliders', 'public');
+        $path = $this->optimizeAndStore($request->file('gambar'), 'sliders', 1920); // Hero slider allows larger width
         Slider::create([
             'judul' => $request->judul,
             'deskripsi' => $request->deskripsi,
@@ -67,7 +69,7 @@ class SliderController extends Controller
         ];
         if ($request->hasFile('gambar')) {
             Storage::disk('public')->delete($item->gambar);
-            $data['gambar'] = $request->file('gambar')->store('sliders', 'public');
+            $data['gambar'] = $this->optimizeAndStore($request->file('gambar'), 'sliders', 1920);
         }
         $item->update($data);
         if ($request->wantsJson()) {

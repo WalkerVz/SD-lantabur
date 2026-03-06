@@ -13,9 +13,11 @@ use App\Models\StaffSdm;
 use App\Models\TahunKelas;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
+use App\Traits\ImageOptimization;
 
 class SiswaController extends Controller
 {
+    use ImageOptimization;
     public static function getTahunAjaranList(): array
     {
         return MasterTahunAjaran::getListForDropdown();
@@ -148,7 +150,7 @@ class SiswaController extends Controller
             if (empty($data[$col])) $data[$col] = 0;
         }
         if ($request->hasFile('foto') && $request->file('foto')->isValid()) {
-            $fotoPath = $request->file('foto')->store('siswa', 'public');
+            $fotoPath = $this->optimizeAndStore($request->file('foto'), 'siswa');
             if ($fotoPath) {
                 $data['foto'] = $fotoPath;
             }
@@ -232,7 +234,7 @@ class SiswaController extends Controller
             if ($item->foto) {
                 $oldFoto = $item->foto;
             }
-            $fotoPath = $request->file('foto')->store('siswa', 'public');
+            $fotoPath = $this->optimizeAndStore($request->file('foto'), 'siswa');
             if ($fotoPath) {
                 $data['foto'] = $fotoPath;
             }

@@ -6,9 +6,11 @@ use App\Http\Controllers\Controller;
 use App\Models\Berita;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
+use App\Traits\ImageOptimization;
 
 class NewsController extends Controller
 {
+    use ImageOptimization;
     public function index(Request $request)
     {
         $query = Berita::orderByDesc('published_at')->orderByDesc('created_at');
@@ -39,7 +41,7 @@ class NewsController extends Controller
         $data = $request->only(['judul', 'kategori', 'isi']);
         $data['published_at'] = $request->boolean('publish') ? now() : null;
         if ($request->hasFile('gambar')) {
-            $data['gambar'] = $request->file('gambar')->store('berita', 'public');
+            $data['gambar'] = $this->optimizeAndStore($request->file('gambar'), 'berita');
         }
         Berita::create($data);
         if ($request->wantsJson()) {
@@ -71,7 +73,7 @@ class NewsController extends Controller
             if ($item->gambar) {
                 Storage::disk('public')->delete($item->gambar);
             }
-            $data['gambar'] = $request->file('gambar')->store('berita', 'public');
+            $data['gambar'] = $this->optimizeAndStore($request->file('gambar'), 'berita');
         }
         $item->update($data);
         if ($request->wantsJson()) {

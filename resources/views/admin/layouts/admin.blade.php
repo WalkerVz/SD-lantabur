@@ -27,7 +27,10 @@
                         <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"/></svg>
                     </button>
                     <img src="{{ asset('images/logo.png') }}" alt="Logo" class="h-10" onerror="this.style.display='none'">
-                    <span class="font-bold text-lg">Admin SD Al-Qur'an Lantabur</span>
+                    <span class="font-bold text-lg">
+                        <span class="hidden sm:inline">Admin SD Al-Qur'an Lantabur</span>
+                        <span class="sm:hidden">Admin Lantabur</span>
+                    </span>
                 </div>
                 <div class="flex items-center gap-4">
                     <span class="text-white/90 text-sm hidden sm:block">Selamat datang, {{ Auth::user()->name ?? 'Admin' }}</span>

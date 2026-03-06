@@ -1,5 +1,7 @@
 @extends('layouts.app')
 
+@section('title', 'Hubungi Kami - SD Al-Qur\'an Lantabur')
+@section('meta_description', 'Pertanyaan seputar pendaftaran atau informasi sekolah? Hubungi SD Al-Qur\'an Lantabur melalui WhatsApp, Email, atau kunjungi alamat kami di Pekanbaru.')
 @section('content')
     {{-- HERO CONTACT --}}
     <section class="bg-gradient-to-r from-[#47663D] to-[#47663D] text-white py-24 px-5 border-b-4 border-[#FFB81C]">

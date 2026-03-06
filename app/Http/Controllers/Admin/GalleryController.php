@@ -6,9 +6,11 @@ use App\Http\Controllers\Controller;
 use App\Models\Gallery;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
+use App\Traits\ImageOptimization;
 
 class GalleryController extends Controller
 {
+    use ImageOptimization;
     public function index(Request $request)
     {
         $query = Gallery::orderBy('urutan')->orderByDesc('created_at');
@@ -33,7 +35,7 @@ class GalleryController extends Controller
             'urutan' => 'nullable|integer|min:0',
         ]);
 
-        $path = $request->file('gambar')->store('gallery', 'public');
+        $path = $this->optimizeAndStore($request->file('gambar'), 'gallery');
         Gallery::create([
             'judul' => $request->judul,
             'kategori' => $request->kategori,
@@ -65,7 +67,7 @@ class GalleryController extends Controller
         $data = ['judul' => $request->judul, 'kategori' => $request->kategori, 'urutan' => $request->urutan ?? 0];
         if ($request->hasFile('gambar')) {
             Storage::disk('public')->delete($item->gambar);
-            $data['gambar'] = $request->file('gambar')->store('gallery', 'public');
+            $data['gambar'] = $this->optimizeAndStore($request->file('gambar'), 'gallery');
         }
         $item->update($data);
         if ($request->wantsJson()) {

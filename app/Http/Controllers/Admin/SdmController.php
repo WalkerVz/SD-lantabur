@@ -8,9 +8,11 @@ use App\Models\StaffSdm;
 use Barryvdh\DomPDF\Facade\Pdf;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
+use App\Traits\ImageOptimization;
 
 class SdmController extends Controller
 {
+    use ImageOptimization;
     public function index(Request $request)
     {
         $tahunAktif = \App\Models\MasterTahunAjaran::getAktif();
@@ -71,7 +73,7 @@ class SdmController extends Controller
 
         $data = $request->only(['nama', 'jabatan', 'niy', 'email', 'nomor_handphone', 'spesialisasi_id', 'jenis_kelamin', 'tempat_lahir', 'tanggal_lahir', 'alamat', 'agama']);
         if ($request->hasFile('foto')) {
-            $data['foto'] = $request->file('foto')->store('staff_sdm', 'public');
+            $data['foto'] = $this->optimizeAndStore($request->file('foto'), 'staff_sdm');
         }
         $staff = StaffSdm::create($data);
         
@@ -111,7 +113,7 @@ class SdmController extends Controller
             if ($item->foto) {
                 Storage::disk('public')->delete($item->foto);
             }
-            $data['foto'] = $request->file('foto')->store('staff_sdm', 'public');
+            $data['foto'] = $this->optimizeAndStore($request->file('foto'), 'staff_sdm');
         }
         $item->update($data);
         
