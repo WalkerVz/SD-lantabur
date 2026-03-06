@@ -109,8 +109,11 @@
                                         <td class="px-3 py-2 text-gray-600" x-text="s.nis || '-'"></td>
                                         <td class="px-3 py-2 text-gray-600" x-text="s.nisn || '-'"></td>
                                         <td class="px-3 py-2">
-                                            <button type="button" @click="openFormModal(s.id)" class="text-blue-600 hover:underline text-sm mr-2">Edit</button>
-                                            <button type="button" @click="confirmDelete(s.id, s.nama)" class="text-red-600 hover:underline text-sm">Hapus</button>
+                                            <div class="flex items-center gap-2">
+                                                <button type="button" @click="openFormModal(s.id)" class="text-blue-600 hover:text-blue-800 font-medium text-xs uppercase tracking-wider transition-colors">Edit</button>
+                                                <button type="button" @click="confirmRemove(s.id, s.nama)" class="text-amber-600 hover:text-amber-800 font-medium text-xs uppercase tracking-wider transition-colors" title="Cuma hapus dari kelas ini, profil aman">Keluarkan</button>
+                                                <button type="button" @click="confirmDelete(s.id, s.nama)" class="text-red-600 hover:text-red-800 font-medium text-xs uppercase tracking-wider transition-colors" title="HAPUS PERMANEN (SEMUA DATA HILANG)">Hapus</button>
+                                            </div>
                                         </td>
                                     </tr>
                                 </template>
@@ -140,22 +143,46 @@
         </div>
     </div>
 
-    {{-- Modal Konfirmasi Hapus --}}
+    {{-- Modal Konfirmasi Hapus PERMANEN --}}
     <div x-show="deleteConfirmOpen" x-cloak class="fixed inset-0 z-[70] overflow-y-auto" role="dialog" aria-modal="true">
         <div class="flex min-h-screen items-center justify-center p-4">
             <div x-show="deleteConfirmOpen" class="fixed inset-0 bg-gray-900/60 backdrop-blur-sm" @click="deleteConfirmOpen = false"></div>
-            <div x-show="deleteConfirmOpen" x-transition class="relative bg-white rounded-2xl shadow-2xl max-w-md w-full p-6">
-                <div class="text-center">
-                    <div class="mx-auto w-14 h-14 rounded-full bg-red-100 flex items-center justify-center mb-4">
-                        <svg class="w-8 h-8 text-red-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"/></svg>
-                    </div>
-                    <h3 class="text-lg font-bold text-gray-900 mb-2">Hapus Siswa?</h3>
-                    <p class="text-gray-600 text-sm mb-2">Anda yakin ingin menghapus <strong x-text="deleteConfirmNama"></strong>?</p>
-                    <p class="text-gray-500 text-xs mb-6">Data yang dihapus tidak dapat dikembalikan.</p>
-                    <div class="flex gap-3 justify-center">
-                        <button type="button" @click="deleteConfirmOpen = false" class="px-5 py-2.5 bg-gray-200 text-gray-700 rounded-lg font-medium hover:bg-gray-300 transition">Batal</button>
-                        <button type="button" @click="doDelete()" class="px-5 py-2.5 bg-red-500 text-white rounded-lg font-medium hover:bg-red-600 transition">Ya, Hapus</button>
-                    </div>
+            <div x-show="deleteConfirmOpen" x-transition class="relative bg-white rounded-2xl shadow-2xl max-w-md w-full p-6 text-center">
+                <div class="mx-auto w-14 h-14 rounded-full bg-red-100 flex items-center justify-center mb-4">
+                    <svg class="w-8 h-8 text-red-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"/></svg>
+                </div>
+                <h3 class="text-lg font-bold text-gray-900 mb-2 uppercase tracking-tight">Hapus Siswa Permanen?</h3>
+                <p class="text-gray-600 text-sm mb-4 leading-relaxed">
+                    Anda yakin ingin menghapus <strong x-text="deleteConfirmNama" class="text-red-700"></strong>?
+                </p>
+                <div class="bg-red-50 border border-red-100 rounded-xl p-3 mb-6">
+                    <p class="text-[11px] text-red-600 font-bold uppercase tracking-widest leading-none mb-1">Peringatan Keras:</p>
+                    <p class="text-xs text-red-500">Tindakan ini akan menghapus **SELURUH DATA** (biodata, raport tahun lalu, pembayaran) dari sistem selamanya.</p>
+                </div>
+                <div class="flex gap-3 justify-center">
+                    <button type="button" @click="deleteConfirmOpen = false" class="flex-1 px-5 py-2.5 bg-gray-100 text-gray-700 rounded-xl font-medium hover:bg-gray-200 transition">Batal</button>
+                    <button type="button" @click="doDelete()" class="flex-1 px-5 py-2.5 bg-red-600 text-white rounded-xl font-bold hover:bg-red-700 transition shadow-lg shadow-red-200">Ya, Hapus Semua</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    {{-- Modal Konfirmasi Keluarkan dari Kelas --}}
+    <div x-show="removeConfirmOpen" x-cloak class="fixed inset-0 z-[70] overflow-y-auto" role="dialog" aria-modal="true">
+        <div class="flex min-h-screen items-center justify-center p-4">
+            <div x-show="removeConfirmOpen" class="fixed inset-0 bg-gray-900/60 backdrop-blur-sm" @click="removeConfirmOpen = false"></div>
+            <div x-show="removeConfirmOpen" x-transition class="relative bg-white rounded-2xl shadow-2xl max-w-md w-full p-6 text-center">
+                <div class="mx-auto w-14 h-14 rounded-full bg-amber-100 flex items-center justify-center mb-4 text-amber-600">
+                    <svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1"/></svg>
+                </div>
+                <h3 class="text-lg font-bold text-gray-900 mb-2">Keluarkan dari Kelas?</h3>
+                <p class="text-gray-600 text-sm mb-6 leading-relaxed">
+                    Keluarkan <strong x-text="removeConfirmNama"></strong> dari Kelas <span x-text="modalKelas"></span> pada tahun <span x-text="tahunAjaran"></span>?
+                    <br><span class="text-xs text-gray-400 mt-2 block">(Data profil & riwayat lainnya tetap aman)</span>
+                </p>
+                <div class="flex gap-3 justify-center">
+                    <button type="button" @click="removeConfirmOpen = false" class="flex-1 px-5 py-2.5 bg-gray-100 text-gray-700 rounded-xl font-medium hover:bg-gray-200 transition">Batal</button>
+                    <button type="button" @click="doRemove()" class="flex-1 px-5 py-2.5 bg-amber-500 text-white rounded-xl font-bold hover:bg-amber-600 transition shadow-lg shadow-amber-200">Ya, Keluarkan</button>
                 </div>
             </div>
         </div>
@@ -175,13 +202,17 @@ function siswaPage() {
         listModalOpen: false,
         formModalOpen: false,
         deleteConfirmOpen: false,
+        removeConfirmOpen: false,
         modalKelas: 1,
+        tahunAjaran: tahunAjaran,
         listSiswa: [],
         listLoading: false,
         formModalEditId: null,
         formModalUrl: '',
         deleteConfirmId: null,
         deleteConfirmNama: '',
+        removeConfirmId: null,
+        removeConfirmNama: '',
 
         openListModal(kelas) {
             this.modalKelas = kelas;
@@ -242,7 +273,7 @@ function siswaPage() {
 
         doDelete() {
             if (!this.deleteConfirmId) return;
-            const url = deleteUrl(this.deleteConfirmId);
+            const url = deleteUrl(this.deleteConfirmId) + '?tahun_ajaran=' + encodeURIComponent(tahunAjaran);
             fetch(url, {
                 method: 'DELETE',
                 headers: {
@@ -258,6 +289,32 @@ function siswaPage() {
                     this.openListModal(this.modalKelas);
                 })
                 .catch(() => { this.deleteConfirmOpen = false; });
+        },
+
+        confirmRemove(id, nama) {
+            this.removeConfirmId = id;
+            this.removeConfirmNama = nama || 'siswa ini';
+            this.removeConfirmOpen = true;
+        },
+
+        doRemove() {
+            if (!this.removeConfirmId) return;
+            const url = deleteUrl(this.removeConfirmId) + '/remove-from-class?tahun_ajaran=' + encodeURIComponent(tahunAjaran);
+            fetch(url, {
+                method: 'DELETE',
+                headers: {
+                    'Accept': 'application/json',
+                    'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]')?.getAttribute('content') || document.querySelector('input[name="_token"]')?.value,
+                    'X-Requested-With': 'XMLHttpRequest'
+                }
+            })
+                .then(r => r.json())
+                .then(() => {
+                    this.removeConfirmOpen = false;
+                    this.removeConfirmId = null;
+                    this.openListModal(this.modalKelas);
+                })
+                .catch(() => { this.removeConfirmOpen = false; });
         }
     };
 }

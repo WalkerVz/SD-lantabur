@@ -121,8 +121,8 @@ class SiswaController extends Controller
         $request->validate([
             'nama' => 'required|string|max:255',
             'kelas' => 'required|integer|exists:master_kelas,tingkat',
-            'nis' => 'nullable|string|max:50',
-            'nisn' => 'nullable|string|max:50',
+            'nis' => 'nullable|string|max:50|unique:siswa,nis',
+            'nisn' => 'nullable|string|max:50|unique:siswa,nisn',
             'jenis_kelamin' => 'nullable|string|max:20',
             'tempat_lahir' => 'nullable|string|max:100',
             'tanggal_lahir' => 'nullable|date',
@@ -204,8 +204,8 @@ class SiswaController extends Controller
         $request->validate([
             'nama' => 'required|string|max:255',
             'kelas' => 'required|integer|exists:master_kelas,tingkat',
-            'nis' => 'nullable|string|max:50',
-            'nisn' => 'nullable|string|max:50',
+            'nis' => 'nullable|string|max:50|unique:siswa,nis,' . $id,
+            'nisn' => 'nullable|string|max:50|unique:siswa,nisn,' . $id,
             'jenis_kelamin' => 'nullable|string|max:20',
             'tempat_lahir' => 'nullable|string|max:100',
             'tanggal_lahir' => 'nullable|date',
@@ -242,10 +242,30 @@ class SiswaController extends Controller
 
         try {
             \Illuminate\Support\Facades\DB::transaction(function () use ($item, $data, $request, $oldFoto) {
+                $oldKelas = $item->kelas;
+                $newKelas = (int) $request->kelas;
+                $tahunAjaran = $request->tahun_ajaran;
+
                 $item->update($data);
 
                 if ($request->filled('tahun_ajaran')) {
-                    Enrollment::where('tahun_ajaran', $request->tahun_ajaran)->where('siswa_id', $item->id)->update(['kelas' => $request->kelas]);
+                    Enrollment::updateOrCreate(
+                        ['tahun_ajaran' => $tahunAjaran, 'siswa_id' => $item->id],
+                        ['kelas' => $newKelas]
+                    );
+
+                    // Sync related data if class corrected within the same year
+                    if ($oldKelas !== $newKelas) {
+                        \App\Models\RaportNilai::where('siswa_id', $item->id)
+                            ->where('tahun_ajaran', $tahunAjaran)
+                            ->where('kelas', $oldKelas)
+                            ->update(['kelas' => $newKelas]);
+
+                        \App\Models\Pembayaran::where('siswa_id', $item->id)
+                            ->where('tahun_ajaran', $tahunAjaran)
+                            ->where('kelas', $oldKelas)
+                            ->update(['kelas' => $newKelas]);
+                    }
                 }
 
                 $item->infoPribadi()->updateOrCreate(
@@ -281,7 +301,22 @@ class SiswaController extends Controller
         if ($request->wantsJson()) {
             return response()->json(['success' => true]);
         }
-        return redirect()->route('admin.siswa.index', ['tahun_ajaran' => $tahunAjaran])->with('success', 'Siswa berhasil dihapus.');
+        return redirect()->route('admin.siswa.index', ['tahun_ajaran' => $tahunAjaran])->with('success', 'Siswa berhasil dihapus secara permanen.');
+    }
+
+    public function removeFromClass(string $id, Request $request)
+    {
+        $tahunAjaran = $request->get('tahun_ajaran');
+        if (!$tahunAjaran) {
+            return response()->json(['success' => false, 'message' => 'Tahun ajaran tidak ditentukan.'], 400);
+        }
+
+        Enrollment::where('siswa_id', $id)->where('tahun_ajaran', $tahunAjaran)->delete();
+
+        if ($request->wantsJson()) {
+            return response()->json(['success' => true]);
+        }
+        return back()->with('success', 'Siswa berhasil dikeluarakan dari kelas.');
     }
 
     public function exportPdf(Request $request)

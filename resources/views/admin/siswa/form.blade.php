@@ -18,7 +18,8 @@
             <div>
                 <label class="block text-sm font-medium text-gray-700 mb-1">Nama Siswa <span class="text-red-500">*</span></label>
                 <input type="text" name="nama" value="{{ old('nama', $item?->nama) }}" required class="w-full px-4 py-2 rounded-lg border border-gray-300 focus:ring-2 focus:ring-[#47663D] focus:border-[#47663D]">
-                <p id="err-nama" class="text-red-500 text-sm mt-1 hidden"></p>
+                <p id="err-nama" class="text-red-500 text-sm mt-1 {{ $errors->has('nama') ? '' : 'hidden' }}">@error('nama') {{ $message }} @enderror</p>
+                @if(!$isModal) @error('nama') <p class="text-red-500 text-sm mt-1">{{ $message }}</p> @enderror @endif
             </div>
             <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
                 <div>
@@ -28,7 +29,8 @@
                             <option value="{{ $k }}" {{ old('kelas', $item?->kelas ?? $kelas ?? 1) == $k ? 'selected' : '' }}>Kelas {{ $k }}</option>
                         @endforeach
                     </select>
-                    <p id="err-kelas" class="text-red-500 text-sm mt-1 hidden"></p>
+                    <p id="err-kelas" class="text-red-500 text-sm mt-1 {{ $errors->has('kelas') ? '' : 'hidden' }}">@error('kelas') {{ $message }} @enderror</p>
+                    @if(!$isModal) @error('kelas') <p class="text-red-500 text-sm mt-1">{{ $message }}</p> @enderror @endif
                 </div>
                 <div>
                     <label class="block text-sm font-medium text-gray-700 mb-1">Jenis Kelamin</label>
@@ -43,10 +45,14 @@
                 <div>
                     <label class="block text-sm font-medium text-gray-700 mb-1">NIS</label>
                     <input type="text" name="nis" value="{{ old('nis', $item?->nis) }}" class="w-full px-4 py-2 rounded-lg border border-gray-300 focus:ring-2 focus:ring-[#47663D] focus:border-[#47663D]">
+                    <p id="err-nis" class="text-red-500 text-sm mt-1 hidden">@error('nis') {{ $message }} @enderror</p>
+                    @error('nis') <p class="text-red-500 text-sm mt-1">{{ $message }}</p> @enderror
                 </div>
                 <div>
                     <label class="block text-sm font-medium text-gray-700 mb-1">NISN</label>
                     <input type="text" name="nisn" value="{{ old('nisn', $item?->nisn) }}" class="w-full px-4 py-2 rounded-lg border border-gray-300 focus:ring-2 focus:ring-[#47663D] focus:border-[#47663D]">
+                    <p id="err-nisn" class="text-red-500 text-sm mt-1 hidden">@error('nisn') {{ $message }} @enderror</p>
+                    @error('nisn') <p class="text-red-500 text-sm mt-1">{{ $message }}</p> @enderror
                 </div>
             </div>
             <div>
@@ -55,6 +61,7 @@
                     <span class="absolute left-3 top-1/2 -translate-y-1/2 text-gray-500 text-sm font-medium">Rp</span>
                     <input type="number" name="spp" min="0" step="1" value="{{ old('spp', $item?->spp ?? 0) }}" placeholder="0" class="w-full pl-10 pr-4 py-2 rounded-lg border border-gray-300 focus:ring-2 focus:ring-[#47663D] focus:border-[#47663D]">
                 </div>
+                <p id="err-spp" class="text-red-500 text-sm mt-1 {{ $errors->has('spp') ? '' : 'hidden' }}">@error('spp') {{ $message }} @enderror</p>
                 <p class="text-xs text-gray-500 mt-1">Biaya SPP per bulan. Digunakan sebagai total tagihan di menu Pembayaran.</p>
             </div>
 
@@ -71,6 +78,7 @@
                                 onblur="if(this.value===''){this.value='0';}"
                                 class="w-full pl-8 pr-3 py-2 text-sm rounded-lg border border-gray-300 focus:ring-2 focus:ring-[#47663D] focus:border-[#47663D]">
                         </div>
+                        <p id="err-biaya_seragam" class="text-red-500 text-[10px] mt-0.5 hidden"></p>
                     </div>
                     <div>
                         <label class="block text-xs font-medium text-gray-600 mb-1">Sarana &amp; Prasarana (Rp)</label>
@@ -81,6 +89,7 @@
                                 onblur="if(this.value===''){this.value='0';}"
                                 class="w-full pl-8 pr-3 py-2 text-sm rounded-lg border border-gray-300 focus:ring-2 focus:ring-[#47663D] focus:border-[#47663D]">
                         </div>
+                        <p id="err-biaya_sarana_prasarana" class="text-red-500 text-[10px] mt-0.5 hidden"></p>
                     </div>
                     <div>
                         <label class="block text-xs font-medium text-gray-600 mb-1">Kegiatan Tahunan (Rp)</label>
@@ -91,6 +100,7 @@
                                 onblur="if(this.value===''){this.value='0';}"
                                 class="w-full pl-8 pr-3 py-2 text-sm rounded-lg border border-gray-300 focus:ring-2 focus:ring-[#47663D] focus:border-[#47663D]">
                         </div>
+                        <p id="err-biaya_kegiatan_tahunan" class="text-red-500 text-[10px] mt-0.5 hidden"></p>
                     </div>
                 </div>
                 <p class="text-xs text-gray-400 mt-2">Nilai ini digunakan sebagai <strong>total tagihan</strong> di menu Pembayaran untuk masing-masing jenis.</p>
@@ -103,6 +113,7 @@
                 <div>
                     <label class="block text-sm font-medium text-gray-700 mb-1">Tanggal Lahir</label>
                     <input type="date" name="tanggal_lahir" value="{{ old('tanggal_lahir', $item?->tanggal_lahir?->format('Y-m-d')) }}" class="w-full px-4 py-2 rounded-lg border border-gray-300 focus:ring-2 focus:ring-[#47663D] focus:border-[#47663D]">
+                    <p id="err-tanggal_lahir" class="text-red-500 text-sm mt-1 {{ $errors->has('tanggal_lahir') ? '' : 'hidden' }}">@error('tanggal_lahir') {{ $message }} @enderror</p>
                 </div>
             </div>
             <div>
@@ -127,10 +138,12 @@
                     <div>
                         <label class="block text-sm font-medium text-gray-700 mb-1">Nama Ayah</label>
                         <input type="text" name="nama_ayah" value="{{ old('nama_ayah', $info?->nama_ayah) }}" class="w-full px-4 py-2 rounded-lg border border-gray-300 focus:ring-2 focus:ring-[#47663D] focus:border-[#47663D]">
+                        <p id="err-nama_ayah" class="text-red-500 text-xs mt-1 hidden"></p>
                     </div>
                     <div>
                         <label class="block text-sm font-medium text-gray-700 mb-1">Nama Ibu</label>
                         <input type="text" name="nama_ibu" value="{{ old('nama_ibu', $info?->nama_ibu) }}" class="w-full px-4 py-2 rounded-lg border border-gray-300 focus:ring-2 focus:ring-[#47663D] focus:border-[#47663D]">
+                        <p id="err-nama_ibu" class="text-red-500 text-xs mt-1 hidden"></p>
                     </div>
                     <div>
                         <label class="block text-sm font-medium text-gray-700 mb-1">Pekerjaan Ayah</label>
@@ -151,6 +164,7 @@
                     <div class="sm:col-span-2">
                         <label class="block text-sm font-medium text-gray-700 mb-1">Status</label>
                         <input type="text" name="status" value="{{ old('status', $info?->status) }}" placeholder="Contoh: Kandung" class="w-full px-4 py-2 rounded-lg border border-gray-300 focus:ring-2 focus:ring-[#47663D] focus:border-[#47663D]">
+                        <p id="err-status" class="text-red-500 text-xs mt-1 hidden"></p>
                     </div>
                 </div>
             </div>

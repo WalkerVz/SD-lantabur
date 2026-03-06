@@ -59,6 +59,7 @@ Route::prefix('admin')->name('admin.')->group(function () {
         Route::get('siswa/{id}/edit', [SiswaController::class, 'edit'])->name('siswa.edit');
         Route::put('siswa/{id}', [SiswaController::class, 'update'])->name('siswa.update');
         Route::delete('siswa/{id}', [SiswaController::class, 'destroy'])->name('siswa.destroy');
+        Route::delete('siswa/{id}/remove-from-class', [SiswaController::class, 'removeFromClass'])->name('siswa.removeFromClass');
         Route::get('siswa/export/pdf', [SiswaController::class, 'exportPdf'])->name('siswa.export.pdf');
         Route::get('siswa/cetak-absen/kelas/{kelas}', [SiswaController::class, 'cetakAbsen'])->name('siswa.cetakAbsen');
         Route::get('siswa-promotion', [SiswaController::class, 'promotion'])->name('siswa.promotion');
