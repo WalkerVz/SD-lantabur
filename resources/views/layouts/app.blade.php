@@ -3,23 +3,23 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>@yield('title', "SD Al-Qur'an Lantabur - Sekolah Dasar Unggul")</title>
-    <meta name="description" content="@yield('meta_description', 'Membangun generasi cerdas, berakhlak, dan siap menghadapi masa depan melalui pendidikan berkualitas dan berbasis Al-Qur\'an di SD Al-Qur\'an Lantabur.')">
+    <title>@yield('title', "SD Al-Qur'an Lantabur Pekanbaru - Sekolah Dasar Unggul")</title>
+    <meta name="description" content="@yield('meta_description', 'Membangun generasi cerdas, berakhlak, dan siap menghadapi masa depan melalui pendidikan berkualitas dan berbasis Al-Qur\'an di SD Al-Qur\'an Lantabur Pekanbaru.')">
     
-    <meta name="keywords" content="@yield('meta_keywords', 'SD Al-Qur\'an Lantabur, Sekolah Dasar Pekanbaru, Pendidikan Islam, Tahfidz Al-Qur\'an, Islamic Character School')">
+    <meta name="keywords" content="@yield('meta_keywords', 'SD Al-Qur\'an Lantabur Pekanbaru, Sekolah Dasar Pekanbaru, Pendidikan Islam, Tahfidz Al-Qur\'an, Islamic Character School')">
     <link rel="canonical" href="{{ url()->current() }}">
 
     {{-- Open Graph Meta Tags --}}
-    <meta property="og:title" content="@yield('title', 'SD Al-Qur\'an Lantabur - Sekolah Dasar Unggul')">
-    <meta property="og:description" content="@yield('meta_description', 'Membangun generasi cerdas, berakhlak, dan berbasis Al-Qur\'an di SD Al-Qur\'an Lantabur.')">
+    <meta property="og:title" content="@yield('title', 'SD Al-Qur\'an Lantabur Pekanbaru - Sekolah Dasar Unggul')">
+    <meta property="og:description" content="@yield('meta_description', 'Membangun generasi cerdas, berakhlak, dan berbasis Al-Qur\'an di SD Al-Qur\'an Lantabur Pekanbaru.')">
     <meta property="og:image" content="@yield('meta_image', asset('images/logo.png'))">
     <meta property="og:url" content="{{ url()->current() }}">
     <meta property="og:type" content="website">
-    <meta property="og:site_name" content="SD Al-Qur'an Lantabur">
+    <meta property="og:site_name" content="SD Al-Qur'an Lantabur Pekanbaru">
 
     {{-- Twitter Card Meta Tags --}}
     <meta name="twitter:card" content="summary_large_image">
-    <meta name="twitter:title" content="@yield('title', 'SD Al-Qur\'an Lantabur')">
+    <meta name="twitter:title" content="@yield('title', 'SD Al-Qur\'an Lantabur Pekanbaru')">
     <meta name="twitter:description" content="@yield('meta_description', 'Pendidikan Sekolah Dasar terbaik berbasis nilai-nilai Al-Qur\'an.')">
     <meta name="twitter:image" content="@yield('meta_image', asset('images/logo.png'))">
 
@@ -88,7 +88,7 @@
                 <div>
                     <div class="flex items-center gap-3 mb-4">
                         <img src="{{ asset('images/logo.png') }}" alt="Logo" class="h-12 w-auto" loading="lazy">
-                        <h3 class="text-xl font-bold text-white">SD Al-Qur'an Lantabur</h3>
+                        <h3 class="text-xl font-bold text-white">SD Al-Qur'an Lantabur Pekanbaru</h3>
                     </div>
                     <p class="text-gray-400 leading-relaxed">
                         Membangun generasi cerdas, berakhlak, dan siap menghadapi masa depan 
@@ -118,7 +118,7 @@
             </div>
             <hr class="border-[#47663D] mb-6">
             <div class="text-center text-gray-400">
-                <p>&copy; 2026 SD Al-Qur'an Lantabur. All rights reserved.</p>
+                <p>&copy; 2026 SD Al-Qur'an Lantabur Pekanbaru. All rights reserved.</p>
             </div>
         </div>
     </footer>

@@ -26,10 +26,10 @@ class RaportController extends Controller
         return view('admin.raport.index', compact('classes'));
     }
 
-    public function byKelas(int $kelas)
+    public function byKelas(int $kelas, Request $request)
     {
-        [$tahun, $semester] = $this->resolveTahunSemester(request());
-        $siswa = $this->getSiswaByKelas($kelas, $tahun);
+        [$tahun, $semester] = $this->resolveTahunSemester($request);
+        $siswa = $this->getSiswaByKelas($kelas, $tahun, $request->get('search'));
 
         $raport = RaportNilai::where('kelas', $kelas)
             ->where('semester', $semester)
@@ -639,7 +639,7 @@ class RaportController extends Controller
             ->first();
 
         $masterMateriTahfidz = MasterMateriTahfidz::orderBy('urutan')->get();
-
+        
         return view('admin.raport.form_tahfidz', compact('siswa', 'item', 'tahun', 'semester', 'masterMateriTahfidz'));
     }
 
@@ -826,13 +826,18 @@ class RaportController extends Controller
         return [$tahun, $semester];
     }
 
-    private function getSiswaByKelas(int $kelas, string $tahun)
+    private function getSiswaByKelas(int $kelas, string $tahun, ?string $search = null)
     {
-        return Enrollment::where('tahun_ajaran', $tahun)
+        $query = Enrollment::where('tahun_ajaran', $tahun)
             ->where('kelas', $kelas)
-            ->whereHas('siswa') // Ensure we only get valid enrollments
-            ->with('siswa:id,nama,kelas,nisn') // Only fetch needed columns
-            ->get()
+            ->whereHas('siswa', function($q) use ($search) {
+                if ($search) {
+                    $q->where('nama', 'like', "%$search%");
+                }
+            })
+            ->with('siswa:id,nama,kelas,nisn');
+
+        return $query->get()
             ->pluck('siswa')
             ->sortBy('nama')
             ->values();

@@ -5,7 +5,7 @@
     {{-- HERO ABOUT --}}
     <section class="bg-gradient-to-r from-[#47663D] to-[#47663D] text-white py-24 px-5 border-b-4 border-[#FFB81C]">
         <div class="max-w-4xl mx-auto text-center">
-            <h1 class="text-5xl font-bold mb-6">Tentang SD Al-Qur'an Lantabur</h1>
+            <h1 class="text-5xl font-bold mb-6">Tentang SD Al-Qur'an Lantabur Pekanbaru</h1>
             <p class="text-xl text-white/60">Memahami visi dan misi kami dalam membangun pendidikan berkualitas</p>
         </div>
     </section>

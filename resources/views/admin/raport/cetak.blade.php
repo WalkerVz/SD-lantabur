@@ -9,7 +9,7 @@
 <body class="bg-white text-gray-800 p-6 print:p-4">
     <div class="max-w-4xl mx-auto">
         <div class="text-center border-b border-gray-300 pb-4 mb-4">
-            <h1 class="text-xl font-bold">SD Al-Qur'an Lantabur</h1>
+            <h1 class="text-xl font-bold">SD Al-Qur'an Lantabur Pekanbaru</h1>
             <p class="text-sm text-gray-600">Raport Nilai – Kelas {{ $kelas }}</p>
             <p class="text-sm text-gray-600">{{ $semester }} – Tahun Ajaran {{ $tahun }}</p>
         </div>

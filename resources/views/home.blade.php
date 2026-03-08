@@ -90,7 +90,7 @@
                     {{-- Logo --}}
                     <div class="flex justify-center md:justify-end">
                         <div class="bg-white p-4 rounded-lg shadow-lg">
-                            <img src="{{ asset('images/logo.png') }}" alt="Logo SD Al-Qur'an Lantabur" class="h-32 w-auto" loading="lazy">
+                            <img src="{{ asset('images/logo.png') }}" alt="Logo SD Al-Qur'an Lantabur Pekanbaru" class="h-32 w-auto" loading="lazy">
                         </div>
                     </div>
 
@@ -100,7 +100,7 @@
                             Assalamualaikum Warahmatullahi Wabarakatuh
                         </p>
                         <p class="text-base md:text-lg leading-relaxed text-white/80 text-center md:text-left">
-                            Kami mengucapkan selamat datang dan terima kasih telah memilih SD Al-Qur'an Lantabur sebagai lembaga pendidikan
+                            Kami mengucapkan selamat datang dan terima kasih telah memilih SD Al-Qur'an Lantabur Pekanbaru sebagai lembaga pendidikan
                             bagi putra dan putri Anda. Kami berkomitmen untuk menjadi mitra terpercaya dalam membangun generasi yang tidak hanya
                             cerdas secara akademik, tetapi juga memiliki akhlak mulia dan jiwa kepemimpinan yang kuat.
                         </p>
@@ -130,7 +130,7 @@
                 <br><span class="text-sm text-gray-500">(HR. Tirmidzi)</span>
             </p>
             <p class="text-lg text-gray-700 leading-relaxed mb-8">
-                SD Al-Qur'an Lantabur berkomitmen memberikan pendidikan terbaik dengan
+                SD Al-Qur'an Lantabur Pekanbaru berkomitmen memberikan pendidikan terbaik dengan
                 mengedepankan nilai-nilai Al-Qur'an, akhlak mulia, dan teknologi untuk mempersiapkan
                 generasi pemimpin yang berani, cerdas, dan bertakwa kepada Allah SWT.
             </p>
@@ -179,7 +179,7 @@
             </p>
             <p class="text-lg mb-10 text-white/70">
                 Daftarkan putra-putri Anda dan wujudkan masa depan yang gemilang bersama
-                SD Al-Qur'an Lantabur, tempat hati menjadi qur'ani dan ilmu menjadi amal.
+                SD Al-Qur'an Lantabur Pekanbaru, tempat hati menjadi qur'ani dan ilmu menjadi amal.
             </p>
             <a href="/contact" class="inline-block px-10 py-4 bg-[#FFB81C] text-[#47663D] font-bold text-lg rounded-lg hover:bg-[#F0A500] transition transform hover:scale-105 shadow-lg">
                 Hubungi Kami Sekarang

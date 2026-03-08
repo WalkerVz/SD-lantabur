@@ -84,7 +84,7 @@
         {{-- Header --}}
         <div class="header">
             <div class="header-title">LAPORAN PEMBAYARAN {{ strtoupper($nama_jenis) }}</div>
-            <div class="header-subtitle">SD AL-QUR'AN LANTABUR</div>
+            <div class="header-subtitle">SD AL-QUR'AN LANTABUR PEKANBARU</div>
             <div class="header-meta">
                 <span><strong>Tahun Ajaran:</strong> {{ $tahun_ajaran }}</span>
                 <span><strong>Cetak:</strong> {{ now()->locale('id')->translatedFormat('d F Y H:i') }}</span>
@@ -165,7 +165,7 @@
         
         {{-- Footer --}}
         <div class="footer">
-            <div class="footer-note">Dokumen ini adalah laporan resmi pembayaran SPP dari SD Al-Qur'an Lantabur.</div>
+            <div class="footer-note">Dokumen ini adalah laporan resmi pembayaran SPP dari SD Al-Qur'an Lantabur Pekanbaru.</div>
             <div class="footer-note">Untuk pertanyaan mengenai pembayaran, silakan hubungi bagian administrasi sekolah.</div>
             <div style="margin-top: 8px; opacity: 0.7; font-size: 9px;">Halaman ini bersifat KONFIDENSIAL</div>
         </div>

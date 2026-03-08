@@ -7,7 +7,7 @@
     <section class="bg-gradient-to-r from-[#47663D] to-[#47663D] text-white py-24 px-5 border-b-4 border-[#FFB81C]">
         <div class="max-w-4xl mx-auto text-center">
             <h1 class="text-5xl font-bold mb-6">Berita & Informasi</h1>
-            <p class="text-xl text-white/60">Dapatkan update terbaru dari SD Al-Qur'an Lantabur</p>
+            <p class="text-xl text-white/60">Dapatkan update terbaru dari SD Al-Qur'an Lantabur Pekanbaru</p>
         </div>
     </section>
 
@@ -16,7 +16,7 @@
             <div class="text-center mb-16">
                 <p class="text-[#FFB81C] text-2xl ornament-text mb-4">✦ ✦ ✦</p>
                 <h2 class="text-5xl font-bold text-[#47663D] mb-4">Berita & Informasi</h2>
-                <p class="text-gray-600 text-lg italic">Update terbaru dari komunitas SD Al-Qur'an Lantabur</p>
+                <p class="text-gray-600 text-lg italic">Update terbaru dari komunitas SD Al-Qur'an Lantabur Pekanbaru</p>
             </div>
 
             <form method="get" action="/news" class="mb-12 flex gap-4 flex-wrap justify-center">
@@ -73,7 +73,7 @@
     <section class="bg-gray-100 py-16 px-5">
         <div class="max-w-2xl mx-auto text-center">
             <h2 class="text-3xl font-bold text-[#47663D] mb-4">Dapatkan Berita Terbaru</h2>
-            <p class="text-gray-700 mb-8">Kunjungi halaman ini secara berkala untuk update terbaru tentang kegiatan dan informasi penting SD Al-Qur'an Lantabur.</p>
+            <p class="text-gray-700 mb-8">Kunjungi halaman ini secara berkala untuk update terbaru tentang kegiatan dan informasi penting SD Al-Qur'an Lantabur Pekanbaru.</p>
             <a href="/contact" class="inline-block px-8 py-3 bg-[#47663D] text-white font-bold rounded-lg hover:bg-[#5a7d52] transition">Hubungi Kami</a>
         </div>
     </section>

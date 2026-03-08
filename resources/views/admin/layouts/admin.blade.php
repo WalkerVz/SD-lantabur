@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="csrf-token" content="{{ csrf_token() }}">
-    <title>@yield('title', 'Admin') - SD Al-Qur'an Lantabur</title>
+    <title>@yield('title', 'Admin') - SD Al-Qur'an Lantabur Pekanbaru</title>
     <link rel="icon" type="image/png" href="{{ asset('images/logo.png') }}">
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap" rel="stylesheet">
     <script src="https://cdn.tailwindcss.com"></script>
@@ -28,7 +28,7 @@
                     </button>
                     <img src="{{ asset('images/logo.png') }}" alt="Logo" class="h-10" onerror="this.style.display='none'">
                     <span class="font-bold text-lg">
-                        <span class="hidden sm:inline">Admin SD Al-Qur'an Lantabur</span>
+                        <span class="hidden sm:inline">Admin SD Al-Qur'an Lantabur Pekanbaru</span>
                         <span class="sm:hidden">Admin Lantabur</span>
                     </span>
                 </div>
@@ -37,9 +37,9 @@
                     <form id="form-logout" method="POST" action="{{ route('admin.logout') }}" class="hidden">
                         @csrf
                     </form>
-                    <button type="button" @click="showLogoutModal = true" class="px-4 py-2 bg-red-500 hover:bg-red-600 rounded-lg text-sm font-semibold transition flex items-center gap-2">
-                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1"/></svg>
-                        Logout
+                    <button type="button" @click="showLogoutModal = true" class="px-3 sm:px-4 py-2 bg-red-500 hover:bg-red-600 rounded-lg text-sm font-semibold transition flex items-center gap-2 flex-shrink-0">
+                        <svg class="w-5 h-5 sm:w-4 sm:h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1"/></svg>
+                        <span class="hidden sm:inline">Logout</span>
                     </button>
                 </div>
             </div>
@@ -92,7 +92,7 @@
             <div class="flex items-center justify-between gap-2 p-4 border-b border-gray-100 min-h-[4rem]">
                 <a href="{{ route('admin.dashboard') }}" class="flex items-center gap-2 min-w-0 flex-1">
                     <img src="{{ asset('images/logo.png') }}" alt="Logo" class="h-9 flex-shrink-0" onerror="this.style.display='none'">
-                    <span x-show="!sidebarCollapsed" x-transition class="font-bold text-[#47663D] truncate">Admin SD Al-Qur'an Lantabur</span>
+                    <span x-show="!sidebarCollapsed" x-transition class="font-bold text-[#47663D] truncate">Admin SD Al-Qur'an Lantabur Pekanbaru</span>
                 </a>
                 <button @click="sidebarCollapsed = !sidebarCollapsed" class="hidden lg:flex p-2 rounded-lg hover:bg-gray-100 text-gray-600 flex-shrink-0" title="Sembunyikan/Tampilkan sidebar">
                     <svg x-show="!sidebarCollapsed" class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 19l-7-7 7-7m8 14l-7-7 7-7"/></svg>

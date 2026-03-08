@@ -22,7 +22,7 @@
 </head>
 <body>
     <div class="header">
-        <div class="school-name">SD AL-QUR'AN LANTABUR</div>
+        <div class="school-name">SD AL-QUR'AN LANTABUR PEKANBARU</div>
         <div>Jl. Mangga Besar, Tengkerang Timur, Kec. Tenayan Raya, Kota Pekanbaru, Riau</div>
         <div class="report-title">REKAPITULASI PEMBAYARAN {{ strtoupper($nama_jenis) }}</div>
     </div>

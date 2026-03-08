@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Login Admin - SD Al-Qur'an Lantabur</title>
+    <title>Login Admin - SD Al-Qur'an Lantabur Pekanbaru</title>
     <link rel="icon" type="image/png" href="{{ asset('images/logo.png') }}">
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
@@ -19,7 +19,7 @@
         <div class="bg-white/95 backdrop-blur rounded-2xl shadow-xl border border-[#47663D]/10 overflow-hidden">
             <div class="bg-gradient-to-r from-[#47663D] to-[#5a7d52] px-8 py-6 text-center">
                 <img src="{{ asset('images/logo.png') }}" alt="Logo" class="h-16 mx-auto mb-3 drop-shadow-lg" onerror="this.style.display='none'">
-                <h1 class="text-xl font-bold text-white">Sistem Informasi SD Al-Qur'an Lantabur</h1>
+                <h1 class="text-xl font-bold text-white">Sistem Informasi SD Al-Qur'an Lantabur Pekanbaru</h1>
                 <p class="text-white/80 text-sm mt-1">Panel Admin</p>
             </div>
             <form method="POST" action="{{ route('admin.login.submit') }}" class="p-8">
@@ -58,7 +58,7 @@
             </form>
 
         </div>
-        <p class="text-center text-gray-500 text-sm mt-4">&copy; {{ date('Y') }} SD Al-Qur'an Lantabur</p>
+        <p class="text-center text-gray-500 text-sm mt-4">&copy; {{ date('Y') }} SD Al-Qur'an Lantabur Pekanbaru</p>
     </div>
 </body>
 </html>

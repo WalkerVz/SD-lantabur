@@ -94,7 +94,7 @@ class SiswaController extends Controller
         }
         $siswa = Enrollment::where('tahun_ajaran', $tahunAjaran)
             ->where('kelas', $kelas)
-            ->with('siswa')
+            ->with('siswa.infoPribadi')
             ->get()
             ->pluck('siswa')
             ->filter()

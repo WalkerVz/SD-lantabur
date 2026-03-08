@@ -7,38 +7,47 @@
     <h1 class="text-2xl font-bold text-gray-800 mb-2">Manajemen SDM</h1>
     <p class="text-gray-600 mb-6">Selamat datang, {{ Auth::user()->name }}</p>
 
-    <div class="flex flex-wrap gap-2 mb-4 border-b border-gray-200">
-        <a href="{{ route('admin.sdm.index') }}" class="px-4 py-3 rounded-t-lg {{ request()->routeIs('admin.sdm.*') && !request()->routeIs('admin.struktur.*') ? 'bg-[#47663D] text-white' : 'bg-gray-100 text-gray-700 hover:bg-gray-200' }}">
-            <span class="inline-flex items-center gap-2">
+    <div class="flex flex-col sm:flex-row gap-0 sm:gap-2 mb-6 border-b border-gray-200">
+        <a href="{{ route('admin.sdm.index') }}" class="px-4 py-3 text-center sm:text-left rounded-t-lg transition-colors {{ request()->routeIs('admin.sdm.*') && !request()->routeIs('admin.struktur.*') ? 'bg-[#47663D] text-white' : 'bg-gray-50 text-gray-600 hover:bg-gray-100 border-x border-t border-transparent hover:border-gray-200' }}">
+            <span class="inline-flex items-center justify-center sm:justify-start gap-2 text-sm font-bold uppercase tracking-wide">
                 <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0z"/></svg>
                 SDM Sekolah
             </span>
         </a>
-        <a href="{{ route('admin.struktur.index') }}" class="px-4 py-3 rounded-t-lg {{ request()->routeIs('admin.struktur.*') ? 'bg-[#47663D] text-white' : 'bg-gray-100 text-gray-700 hover:bg-gray-200' }}">
-            <span class="inline-flex items-center gap-2">
+        <a href="{{ route('admin.struktur.index') }}" class="px-4 py-3 text-center sm:text-left rounded-t-lg transition-colors {{ request()->routeIs('admin.struktur.*') ? 'bg-[#47663D] text-white' : 'bg-gray-50 text-gray-600 hover:bg-gray-100 border-x border-t border-transparent hover:border-gray-200' }}">
+            <span class="inline-flex items-center justify-center sm:justify-start gap-2 text-sm font-bold uppercase tracking-wide">
                 <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h10M9 17h1m10 0h1m-1 0h-1m1 0h-5"/></svg>
-                Struktur Organisasi
+                Struktur
             </span>
         </a>
     </div>
 
-    <div class="bg-white rounded-xl shadow border border-gray-100 p-4 mb-4 flex flex-wrap justify-between items-center gap-4">
-        <div>
-            <p class="text-sm text-gray-600 mb-2">Filter berdasarkan Spesialisasi:</p>
-            <div class="flex flex-wrap gap-2">
-                <a href="{{ route('admin.sdm.index') }}" class="px-3 py-1.5 rounded-lg {{ !request('spesialisasi_id') ? 'bg-[#47663D] text-white' : 'bg-gray-100 text-gray-700 hover:bg-gray-200' }}">Semua ({{ $totalAll }})</a>
-                @foreach($spesialisasi as $s)
-                    @php $cnt = $countBySpesialisasi->get($s->id)?->total ?? 0; @endphp
-                    <a href="{{ route('admin.sdm.index', ['spesialisasi_id' => $s->id]) }}" class="px-3 py-1.5 rounded-lg {{ request('spesialisasi_id') == $s->id ? 'bg-[#47663D] text-white' : 'bg-gray-100 text-gray-700 hover:bg-gray-200' }}">{{ $s->nama }} ({{ $cnt }})</a>
-                @endforeach
+    <div class="bg-white rounded-xl shadow-sm border border-gray-100 p-4 mb-6">
+        <div class="flex flex-col md:flex-row md:items-end justify-between gap-6">
+            <div class="flex-1 overflow-hidden">
+                <p class="text-xs font-bold text-gray-400 uppercase tracking-widest mb-3">Filter Spesialisasi</p>
+                <div class="flex overflow-x-auto pb-2 -mb-2 gap-2 no-scrollbar">
+                    <a href="{{ route('admin.sdm.index') }}" class="whitespace-nowrap px-4 py-2 rounded-full text-sm font-medium transition-all {{ !request('spesialisasi_id') ? 'bg-[#47663D] text-white shadow-md' : 'bg-gray-100 text-gray-600 hover:bg-gray-200 border border-transparent' }}">
+                        Semua <span class="ml-1 opacity-75">({{ $totalAll }})</span>
+                    </a>
+                    @foreach($spesialisasi as $s)
+                        @php $cnt = $countBySpesialisasi->get($s->id)?->total ?? 0; @endphp
+                        <a href="{{ route('admin.sdm.index', ['spesialisasi_id' => $s->id]) }}" class="whitespace-nowrap px-4 py-2 rounded-full text-sm font-medium transition-all {{ request('spesialisasi_id') == $s->id ? 'bg-[#47663D] text-white shadow-md' : 'bg-gray-100 text-gray-600 hover:bg-gray-200 border border-transparent' }}">
+                            {{ $s->nama }} <span class="ml-1 opacity-75">({{ $cnt }})</span>
+                        </a>
+                    @endforeach
+                </div>
             </div>
-        </div>
-        <div class="flex gap-2">
-            <a href="{{ route('admin.sdm.export.pdf', request()->only('spesialisasi_id')) }}" class="px-4 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700 text-sm font-medium inline-flex items-center gap-2">
-                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/></svg>
-                Export PDF
-            </a>
-            <button type="button" @click="openFormModal(null)" class="px-4 py-2 bg-[#47663D] text-white rounded-lg hover:bg-[#5a7d52] text-sm font-medium">+ Tambah Staff</button>
+            <div class="flex items-center gap-2">
+                <a href="{{ route('admin.sdm.export.pdf', request()->only('spesialisasi_id')) }}" class="flex-1 md:flex-none justify-center px-4 py-2.5 bg-red-50 text-red-600 border border-red-100 rounded-xl hover:bg-red-100 text-sm font-bold transition flex items-center gap-2">
+                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/></svg>
+                    <span>Export</span>
+                </a>
+                <button type="button" @click="openFormModal(null)" class="flex-1 md:flex-none justify-center px-4 py-2.5 bg-[#47663D] text-white rounded-xl hover:bg-[#5a7d52] text-sm font-bold transition shadow-md hover:shadow-lg flex items-center gap-2">
+                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"/></svg>
+                    <span>Tambah Staff</span>
+                </button>
+            </div>
         </div>
     </div>
 

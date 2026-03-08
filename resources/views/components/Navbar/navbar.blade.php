@@ -24,9 +24,9 @@
 <nav class="bg-[#47663D] text-white shadow-lg sticky top-0 z-50" x-data="{ mobileMenuOpen: false }">
     <div class="max-w-6xl mx-auto px-5 py-3 flex justify-between items-center">
         <a href="/" class="flex items-center gap-3 hover:opacity-80 transition">
-            <img src="{{ asset('images/logo.png') }}" alt="Logo SD Al-Qur'an Lantabur" class="h-12 w-auto" loading="lazy">
+            <img src="{{ asset('images/logo.png') }}" alt="Logo SD Al-Qur'an Lantabur Pekanbaru" class="h-12 w-auto" loading="lazy">
             <div class="hidden sm:block">
-                <div class="text-sm font-semibold">SD Al-Qur'an Lantabur</div>
+                <div class="text-sm font-semibold">SD Al-Qur'an Lantabur Pekanbaru</div>
                 <div class="text-xs text-white/70">Pendidikan Berkualitas Berbasis Al-Qur'an</div>
             </div>
         </a>

@@ -80,7 +80,7 @@
     <div class="print-wrapper">
         <div class="header">
             <h1>Daftar Hadir Siswa</h1>
-            <p>SD Al-Qur'an Lantabur - Islamic Character School</p>
+            <p>SD Al-Qur'an Lantabur Pekanbaru - Islamic Character School</p>
         </div>
 
         <table class="info-table">

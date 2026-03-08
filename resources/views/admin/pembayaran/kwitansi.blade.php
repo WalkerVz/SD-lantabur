@@ -302,10 +302,10 @@
     <div class="page">
         <div class="page-inner">
             <div class="header">
-                <img src="{{ asset('images/logo-lantabur.png') }}" alt="Logo SD Al-Qur'an Lantabur" class="school-logo" onerror="this.src='{{ asset('images/logo.png') }}'">
+                <img src="{{ asset('images/logo-lantabur.png') }}" alt="Logo SD Al-Qur'an Lantabur Pekanbaru" class="school-logo" onerror="this.src='{{ asset('images/logo.png') }}'">
 
                 <div class="school-info">
-                    <div class="school-name">SD Al-Qur'an Lantabur</div>
+                    <div class="school-name">SD Al-Qur'an Lantabur Pekanbaru</div>
                     <div class="school-subtitle">Sekolah Dasar Islam Terpadu Berbasis Al-Qur'an</div>
                     <div class="school-meta">
                         Jl. Dahlia B8, Harapan Raya, Pekanbaru &middot; Telp. 0822-8835-9565
@@ -404,7 +404,7 @@
                         {{ $p->status === 'lunas' ? 'Pembayaran telah diterima dan dinyatakan LUNAS.' : 'Pembayaran belum lengkap. Harap segera melunasi.' }}
                     </div>
                     <div class="note-box">
-                        Kwitansi ini diterbitkan secara otomatis oleh sistem administrasi SD Al-Qur'an Lantabur dan sah tanpa tanda tangan basah.
+                        Kwitansi ini diterbitkan secara otomatis oleh sistem administrasi SD Al-Qur'an Lantabur Pekanbaru dan sah tanpa tanda tangan basah.
                     </div>
                 </div>
             </div>
