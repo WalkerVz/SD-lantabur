@@ -7,7 +7,7 @@ use Illuminate\Database\Eloquent\Model;
 class MasterTahunAjaran extends Model
 {
     protected $table = 'master_tahun_ajaran';
-    protected $fillable = ['nama', 'is_aktif', 'urutan'];
+    protected $fillable = ['nama', 'is_aktif', 'urutan', 'min_a', 'min_b', 'min_c'];
     protected $casts = [
         'is_aktif' => 'boolean',
     ];

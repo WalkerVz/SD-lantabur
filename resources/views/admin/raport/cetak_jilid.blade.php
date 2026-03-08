@@ -22,14 +22,15 @@
         }
 
         .jilid-wrapper {
-            max-width: 800px;
+            width: 100%;
+            max-width: 190mm; /* For screen preview */
             min-height: 297mm;
             margin: 10px auto;
             background: #fff;
             border: 1px solid #ccc;
-            padding: 15px 25px;
             box-shadow: 0 2px 10px rgba(0,0,0,0.1);
             position: relative;
+            padding: 0; /* Remove padding from wrapper */
         }
 
         /* Watermark Logo */
@@ -38,18 +39,20 @@
             top: 50%;
             left: 50%;
             transform: translate(-50%, -50%);
-            opacity: 0.15;
             z-index: 2;
             pointer-events: none;
+            /* Mask to clear the repeating text behind the logo */
+            background: radial-gradient(circle, white 70%, transparent 100%);
+            padding: 40px;
         }
 
         .watermark img {
-            width: 400px;
+            width: 350px;
             height: auto;
-            filter: blur(1px);
+            opacity: 0.15;
         }
 
-        /* Watermark Text Brick Pattern */
+        /* Watermark Text - 4 Columns Dense Grid */
         .watermark-text {
             position: absolute;
             top: 0;
@@ -58,13 +61,19 @@
             bottom: 0;
             pointer-events: none;
             z-index: 1;
-            opacity: 0.05;
-            background-image: 
-                url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 280 40'%3E%3Ctext x='140' y='20' fill='black' font-size='10' font-weight='bold' font-family='sans-serif' text-anchor='middle' dominant-baseline='middle'%3ESD AL-QUR'AN LANTABUR%3C/text%3E%3C/svg%3E"), 
-                url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 280 40'%3E%3Ctext x='140' y='20' fill='black' font-size='10' font-weight='bold' font-family='sans-serif' text-anchor='middle' dominant-baseline='middle'%3ESD AL-QUR'AN LANTABUR%3C/text%3E%3C/svg%3E");
-            background-repeat: repeat, repeat;
-            background-size: 280px 40px, 280px 40px;
-            background-position: 0 0, 140px 20px;
+            opacity: 0.06;
+            /* Absolutely NO gaps - Larger Font 15 - Tight Layout */
+            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 42 22'%3E%3Ctext x='21' y='17' fill='black' font-size='15' font-weight='bold' font-family='sans-serif' text-anchor='middle'%3ESD AL QUR%27AN LANTABUR%3C/text%3E%3C/svg%3E");
+            background-repeat: repeat;
+            background-size: 25% 20px;
+            background-position: 0 0;
+        }
+
+        /* Content wrapper */
+        .content {
+            position: relative;
+            z-index: 10;
+            padding: 15px 25px; /* Move padding here */
         }
 
         /* ---- Header ---- */
@@ -89,7 +98,7 @@
             text-align: center;
         }
         .jilid-header-text h3 {
-            font-size: 13pt;
+            font-size: 14pt;
             font-weight: bold;
             text-transform: uppercase;
             letter-spacing: 0.5px;
@@ -97,14 +106,18 @@
             line-height: 1.1;
         }
         .jilid-header-text h4 {
-            font-size: 11pt;
+            font-size: 14pt;
             font-weight: bold;
+            text-transform: uppercase;
             margin: 0;
             line-height: 1.1;
         }
-        .jilid-header-text p {
-            font-size: 8.5pt;
+        .jilid-header-text .tp-line {
+            font-size: 14pt;
+            font-weight: bold;
+            text-transform: uppercase;
             margin: 0;
+            line-height: 1.1;
         }
 
         /* ---- Identitas ---- */
@@ -202,6 +215,16 @@
             font-weight: bold;
         }
 
+        /* Decision Box */
+        .decision-box p {
+            margin: 2px 0;
+            line-height: 1.3;
+        }
+        .decision-box .title {
+            font-weight: bold;
+            margin-bottom: 4px;
+        }
+
         /* ---- Print ---- */
         @media print {
             @page {
@@ -213,13 +236,17 @@
                 font-size: 10.5pt;
             }
             .jilid-wrapper {
-                max-width: 100%;
+                width: 100% !important;
+                max-width: none !important;
                 min-height: 297mm;
                 margin: 0 auto;
-                padding: 4mm 8mm;
+                padding: 0 !important;
                 box-shadow: none;
                 border: none;
                 overflow: hidden;
+            }
+            .content {
+                padding: 4mm 8mm !important; /* Adjusted for jilid print */
             }
             .no-print { display: none !important; }
         }
@@ -250,13 +277,14 @@
             <img src="{{ asset('images/logo.png') }}" alt="Logo Watermark">
         </div>
 
-        <!-- HEADER -->
+        <div class="content">
+            <!-- HEADER -->
         <div class="jilid-header">
             <img src="{{ asset('images/logo-lantabur.png') }}" alt="Logo Lantabur" class="jilid-header-logo">
             <div class="jilid-header-text">
-                <h3>Laporan Pembelajaran Ummi</h3>
-                <h4>SD Al-Qur'an Lantabur</h4>
-                <p>Tahun Pelajaran {{ $tahun }}</p>
+                <h3>LAPORAN PEMBELAJARAN UMMI</h3>
+                <h4>SD AL QUR'AN LANTABUR</h4>
+                <div class="tp-line">TAHUN PELAJARAN {{ $tahun }}</div>
             </div>
             <img src="{{ asset('images/logo-ummi.png') }}" alt="Logo Ummi" class="jilid-header-logo right">
         </div>
@@ -290,6 +318,16 @@
             <tbody>
                 @php
                     $printedJilids = [];
+                    if (!function_exists('getPredikat')) {
+                        function getPredikat($nilai, $ranges) {
+                            if (!$nilai || !is_numeric($nilai)) return $nilai;
+                            $n = (int)$nilai;
+                            if ($n >= $ranges['a_min']) return 'A';
+                            if ($n >= $ranges['b_min']) return 'B';
+                            if ($n >= $ranges['c_min']) return 'C';
+                            return 'D';
+                        }
+                    }
                 @endphp
 
                 @forelse($materi as $item)
@@ -305,7 +343,7 @@
                     <td class="center" rowspan="{{ $jilidCounts[$jilid] ?? 1 }}" style="vertical-align: middle;">{{ $jilid }}</td>
                     @endif
                     <td>{{ $item['materi'] ?? '-' }}</td>
-                    <td class="center">{{ $item['nilai'] ?? '-' }}</td>
+                    <td class="center">{{ getPredikat($item['nilai'] ?? null, $ranges) }}</td>
                     <td>{{ $item['keterangan'] ?? '' }}</td>
                 </tr>
                 @empty
@@ -325,6 +363,9 @@
                 <td>{{ $deskripsi ?? '-' }}</td>
             </tr>
         </table>
+
+        <!-- KEPUTUSAN -->
+        
 
         <!-- TANDA TANGAN -->
         <div class="jilid-sign-wrap">
@@ -349,7 +390,6 @@
                 </tr>
             </table>
         </div>
-
     </div>
 @if(!isset($is_cetak_semua))
 </body>

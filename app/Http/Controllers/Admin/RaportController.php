@@ -74,13 +74,22 @@ class RaportController extends Controller
         ]);
     }
 
-    private function getPraktikCategories(): array
+    private function getPraktikCategories(int $kelas): array
     {
-        $master = MasterPraktik::orderBy('section')->orderBy('urutan')->get();
+        $master = MasterPraktik::where('kelas', $kelas)->orderBy('section')->orderBy('urutan')->get();
         $categories = [];
         foreach ($master as $m) {
             $categories[$m->section][] = $m->kategori;
         }
+
+        $order = ['ADAB' => 1, 'PAI' => 2, 'LIFE SKILL' => 3];
+        uksort($categories, function($a, $b) use ($order) {
+            $valA = $order[strtoupper($a)] ?? 99;
+            $valB = $order[strtoupper($b)] ?? 99;
+            if ($valA === $valB) return strcmp($a, $b);
+            return $valA <=> $valB;
+        });
+
         return $categories;
     }
 
@@ -205,7 +214,7 @@ class RaportController extends Controller
 
         return view('admin.raport.form_praktik', [
             'item' => $item,
-            'praktik_categories' => $this->getPraktikCategories(),
+            'praktik_categories' => $this->getPraktikCategories($item->kelas),
             'praktik_values' => $item->praktik->groupBy('section')->map(fn($sec) => $sec->keyBy('kategori')),
         ]);
     }
@@ -275,7 +284,15 @@ class RaportController extends Controller
             'tanpa_keterangan' => $raport->tanpa_keterangan ?? 0,
         ];
 
-        return view('admin.raport.cetak_siswa', compact('raport', 'siswa', 'attendance', 'signatures', 'tanggal_cetak', 'master_mapel', 'mapel_values'));
+        // Ambil Rentang Predikat dari MasterTahunAjaran
+        $tahunAjaran = \App\Models\MasterTahunAjaran::where('nama', $raport->tahun_ajaran)->first();
+        $ranges = [
+            'a_min' => $tahunAjaran->min_a ?? 91,
+            'b_min' => $tahunAjaran->min_b ?? 83,
+            'c_min' => $tahunAjaran->min_c ?? 75,
+        ];
+
+        return view('admin.raport.cetak_siswa', compact('raport', 'siswa', 'attendance', 'signatures', 'tanggal_cetak', 'master_mapel', 'mapel_values', 'ranges'));
     }
 
     public function cetakSemua(string $id, Request $request)
@@ -389,7 +406,7 @@ class RaportController extends Controller
         $kelas = \App\Models\Siswa::getNamaKelas($raport->kelas);
 
         // Ambil data praktik dari Master untuk mendapatkan urutan & list kategori terbaru
-        $masterPraktik = MasterPraktik::orderBy('section')->orderBy('urutan')->get();
+        $masterPraktik = MasterPraktik::where('kelas', $raport->kelas)->orderBy('section')->orderBy('urutan')->get();
         $praktik_groups = [];
 
         foreach ($masterPraktik as $m) {
@@ -402,6 +419,15 @@ class RaportController extends Controller
             ];
         }
 
+        // Custom Sort Sections: 1. ADAB, 2. PAI, 3. LIFE SKILL, 4. Others
+        $order = ['ADAB' => 1, 'PAI' => 2, 'LIFE SKILL' => 3];
+        uksort($praktik_groups, function($a, $b) use ($order) {
+            $valA = $order[strtoupper($a)] ?? 99;
+            $valB = $order[strtoupper($b)] ?? 99;
+            if ($valA === $valB) return strcmp($a, $b);
+            return $valA <=> $valB;
+        });
+
         $meta = $this->getPrintMetadata($raport);
         $signatures = $meta['signatures'];
         
@@ -410,6 +436,7 @@ class RaportController extends Controller
             'semester' => $semester,
             'tahun' => $tahun,
             'kelas' => $kelas,
+            'tingkat' => $raport->kelas,
             'praktik_groups' => $praktik_groups,
             'ortu' => strtoupper($signatures['ortu']),
             'tanggal' => $meta['tanggal'],
@@ -577,11 +604,20 @@ class RaportController extends Controller
             $jilidCounts[$j] = ($jilidCounts[$j] ?? 0) + 1;
         }
 
+        // Ambil Rentang Predikat dari MasterTahunAjaran
+        $tahunAjaran = \App\Models\MasterTahunAjaran::where('nama', $tahun)->first();
+        $ranges = [
+            'a_min' => $tahunAjaran->min_a ?? 90,
+            'b_min' => $tahunAjaran->min_b ?? 75,
+            'c_min' => $tahunAjaran->min_c ?? 66,
+        ];
+
         return view('admin.raport.cetak_jilid', [
             'tahun'       => $tahun,
             'semester'    => $semester,
             'nama'        => $siswa->nama,
             'kelas'       => \App\Models\Siswa::getNamaKelas($siswa->kelas),
+            'tingkat'     => $historicalKelas,
             'jilid'       => $raportJilid?->jilid ?? '-',
             'deskripsi'   => $raportJilid?->deskripsi ?? '',
             'materi'      => $materi,
@@ -589,6 +625,7 @@ class RaportController extends Controller
             'guru'        => $guruAlQuran,
             'ortu'        => strtoupper($namaOrtu),
             'tanggal'     => now()->locale('id')->translatedFormat('d F Y'),
+            'ranges'      => $ranges,
         ]);
     }
 
@@ -732,11 +769,20 @@ class RaportController extends Controller
             $niyKepsek = 'NIY. ' . $niyKepsek;
         }
 
+        // Ambil Rentang Predikat dari MasterTahunAjaran
+        $tahunAjaran = \App\Models\MasterTahunAjaran::where('nama', $tahun)->first();
+        $ranges = [
+            'a_min' => $tahunAjaran->min_a ?? 90,
+            'b_min' => $tahunAjaran->min_b ?? 75,
+            'c_min' => $tahunAjaran->min_c ?? 66,
+        ];
+
         return view('admin.raport.cetak_tahfidz', [
             'tahun'    => $tahun,
             'semester' => $semester,
             'nama'     => $siswa->nama,
             'kelas'    => \App\Models\Siswa::getNamaKelas($siswa->kelas),
+            'tingkat'  => $historicalKelas,
             'deskripsi'=> $tahfidz?->deskripsi ?? '',
             'materi'   => $tahfidz?->materi ?? [],
             'guru'     => $guruTahfidz,
@@ -745,6 +791,7 @@ class RaportController extends Controller
             'niy_kepsek' => $niyKepsek,
             'niy_guru'  => $niyGuru,
             'tanggal'  => now()->locale('id')->translatedFormat('d F Y'),
+            'ranges'   => $ranges,
         ]);
     }
 

@@ -76,14 +76,12 @@
                                            class="w-full px-2 py-1 bg-transparent border-0 text-xs font-semibold text-gray-800 focus:ring-0">
                                 </td>
                                 <td class="px-2 py-1.5 border-l border-gray-100">
-                                    <select :name="'materi['+i+'][nilai]'" x-model="row.nilai"
+                                    <input type="number"
+                                            :name="'materi['+i+'][nilai]'" 
+                                            x-model="row.nilai"
+                                            min="0" max="100"
+                                            placeholder="0-100"
                                             class="w-full px-2 py-1.5 border border-blue-300 bg-white rounded-lg text-center font-bold text-sm focus:ring-2 focus:ring-blue-500 shadow-sm">
-                                        <option value="">-</option>
-                                        <option value="A">A (Mumtaz)</option>
-                                        <option value="B">B (Jayyid)</option>
-                                        <option value="C">C (Maqbul)</option>
-                                        <option value="D">D (Naqis)</option>
-                                    </select>
                                 </td>
                                 <td class="px-2 py-1.5 border-l border-gray-100">
                                     <input type="text" :name="'materi['+i+'][keterangan]'" x-model="row.keterangan"

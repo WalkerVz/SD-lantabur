@@ -231,5 +231,20 @@ class SettingsController extends Controller
 
         return back()->with('success', 'Wali kelas berhasil disimpan untuk tahun ajaran ' . $request->tahun_ajaran . '.');
     }
+
+    public function updatePredicateRanges(Request $request)
+    {
+        $request->validate([
+            'id' => 'required|exists:master_tahun_ajaran,id',
+            'min_a' => 'required|integer|min:0|max:100',
+            'min_b' => 'required|integer|min:0|max:100',
+            'min_c' => 'required|integer|min:0|max:100',
+        ]);
+
+        $tahun = MasterTahunAjaran::findOrFail($request->id);
+        $tahun->update($request->only('min_a', 'min_b', 'min_c'));
+
+        return back()->with('success', 'Rentang predikat untuk tahun ' . $tahun->nama . ' berhasil diperbarui.');
+    }
 }
 

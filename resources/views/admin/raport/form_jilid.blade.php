@@ -88,15 +88,12 @@
                                     <span class="text-gray-800 leading-tight block" x-text="row.materi"></span>
                                 </td>
                                 <td class="px-2 py-2">
-                                    <select :name="'materi['+i+'][nilai]'"
-                                            x-model="row.nilai"
-                                            class="w-full px-2 py-1.5 border border-gray-300 rounded text-center text-sm font-semibold focus:ring-1 focus:ring-[#47663D]">
-                                        <option value="">-</option>
-                                        <option value="A">A (Mumtaz)</option>
-                                        <option value="B">B (Jayyid)</option>
-                                        <option value="C">C (Maqbul)</option>
-                                        <option value="D">D (Naqis)</option>
-                                    </select>
+                                    <input type="number"
+                                           :name="'materi['+i+'][nilai]'"
+                                           x-model="row.nilai"
+                                           min="0" max="100"
+                                           placeholder="0-100"
+                                           class="w-full px-2 py-1.5 border border-gray-300 rounded text-center text-sm font-semibold focus:ring-1 focus:ring-[#47663D]">
                                 </td>
                                 <td class="px-2 py-2">
                                     <input type="text"

@@ -22,14 +22,15 @@
         }
 
         .tahfidz-wrapper {
-            max-width: 800px;
+            width: 100%;
+            max-width: 190mm; /* For screen preview */
             min-height: 297mm;
             margin: 30px auto;
             background: #fff;
             border: 1px solid #ccc;
-            padding: 30px 40px;
             box-shadow: 0 2px 10px rgba(0,0,0,0.1);
             position: relative;
+            padding: 0; /* Remove padding from wrapper */
         }
 
         /* Watermark Logo */
@@ -38,18 +39,20 @@
             top: 50%;
             left: 50%;
             transform: translate(-50%, -50%);
-            opacity: 0.15;
             z-index: 2;
             pointer-events: none;
+            /* Mask to clear the repeating text behind the logo */
+            background: radial-gradient(circle, white 70%, transparent 100%);
+            padding: 40px;
         }
 
         .watermark img {
-            width: 400px;
+            width: 350px;
             height: auto;
-            filter: blur(1px);
+            opacity: 0.15;
         }
 
-        /* Watermark Text Brick Pattern */
+        /* Watermark Text - 4 Columns Dense Grid */
         .watermark-text {
             position: absolute;
             top: 0;
@@ -58,24 +61,30 @@
             bottom: 0;
             pointer-events: none;
             z-index: 1;
-            opacity: 0.05;
-            background-image: 
-                url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 280 40'%3E%3Ctext x='140' y='20' fill='black' font-size='10' font-weight='bold' font-family='sans-serif' text-anchor='middle' dominant-baseline='middle'%3ESD AL-QUR'AN LANTABUR%3C/text%3E%3C/svg%3E"), 
-                url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 280 40'%3E%3Ctext x='140' y='20' fill='black' font-size='10' font-weight='bold' font-family='sans-serif' text-anchor='middle' dominant-baseline='middle'%3ESD AL-QUR'AN LANTABUR%3C/text%3E%3C/svg%3E");
-            background-repeat: repeat, repeat;
-            background-size: 280px 40px, 280px 40px;
-            background-position: 0 0, 140px 20px;
+            opacity: 0.06;
+            /* Absolutely NO gaps - Larger Font 15 - Tight Layout */
+            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 42 22'%3E%3Ctext x='21' y='17' fill='black' font-size='15' font-weight='bold' font-family='sans-serif' text-anchor='middle'%3ESD AL QUR%27AN LANTABUR%3C/text%3E%3C/svg%3E");
+            background-repeat: repeat;
+            background-size: 25% 20px;
+            background-position: 0 0;
+        }
+
+        /* Content wrapper */
+        .content {
+            position: relative;
+            z-index: 10;
+            padding: 30px 40px; /* Move padding here */
         }
 
         /* ---- Header ---- */
         .tahfidz-header {
             display: grid;
-            grid-template-columns: 90px 1fr 90px;
+            grid-template-columns: 80px 1fr 80px;
             align-items: center;
-            gap: 10px;
+            gap: 8px;
             border-bottom: 3px double #000;
             padding-bottom: 2px;
-            margin-bottom: 6px;
+            margin-bottom: 4px;
         }
         .tahfidz-header-logo {
             width: 70px;
@@ -89,23 +98,26 @@
             text-align: center;
         }
         .tahfidz-header-text h3 {
-            font-size: 13pt;
+            font-size: 14pt;
             font-weight: bold;
             text-transform: uppercase;
             letter-spacing: 0.5px;
-            margin: 0 0 1px 0;
+            margin: 0;
             line-height: 1.1;
         }
         .tahfidz-header-text h4 {
-            font-size: 12pt;
+            font-size: 14pt;
             font-weight: bold;
-            margin: 1px 0;
-            line-height: 1.2;
+            text-transform: uppercase;
+            margin: 0;
+            line-height: 1.1;
         }
-        .tahfidz-header-text p {
-            font-size: 9pt;
-            margin-top: 1px;
+        .tahfidz-header-text .tp-line {
+            font-size: 14pt;
             font-weight: bold;
+            text-transform: uppercase;
+            margin: 0;
+            line-height: 1.1;
         }
 
         /* ---- Identitas ---- */
@@ -189,6 +201,15 @@
             text-decoration: underline;
         }
 
+        .decision-box p {
+            margin: 2px 0;
+            line-height: 1.3;
+        }
+        .decision-box .title {
+            font-weight: bold;
+            margin-bottom: 4px;
+        }
+
         /* ---- Print ---- */
         @media print {
             @page {
@@ -200,12 +221,16 @@
                 font-size: 10.5pt;
             }
             .tahfidz-wrapper {
-                max-width: 100%;
+                width: 100% !important;
+                max-width: none !important;
                 min-height: 297mm;
                 margin: 0 auto;
-                padding: 10mm 15mm;
+                padding: 0 !important;
                 box-shadow: none;
                 border: none;
+            }
+            .content {
+                padding: 10mm 15mm !important;
             }
             .no-print { display: none !important; }
         }
@@ -236,15 +261,16 @@
             <img src="{{ asset('images/logo.png') }}" alt="Logo Watermark">
         </div>
 
-        <!-- HEADER -->
+        <div class="content">
+            <!-- HEADER -->
         <div class="tahfidz-header">
             <img src="{{ asset('images/logo-lantabur.png') }}" alt="Logo Lantabur" class="tahfidz-header-logo">
             <div class="tahfidz-header-text">
-                <h3>Laporan Pembelajaran Ummi</h3>
-                <h4>SD AL-QUR'AN LANTABUR</h4>
-                <p>TAHUN PELAJARAN {{ str_replace('/', '/', $tahun) }}</p>
+                <h3>LAPORAN TAHFIDZUL QUR'AN</h3>
+                <h4>SD AL QUR'AN LANTABUR</h4>
+                <div class="tp-line">TAHUN PELAJARAN {{ $tahun }}</div>
             </div>
-            <img src="{{ asset('images/logo-ummi.png') }}" alt="Logo Ummi" class="tahfidz-header-logo right" style="width: 100px;">
+            <img src="{{ asset('images/logo-ummi.png') }}" alt="Logo Ummi" class="tahfidz-header-logo right">
         </div>
 
         <!-- IDENTITAS SISWA -->
@@ -263,8 +289,14 @@
 
         @php
             if (!function_exists('getVal')) {
-                function getVal($materi, $idx) {
-                    return $materi[$idx]['nilai'] ?? '';
+                function getVal($materi, $idx, $ranges) {
+                    $nilai = $materi[$idx]['nilai'] ?? '';
+                    if (!$nilai || !is_numeric($nilai)) return $nilai;
+                    $n = (int)$nilai;
+                    if ($n >= $ranges['a_min']) return 'A';
+                    if ($n >= $ranges['b_min']) return 'B';
+                    if ($n >= $ranges['c_min']) return 'C';
+                    return 'D';
                 }
             }
         @endphp
@@ -283,33 +315,33 @@
                         </tr>
                     </thead>
                     <tbody>
-                        <tr><td class="center">1</td><td>An Naas</td><td class="center font-bold" rowspan="4">1</td><td class="center font-bold">{{ getVal($materi, 0) }}</td></tr>
-                        <tr><td class="center">2</td><td>Al Falaq</td><td class="center font-bold">{{ getVal($materi, 1) }}</td></tr>
-                        <tr><td class="center">3</td><td>Al Ikhlas</td><td class="center font-bold">{{ getVal($materi, 2) }}</td></tr>
-                        <tr><td class="center">4</td><td>Al Lahab</td><td class="center font-bold">{{ getVal($materi, 3) }}</td></tr>
+                        <tr><td class="center">1</td><td>An Naas</td><td class="center font-bold" rowspan="4">1</td><td class="center font-bold">{{ getVal($materi, 0, $ranges) }}</td></tr>
+                        <tr><td class="center">2</td><td>Al Falaq</td><td class="center font-bold">{{ getVal($materi, 1, $ranges) }}</td></tr>
+                        <tr><td class="center">3</td><td>Al Ikhlas</td><td class="center font-bold">{{ getVal($materi, 2, $ranges) }}</td></tr>
+                        <tr><td class="center">4</td><td>Al Lahab</td><td class="center font-bold">{{ getVal($materi, 3, $ranges) }}</td></tr>
                         
-                        <tr><td class="center">5</td><td>An Nasr</td><td class="center font-bold" rowspan="3">2</td><td class="center font-bold">{{ getVal($materi, 4) }}</td></tr>
-                        <tr><td class="center">6</td><td>Al Kafirun</td><td class="center font-bold">{{ getVal($materi, 5) }}</td></tr>
-                        <tr><td class="center">7</td><td>Al Kautsar</td><td class="center font-bold">{{ getVal($materi, 6) }}</td></tr>
+                        <tr><td class="center">5</td><td>An Nasr</td><td class="center font-bold" rowspan="3">2</td><td class="center font-bold">{{ getVal($materi, 4, $ranges) }}</td></tr>
+                        <tr><td class="center">6</td><td>Al Kafirun</td><td class="center font-bold">{{ getVal($materi, 5, $ranges) }}</td></tr>
+                        <tr><td class="center">7</td><td>Al Kautsar</td><td class="center font-bold">{{ getVal($materi, 6, $ranges) }}</td></tr>
                         
-                        <tr><td class="center">8</td><td>Al Ma'un</td><td class="center font-bold" rowspan="3">3</td><td class="center font-bold">{{ getVal($materi, 7) }}</td></tr>
-                        <tr><td class="center">9</td><td>Al Quraisy</td><td class="center font-bold">{{ getVal($materi, 8) }}</td></tr>
-                        <tr><td class="center">10</td><td>Al Fiil</td><td class="center font-bold">{{ getVal($materi, 9) }}</td></tr>
+                        <tr><td class="center">8</td><td>Al Ma'un</td><td class="center font-bold" rowspan="3">3</td><td class="center font-bold">{{ getVal($materi, 7, $ranges) }}</td></tr>
+                        <tr><td class="center">9</td><td>Al Quraisy</td><td class="center font-bold">{{ getVal($materi, 8, $ranges) }}</td></tr>
+                        <tr><td class="center">10</td><td>Al Fiil</td><td class="center font-bold">{{ getVal($materi, 9, $ranges) }}</td></tr>
                         
-                        <tr><td class="center">11</td><td>Al Humazah</td><td class="center font-bold" rowspan="3">4</td><td class="center font-bold">{{ getVal($materi, 10) }}</td></tr>
-                        <tr><td class="center">12</td><td>Al 'Asr</td><td class="center font-bold">{{ getVal($materi, 11) }}</td></tr>
-                        <tr><td class="center">13</td><td>At Takatsur</td><td class="center font-bold">{{ getVal($materi, 12) }}</td></tr>
+                        <tr><td class="center">11</td><td>Al Humazah</td><td class="center font-bold" rowspan="3">4</td><td class="center font-bold">{{ getVal($materi, 10, $ranges) }}</td></tr>
+                        <tr><td class="center">12</td><td>Al 'Asr</td><td class="center font-bold">{{ getVal($materi, 11, $ranges) }}</td></tr>
+                        <tr><td class="center">13</td><td>At Takatsur</td><td class="center font-bold">{{ getVal($materi, 12, $ranges) }}</td></tr>
                         
-                        <tr><td class="center">14</td><td>Al Qori'ah</td><td class="center font-bold" rowspan="2">5</td><td class="center font-bold">{{ getVal($materi, 13) }}</td></tr>
-                        <tr><td class="center">15</td><td>Al 'Adiyat</td><td class="center font-bold">{{ getVal($materi, 14) }}</td></tr>
+                        <tr><td class="center">14</td><td>Al Qori'ah</td><td class="center font-bold" rowspan="2">5</td><td class="center font-bold">{{ getVal($materi, 13, $ranges) }}</td></tr>
+                        <tr><td class="center">15</td><td>Al 'Adiyat</td><td class="center font-bold">{{ getVal($materi, 14, $ranges) }}</td></tr>
                         
-                        <tr><td class="center">16</td><td>Al Zalzalah</td><td class="center font-bold" rowspan="2">6</td><td class="center font-bold">{{ getVal($materi, 15) }}</td></tr>
-                        <tr><td class="center">17</td><td>Al Bayyinah</td><td class="center font-bold">{{ getVal($materi, 16) }}</td></tr>
+                        <tr><td class="center">16</td><td>Al Zalzalah</td><td class="center font-bold" rowspan="2">6</td><td class="center font-bold">{{ getVal($materi, 15, $ranges) }}</td></tr>
+                        <tr><td class="center">17</td><td>Al Bayyinah</td><td class="center font-bold">{{ getVal($materi, 16, $ranges) }}</td></tr>
                         
-                        <tr><td class="center">18</td><td>Al Qodr</td><td class="center font-bold" rowspan="2">Al Qur'an</td><td class="center font-bold">{{ getVal($materi, 17) }}</td></tr>
-                        <tr><td class="center">19</td><td>Al 'Alaq</td><td class="center font-bold">{{ getVal($materi, 18) }}</td></tr>
+                        <tr><td class="center">18</td><td>Al Qodr</td><td class="center font-bold" rowspan="2">Al Qur'an</td><td class="center font-bold">{{ getVal($materi, 17, $ranges) }}</td></tr>
+                        <tr><td class="center">19</td><td>Al 'Alaq</td><td class="center font-bold">{{ getVal($materi, 18, $ranges) }}</td></tr>
                         
-                        <tr><td class="center">20</td><td>At Tiin</td><td class="center">Ghorib 1-14<br>(Ghorib 1)</td><td class="center font-bold">{{ getVal($materi, 19) }}</td></tr>
+                        <tr><td class="center">20</td><td>At Tiin</td><td class="center">Ghorib 1-14<br>(Ghorib 1)</td><td class="center font-bold">{{ getVal($materi, 19, $ranges) }}</td></tr>
                     </tbody>
                 </table>
             </div>
@@ -326,30 +358,30 @@
                         </tr>
                     </thead>
                     <tbody>
-                        <tr><td class="center">21</td><td>Al Insyiroh</td><td class="center" rowspan="2">Ghorib 1-14<br>(Ghorib 1)</td><td class="center font-bold">{{ getVal($materi, 20) }}</td></tr>
-                        <tr><td class="center">22</td><td>Adh Dhuha</td><td class="center font-bold">{{ getVal($materi, 21) }}</td></tr>
+                        <tr><td class="center">21</td><td>Al Insyiroh</td><td class="center" rowspan="2">Ghorib 1-14<br>(Ghorib 1)</td><td class="center font-bold">{{ getVal($materi, 20, $ranges) }}</td></tr>
+                        <tr><td class="center">22</td><td>Adh Dhuha</td><td class="center font-bold">{{ getVal($materi, 21, $ranges) }}</td></tr>
                         
-                        <tr><td class="center">23</td><td>Al Lail</td><td class="center" rowspan="2">Ghorib 15-28<br>(Ghorib 2)</td><td class="center font-bold">{{ getVal($materi, 22) }}</td></tr>
-                        <tr><td class="center">24</td><td>Asy Syams</td><td class="center font-bold">{{ getVal($materi, 23) }}</td></tr>
+                        <tr><td class="center">23</td><td>Al Lail</td><td class="center" rowspan="2">Ghorib 15-28<br>(Ghorib 2)</td><td class="center font-bold">{{ getVal($materi, 22, $ranges) }}</td></tr>
+                        <tr><td class="center">24</td><td>Asy Syams</td><td class="center font-bold">{{ getVal($materi, 23, $ranges) }}</td></tr>
                         
-                        <tr><td class="center">25</td><td>Al Balad</td><td class="center" rowspan="2">Ghorib-Tajwid<br>(Tajwid 1)</td><td class="center font-bold">{{ getVal($materi, 24) }}</td></tr>
-                        <tr><td class="center">26</td><td>Al Fajr</td><td class="center font-bold">{{ getVal($materi, 25) }}</td></tr>
+                        <tr><td class="center">25</td><td>Al Balad</td><td class="center" rowspan="2">Ghorib-Tajwid<br>(Tajwid 1)</td><td class="center font-bold">{{ getVal($materi, 24, $ranges) }}</td></tr>
+                        <tr><td class="center">26</td><td>Al Fajr</td><td class="center font-bold">{{ getVal($materi, 25, $ranges) }}</td></tr>
                         
-                        <tr><td class="center">27</td><td>Al Ghosyiyah</td><td class="center" rowspan="2">Ghorib-Tajwid<br>(Tajwid 2)</td><td class="center font-bold">{{ getVal($materi, 26) }}</td></tr>
-                        <tr><td class="center">28</td><td>Al A'la</td><td class="center font-bold">{{ getVal($materi, 27) }}</td></tr>
+                        <tr><td class="center">27</td><td>Al Ghosyiyah</td><td class="center" rowspan="2">Ghorib-Tajwid<br>(Tajwid 2)</td><td class="center font-bold">{{ getVal($materi, 26, $ranges) }}</td></tr>
+                        <tr><td class="center">28</td><td>Al A'la</td><td class="center font-bold">{{ getVal($materi, 27, $ranges) }}</td></tr>
                         
-                        <tr><td class="center">29</td><td>Ath Thoriq</td><td class="center" rowspan="9">Pengembangan<br>1</td><td class="center font-bold">{{ getVal($materi, 28) }}</td></tr>
-                        <tr><td class="center">30</td><td>Al Buruj</td><td class="center font-bold">{{ getVal($materi, 29) }}</td></tr>
-                        <tr><td class="center">31</td><td>Al Insyiqoq</td><td class="center font-bold">{{ getVal($materi, 30) }}</td></tr>
-                        <tr><td class="center">32</td><td>Al Mutoffifin</td><td class="center font-bold">{{ getVal($materi, 31) }}</td></tr>
-                        <tr><td class="center">33</td><td>Al Infithor</td><td class="center font-bold">{{ getVal($materi, 32) }}</td></tr>
-                        <tr><td class="center">34</td><td>At Takwir</td><td class="center font-bold">{{ getVal($materi, 33) }}</td></tr>
-                        <tr><td class="center">35</td><td>Abasa</td><td class="center font-bold">{{ getVal($materi, 34) }}</td></tr>
-                        <tr><td class="center">36</td><td>An Nazi'at</td><td class="center font-bold">{{ getVal($materi, 35) }}</td></tr>
-                        <tr><td class="center">37</td><td>An Naba'</td><td class="center font-bold">{{ getVal($materi, 36) }}</td></tr>
+                        <tr><td class="center">29</td><td>Ath Thoriq</td><td class="center" rowspan="9">Pengembangan<br>1</td><td class="center font-bold">{{ getVal($materi, 28, $ranges) }}</td></tr>
+                        <tr><td class="center">30</td><td>Al Buruj</td><td class="center font-bold">{{ getVal($materi, 29, $ranges) }}</td></tr>
+                        <tr><td class="center">31</td><td>Al Insyiqoq</td><td class="center font-bold">{{ getVal($materi, 30, $ranges) }}</td></tr>
+                        <tr><td class="center">32</td><td>Al Mutoffifin</td><td class="center font-bold">{{ getVal($materi, 31, $ranges) }}</td></tr>
+                        <tr><td class="center">33</td><td>Al Infithor</td><td class="center font-bold">{{ getVal($materi, 32, $ranges) }}</td></tr>
+                        <tr><td class="center">34</td><td>At Takwir</td><td class="center font-bold">{{ getVal($materi, 33, $ranges) }}</td></tr>
+                        <tr><td class="center">35</td><td>Abasa</td><td class="center font-bold">{{ getVal($materi, 34, $ranges) }}</td></tr>
+                        <tr><td class="center">36</td><td>An Nazi'at</td><td class="center font-bold">{{ getVal($materi, 35, $ranges) }}</td></tr>
+                        <tr><td class="center">37</td><td>An Naba'</td><td class="center font-bold">{{ getVal($materi, 36, $ranges) }}</td></tr>
                         
-                        <tr><td class="center">1</td><td>Pemeliharaan hafalan juz 30</td><td class="center" rowspan="2">Pengembangan<br>2</td><td class="center font-bold">{{ getVal($materi, 37) }}</td></tr>
-                        <tr><td class="center">2</td><td>Penambahan hafalan baru juz 29</td><td class="center font-bold">{{ getVal($materi, 38) }}</td></tr>
+                        <tr><td class="center">1</td><td>Pemeliharaan hafalan juz 30</td><td class="center" rowspan="2">Pengembangan<br>2</td><td class="center font-bold">{{ getVal($materi, 37, $ranges) }}</td></tr>
+                        <tr><td class="center">2</td><td>Penambahan hafalan baru juz 29</td><td class="center font-bold">{{ getVal($materi, 38, $ranges) }}</td></tr>
                     </tbody>
                 </table>
             </div>
@@ -367,9 +399,9 @@
                     </tr>
                 </thead>
                 <tbody>
-                    <tr><td>1</td><td>90-100</td><td>A</td><td>Mumtaz</td></tr>
-                    <tr><td>2</td><td>75-89</td><td>B</td><td>Jayyid</td></tr>
-                    <tr><td>3</td><td>66-74</td><td>C</td><td>Maqbul</td></tr>
+                    <tr><td>1</td><td>{{ $ranges['a_min'] }}-100</td><td>A</td><td>Mumtaz</td></tr>
+                    <tr><td>2</td><td>{{ $ranges['b_min'] }}-{{ $ranges['a_min'] - 1 }}</td><td>B</td><td>Jayyid</td></tr>
+                    <tr><td>3</td><td>{{ $ranges['c_min'] }}-{{ $ranges['b_min'] - 1 }}</td><td>C</td><td>Maqbul</td></tr>
                 </tbody>
             </table>
             @if($deskripsi)
@@ -378,7 +410,8 @@
                 {{ $deskripsi }}
             </div>
             @endif
-        </div>
+
+            </div>
 
         <!-- TANDA TANGAN -->
         <div class="tahfidz-sign">
@@ -400,7 +433,6 @@
                 <p><b>{{ strtoupper($guru) }}</b><br>{{ $niy_guru ?? '' }}</p>
             </div>
         </div>
-
     </div>
 
 @if(!isset($is_cetak_semua))

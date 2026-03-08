@@ -81,21 +81,29 @@ class MapelController extends Controller
     }
 
     // ─── Praktik ────────────────────────────────────────────────
-    public function indexPraktik()
+    public function indexPraktik(Request $request)
     {
-        $items = MasterPraktik::orderBy('section')->orderBy('urutan')->get();
-        return view('admin.mapel.index_praktik', compact('items'));
+        $classes = MasterKelas::orderBy('tingkat')->get();
+        $selectedKelas = $request->get('kelas', $classes->first()?->tingkat ?? 1);
+
+        $items = MasterPraktik::where('kelas', $selectedKelas)
+            ->orderBy('section')
+            ->orderBy('urutan')
+            ->get();
+            
+        return view('admin.mapel.index_praktik', compact('items', 'classes', 'selectedKelas'));
     }
 
     public function storePraktik(Request $request)
     {
         $request->validate([
+            'kelas' => 'required|integer',
             'section' => 'required|string|max:50',
             'kategori' => 'required|string|max:255',
             'urutan' => 'required|integer|min:0',
         ]);
 
-        MasterPraktik::create($request->only('section', 'kategori', 'urutan'));
+        MasterPraktik::create($request->only('kelas', 'section', 'kategori', 'urutan'));
 
         return back()->with('success', 'Kategori praktik berhasil ditambahkan.');
     }
@@ -104,6 +112,7 @@ class MapelController extends Controller
     {
         $item = MasterPraktik::findOrFail($id);
         $request->validate([
+            'kelas' => 'required|integer',
             'section' => 'required|string|max:50',
             'kategori' => 'required|string|max:255',
             'urutan' => 'required|integer|min:0',
@@ -113,7 +122,7 @@ class MapelController extends Controller
         $oldKategori = $item->kategori;
 
         DB::transaction(function () use ($item, $request, $oldSection, $oldKategori) {
-            $item->update($request->only('section', 'kategori', 'urutan'));
+            $item->update($request->only('kelas', 'section', 'kategori', 'urutan'));
 
             // Cascade rename ke tabel raport_praktik jika ada perubahan nama/seksi
             if ($oldSection !== $item->section || $oldKategori !== $item->kategori) {

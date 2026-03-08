@@ -17,19 +17,19 @@
             font-size: 11pt;
             color: #000;
             background: #fff;
-            line-height: 1.4;
+            line-height: 1.2; /* Dikecilkan */
         }
 
         /* Container untuk A4 */
         .praktik-container {
-            max-width: 190mm;
             width: 100%;
+            max-width: 190mm; /* For screen preview */
             min-height: 297mm;
-            padding: 15mm 10mm;
             margin: 0 auto;
             background: white;
             box-shadow: 0 0 10px rgba(0,0,0,0.1);
             position: relative;
+            padding: 0; /* Remove padding from container */
         }
 
         /* Watermark Logo */
@@ -38,18 +38,20 @@
             top: 50%;
             left: 50%;
             transform: translate(-50%, -50%);
-            opacity: 0.15;
             z-index: 2;
             pointer-events: none;
+            /* Mask to clear the repeating text behind the logo */
+            background: radial-gradient(circle, white 70%, transparent 100%);
+            padding: 40px;
         }
 
         .watermark img {
-            width: 400px;
+            width: 350px;
             height: auto;
-            filter: blur(1px);
+            opacity: 0.15;
         }
 
-        /* Watermark Text Brick Pattern */
+        /* Watermark Text - 4 Columns Dense Grid */
         .watermark-text {
             position: absolute;
             top: 0;
@@ -58,19 +60,19 @@
             bottom: 0;
             pointer-events: none;
             z-index: 1;
-            opacity: 0.05;
-            background-image: 
-                url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 280 40'%3E%3Ctext x='140' y='20' fill='black' font-size='10' font-weight='bold' font-family='sans-serif' text-anchor='middle' dominant-baseline='middle'%3ESD AL-QUR'AN LANTABUR%3C/text%3E%3C/svg%3E"), 
-                url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 280 40'%3E%3Ctext x='140' y='20' fill='black' font-size='10' font-weight='bold' font-family='sans-serif' text-anchor='middle' dominant-baseline='middle'%3ESD AL-QUR'AN LANTABUR%3C/text%3E%3C/svg%3E");
-            background-repeat: repeat, repeat;
-            background-size: 280px 40px, 280px 40px;
-            background-position: 0 0, 140px 20px;
+            opacity: 0.06;
+            /* Absolutely NO gaps - Larger Font 15 - Tight Layout */
+            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 42 22'%3E%3Ctext x='21' y='17' fill='black' font-size='15' font-weight='bold' font-family='sans-serif' text-anchor='middle'%3ESD AL QUR%27AN LANTABUR%3C/text%3E%3C/svg%3E");
+            background-repeat: repeat;
+            background-size: 25% 20px;
+            background-position: 0 0;
         }
 
         /* Content wrapper */
         .content {
             position: relative;
-            z-index: 1;
+            z-index: 10;
+            padding: 10mm 10mm; /* Dikecilkan */
         }
 
         /* Header */
@@ -97,25 +99,30 @@
         }
 
         .praktik-header h3 {
-            font-size: 15pt;
+            font-size: 13pt; /* Dikecilkan dikit agar muat 1 baris */
             font-weight: bold;
             text-transform: uppercase;
             letter-spacing: 0.5px;
             margin: 0 0 2px 0;
             line-height: 1.1;
+            white-space: nowrap;
         }
 
         .praktik-header h4 {
             font-size: 13pt;
             font-weight: bold;
             margin: 1px 0;
-            line-height: 1.2;
+            line-height: 1.1;
         }
 
         /* Tables */
         table {
             width: 100%;
-            border-collapse: collapse;
+            border-collapse: collapse; 
+        }
+
+        .praktik-info {
+            margin-bottom: 15px; 
         }
 
         .praktik-info td {
@@ -134,14 +141,14 @@
 
         /* Tabel Nilai */
         .praktik-nilai {
-            margin: 6px 0;
+            margin: 4px 0;
             font-size: 10pt;
             table-layout: fixed;
         }
 
         .praktik-nilai th, .praktik-nilai td {
             border: 1px solid #000;
-            padding: 3px 5px;
+            padding: 2px 4px;
             text-align: center;
         }
 
@@ -154,9 +161,9 @@
 
         .praktik-nilai td.deskripsi {
             text-align: left;
-            padding: 4px 6px;
-            font-size: 8.5pt;
-            line-height: 1.2;
+            padding: 2px 4px;
+            font-size: 8pt;
+            line-height: 1.1; 
             word-wrap: break-word;
             overflow-wrap: break-word;
         }
@@ -168,22 +175,44 @@
 
         .praktik-title {
             font-weight: bold;
-            margin: 10px 0 3px 0;
+            margin: 5px 0 2px 0;
             text-transform: uppercase;
-            font-size: 11pt;
+            font-size: 10pt;
+        }
+
+        .report-title {
+            text-align: center;
+            font-weight: bold;
+            font-size: 14pt;
+            text-decoration: underline;
+            margin: 5px 0 10px 0;
+            text-transform: uppercase;
         }
 
         /* Signature Section */
         .praktik-sign {
-            margin-top: 20px;
-            display: flex;
-            justify-content: space-between;
-            text-align: center;
+            margin-top: 15px;
+            width: 100%;
+            border-collapse: collapse;
+            table-layout: fixed;
             font-size: 10pt;
         }
 
-        .praktik-sign div {
-            width: 30%;
+        .praktik-sign td {
+            border: none;
+            padding: 0;
+            text-align: center;
+            vertical-align: top;
+            width: 33.33%;
+        }
+
+        .praktik-sign p {
+            margin: 2px 0;
+            line-height: 1.2;
+        }
+
+        .praktik-sign b {
+            text-decoration: underline;
         }
 
         .praktik-sign p {
@@ -194,6 +223,15 @@
             text-decoration: underline;
         }
 
+        .decision-box p {
+            margin: 2px 0;
+            line-height: 1.3;
+        }
+        .decision-box .title {
+            font-weight: bold;
+            margin-bottom: 5px;
+        }
+
         /* Print Styles */
         @media print {
             body {
@@ -201,10 +239,11 @@
             }
 
             .praktik-container {
-                width: 100%;
+                width: 100% !important;
+                max-width: none !important;
                 min-height: 297mm;
-                padding: 0;
-                margin: 0;
+                padding: 0 !important;
+                margin: 0 !important;
                 box-shadow: none;
             }
 
@@ -222,8 +261,11 @@
             }
 
             .praktik-container {
-                padding: 15mm 10mm;
-                margin: 0 auto;
+                padding: 0 !important;
+                margin: 0 !important;
+            }
+            .content {
+                padding: 10mm 10mm !important; /* Dikecilkan */
             }
         }
 
@@ -255,6 +297,8 @@
                 <h4>PEKANBARU</h4>
             </div>
         </div>
+
+        <div class="report-title">RAPOR PRAKTIK</div>
 
         <!-- INFO SISWA -->
         <table class="praktik-info">
@@ -293,31 +337,39 @@
                 @endforeach
                 </tbody>
             </table>
-            <br>
+            <!-- Reduced break -->
         @endforeach
 
-        <br><br>
 
-        <!-- TANDA TANGAN -->
-        <div class="praktik-sign">
-            <div>
-                <p>Mengetahui,<br>Orang Tua/Wali</p>
-                <br><br><br>
-                <p><b>{{ strtoupper($ortu) }}</b></p>
-            </div>
-
-            <div style="margin-top: 40px;">
-                <p>Kepala Sekolah</p>
-                <br><br><br>
-                <p><b>{{ strtoupper($kepala_sekolah) }}</b><br>{{ $niy_kepsek }}</p>
-            </div>
-
-            <div>
-                <p>Pekanbaru, {{ $tanggal }}<br>Wali Kelas {{ $kelas }}</p>
-                <br><br>
-                <p><b>{{ strtoupper($wali_kelas) }}</b><br>{{ $niy_wali ?? '' }}</p>
-            </div>
-        </div>
+    <!-- TANDA TANGAN -->
+        <table class="praktik-sign">
+            <tr>
+                <td>
+                    <p>Mengetahui,<br>Orang Tua/Wali</p>
+                </td>
+                <td style="padding-top: 30px;">
+                    @if(strtoupper($semester) == 'GENAP')
+                    <p>Kepala Sekolah</p>
+                    @endif
+                </td>
+                <td>
+                    <p>Pekanbaru, {{ $tanggal }}<br>Wali Kelas {{ $kelas }}</p>
+                </td>
+            </tr>
+            <tr>
+                <td style="padding-top: 50px;">
+                    <p><b>{{ strtoupper($ortu) }}</b></p>
+                </td>
+                <td style="padding-top: 80px;">
+                    @if(strtoupper($semester) == 'GENAP')
+                    <p><b>{{ strtoupper($kepala_sekolah) }}</b><br>{{ $niy_kepsek }}</p>
+                    @endif
+                </td>
+                <td style="padding-top: 50px;">
+                    <p><b>{{ strtoupper($wali_kelas) }}</b><br>{{ $niy_wali ?? '' }}</p>
+                </td>
+            </tr>
+        </table>
 
         <!-- TOMBOL CETAK -->
         <div class="no-print" style="margin-top: 30px; text-align: center;">

@@ -16,7 +16,6 @@
     </div>
 
     {{-- Tab Navigasi Tipe + Filter Section --}}
-    {{-- Tab Navigasi Tipe + Filter Section --}}
     <div class="bg-white rounded-2xl shadow-sm border border-gray-100 p-2 mb-6 flex flex-col overflow-hidden">
         <div class="w-full overflow-x-auto scrollbar-hide">
             <div class="inline-flex gap-1 min-w-max">
@@ -33,6 +32,18 @@
                     <button @click="activeSection = sec" :class="activeSection === sec ? 'bg-gray-200 text-gray-800' : 'text-gray-500 hover:bg-gray-50'" class="px-3 sm:px-4 py-1.5 rounded-lg text-[10px] sm:text-xs font-bold transition-all" x-text="sec"></button>
                 </template>
             </div>
+        </div>
+    </div>
+
+    {{-- Filter Kelas --}}
+    <div class="w-full overflow-x-auto mb-8 scrollbar-hide">
+        <div class="bg-white rounded-2xl shadow-sm border border-gray-100 p-2 inline-flex gap-1 min-w-max">
+            @foreach($classes as $c)
+                <a href="{{ route('admin.mapel.praktik', ['kelas' => $c->tingkat]) }}" 
+                   class="px-4 sm:px-6 py-2.5 rounded-xl text-xs sm:text-sm font-bold transition-all {{ $selectedKelas == $c->tingkat ? 'bg-[#47663D] text-white shadow-md' : 'text-gray-500 hover:bg-gray-50' }}">
+                    Kelas {{ $c->tingkat }}
+                </a>
+            @endforeach
         </div>
     </div>
 
@@ -93,6 +104,7 @@
                 <form :action="editId ? '{{ url('admin/mapel/praktik') }}/' + editId : '{{ route('admin.mapel.praktik.store') }}'" method="POST">
                     @csrf
                     <template x-if="editId"><input type="hidden" name="_method" value="PUT"></template>
+                    <input type="hidden" name="kelas" value="{{ $selectedKelas }}">
                     <div class="space-y-4">
                         <div>
                             <label class="block text-sm font-bold text-gray-700 mb-1">Section</label>

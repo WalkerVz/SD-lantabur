@@ -155,6 +155,7 @@ Route::prefix('admin')->name('admin.')->group(function () {
 
         Route::post('settings/biaya-spp', [SettingsController::class, 'storeBiayaSpp'])->name('settings.biaya-spp.store');
         Route::post('settings/wali-kelas', [SettingsController::class, 'storeWaliKelas'])->name('settings.wali-kelas.store');
+        Route::post('settings/rentang-predikat', [SettingsController::class, 'updatePredicateRanges'])->name('settings.rentang-predikat.store');
 
         Route::get('video', [VideoController::class, 'index'])->name('video.index');
         Route::get('video/create', [VideoController::class, 'create'])->name('video.create');

@@ -22,14 +22,14 @@
 
         /* Container untuk A4 */
         .umum-container {
-            max-width: 190mm;
             width: 100%;
+            max-width: 190mm; /* For screen preview */
             min-height: 297mm;
-            padding: 15mm 10mm;
             margin: 0 auto;
             background: white;
             box-shadow: 0 0 10px rgba(0,0,0,0.1);
             position: relative;
+            padding: 0; /* Remove padding from container */
         }
 
         /* Watermark Logo */
@@ -38,18 +38,20 @@
             top: 50%;
             left: 50%;
             transform: translate(-50%, -50%);
-            opacity: 0.15;
             z-index: 2;
             pointer-events: none;
+            /* Mask to clear the repeating text behind the logo */
+            background: radial-gradient(circle, white 70%, transparent 100%);
+            padding: 40px;
         }
 
         .watermark img {
-            width: 400px;
+            width: 350px;
             height: auto;
-            filter: blur(1px);
+            opacity: 0.15;
         }
 
-        /* Watermark Text Brick Pattern */
+        /* Watermark Text - 4 Columns Dense Grid */
         .watermark-text {
             position: absolute;
             top: 0;
@@ -58,24 +60,21 @@
             bottom: 0;
             pointer-events: none;
             z-index: 1;
-            opacity: 0.05;
-            background-image: 
-                url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 280 40'%3E%3Ctext x='140' y='20' fill='black' font-size='10' font-weight='bold' font-family='sans-serif' text-anchor='middle' dominant-baseline='middle'%3ESD AL-QUR'AN LANTABUR%3C/text%3E%3C/svg%3E"), 
-                url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 280 40'%3E%3Ctext x='140' y='20' fill='black' font-size='10' font-weight='bold' font-family='sans-serif' text-anchor='middle' dominant-baseline='middle'%3ESD AL-QUR'AN LANTABUR%3C/text%3E%3C/svg%3E");
-            background-repeat: repeat, repeat;
-            background-size: 280px 40px, 280px 40px;
-            background-position: 0 0, 140px 20px;
+            opacity: 0.06;
+            /* Absolutely NO gaps - Larger Font 17 - Tight Layout */
+            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 42 22'%3E%3Ctext x='21' y='17' fill='black' font-size='15' font-weight='bold' font-family='sans-serif' text-anchor='middle'%3ESD AL QUR%27AN LANTABUR%3C/text%3E%3C/svg%3E");
+            background-repeat: repeat;
+            background-size: 25% 20px;
+            background-position: 0 0;
         }
 
         /* Content wrapper */
         .content {
             position: relative;
-            z-index: 1;
+            z-index: 10;
+            padding: 15mm 10mm; 
         }
 
-        /* Header */
-        /* Header */
-        /* Header */
         .umum-header {
             position: relative;
             border-bottom: 4px double #000;
@@ -99,12 +98,13 @@
         }
 
         .umum-header h3 {
-            font-size: 15pt;
+            font-size: 13pt; /* Dikecilkan dikit agar muat 1 baris */
             font-weight: bold;
             text-transform: uppercase;
             letter-spacing: 0.5px;
             margin: 0 0 2px 0;
             line-height: 1.1;
+            white-space: nowrap;
         }
 
         .umum-header h4 {
@@ -163,12 +163,39 @@
             overflow-wrap: break-word;
         }
 
+        /* Decision Box */
+        .decision-box {
+            margin-top: 10px;
+            border: 1px solid #000;
+            padding: 5px 8px;
+            width: 100%;
+            font-size: 10pt;
+            text-align: left;
+        }
+        .decision-box p {
+            margin: 1px 0;
+            line-height: 1.2;
+        }
+        .decision-box .title {
+            font-weight: bold;
+            margin-bottom: 2px;
+        }
+
         .umum-nilai th:nth-child(1) { width: 5%; }
         .umum-nilai th:nth-child(2) { width: 25%; }
         .umum-nilai th:nth-child(3) { width: 10%; }
         .umum-nilai th:nth-child(4) { width: 10%; }
         .umum-nilai th:nth-child(5) { width: 12%; }
         .umum-nilai th:nth-child(6) { width: 38%; }
+
+        .report-title {
+            text-align: center;
+            font-weight: bold;
+            font-size: 14pt;
+            text-decoration: underline;
+            margin: 5px 0 10px 0;
+            text-transform: uppercase;
+        }
 
         /* Summary Table */
         .umum-summary {
@@ -216,28 +243,28 @@
         /* Signature Section */
         .umum-sign {
             margin-top: 20px;
-            display: flex;
-            justify-content: space-between;
-            align-items: flex-start; 
+            width: 100%;
+            border-collapse: collapse;
+            table-layout: fixed;
+        }
+
+        .umum-sign td {
+            border: none;
+            padding: 0;
             text-align: center;
-            font-size: 10pt;
-        }
-
-        .umum-sign div {
-            width: 30%;
-        }
-
-        .umum-sign div:nth-child(2) {
-            margin-top: 30px;
+            vertical-align: top;
+            width: 33.33%;
         }
 
         .umum-sign p {
             margin: 2px 0;
+            line-height: 1.2;
         }
 
         .umum-sign b {
             text-decoration: underline;
         }
+
 
         /* Print Styles */
         @media print {
@@ -246,10 +273,11 @@
             }
 
             .umum-container {
-                width: 100%;
+                width: 100% !important;
+                max-width: none !important;
                 min-height: 297mm;
-                padding: 0;
-                margin: 0;
+                padding: 0 !important;
+                margin: 0 !important;
                 box-shadow: none;
             }
 
@@ -265,12 +293,15 @@
             /* A4 Page Setup */
             @page {
                 size: A4 portrait;
-                margin: 0; /* Menghilangkan Header/Footer bawaan browser (Tanggal, URL, dll) */
+                margin: 0; 
             }
 
             .umum-container {
-                padding: 15mm 10mm; /* Margin dipindah ke sini supaya konten tetap aman */
-                margin: 0 auto;
+                padding: 0 !important; 
+                margin: 0 !important;
+            }
+            .content {
+                padding: 15mm 10mm !important;
             }
         }
 
@@ -303,7 +334,9 @@
             </div>
         </div>
 
-    <!-- INFO SISWA -->
+        <div class="report-title">RAPOR PENGETAHUAN</div>
+
+        <!-- INFO SISWA -->
     <table class="umum-info">
         <tr>
             <td>Nama Peserta Didik</td><td>: {{ strtoupper($siswa->nama) }}</td>
@@ -318,12 +351,12 @@
     <br>
 
     @php
-        // Fungsi untuk menghitung predikat
+        // Fungsi untuk menghitung predikat (Dinamis berdasarkan Tahun Ajaran)
         if (!function_exists('getPredikat')) {
-            function getPredikat($nilai) {
-                if ($nilai >= 91) return 'A';
-                if ($nilai >= 83) return 'B';
-                if ($nilai >= 75) return 'C';
+            function getPredikat($nilai, $ranges) {
+                if ($nilai >= ($ranges['a_min'] ?? 91)) return 'A';
+                if ($nilai >= ($ranges['b_min'] ?? 83)) return 'B';
+                if ($nilai >= ($ranges['c_min'] ?? 75)) return 'C';
                 return '-';
             }
         }
@@ -345,7 +378,7 @@
         <thead>
         <tr>
             <th>No</th>
-            <th>Nama Pelajaran</th>
+            <th>Mata Pelajaran</th>
             <th>KKM</th>
             <th>Nilai</th>
             <th>Predikat</th>
@@ -364,7 +397,7 @@
             <td>{{ $m->nama }}</td>
             <td>{{ $m->kkm }}</td>
             <td>{{ $nilai ? number_format($nilai, 0) : '-' }}</td>
-            <td>{{ $nilai ? getPredikat($nilai) : '-' }}</td>
+            <td>{{ $nilai ? getPredikat($nilai, $ranges) : '-' }}</td>
             <td class="deskripsi">
                 @if($deskripsi)
                     {{ $deskripsi }}
@@ -409,33 +442,53 @@
                     <th>Predikat</th>
                     <th>Keterangan</th>
                 </tr>
-                <tr><td>91–100</td><td>A</td><td>Sangat Baik</td></tr>
-                <tr><td>83–90</td><td>B</td><td>Baik</td></tr>
-                <tr><td>75–82</td><td>C</td><td>Cukup Baik</td></tr>
+                <tr><td>{{ $ranges['a_min'] }}–100</td><td>A</td><td>Sangat Baik</td></tr>
+                <tr><td>{{ $ranges['b_min'] }}–{{ $ranges['a_min'] - 1 }}</td><td>B</td><td>Baik</td></tr>
+                <tr><td>{{ $ranges['c_min'] }}–{{ $ranges['b_min'] - 1 }}</td><td>C</td><td>Cukup Baik</td></tr>
             </table>
+
+            @if(strtoupper($raport->semester ?? '') == 'GENAP')
+            <div class="decision-box">
+                <p class="title">Keputusan :</p>
+                <p>Berdasarkan pencapaian kompetensi pada semester ke-1 dan ke-2, peserta didik ditetapkan :</p>
+                <div style="margin-top: 5px; margin-left: 15px;">
+                    <p>Naik ke kelas &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;: </p>
+                    <p>Tinggal di kelas &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;: </p>
+                </div>
+            </div>
+            @endif
         </div>
     </div>
 
     <!-- TANDA TANGAN -->
-    <div class="umum-sign">
-        <div>
-            <p>Mengetahui,<br>Orang Tua/Wali</p>
-            <br><br><br>
-            <p><b>{{ strtoupper($signatures['ortu'] ?? '_______________') }}</b></p>
-        </div>
-
-        <div style="margin-top: 40px;">
-            <p>Kepala Sekolah</p>
-            <br><br><br>
-            <p><b>{{ strtoupper($signatures['kepala_sekolah'] ?? 'KASMIDAR, S.Pd') }}</b><br>{{ $signatures['niy_kepala'] ?? 'NIY. 2403001' }}</p>
-        </div>
-
-        <div>
-            <p>Pekanbaru, {{ $tanggal_cetak ?? date('d F Y') }}<br>Wali Kelas {{ \App\Models\Siswa::getNamaKelas($raport->kelas ?? 0) }}</p>
-            <br><br>
-            <p><b>{{ strtoupper($signatures['wali_kelas'] ?? '_______________') }}</b><br>{{ $signatures['niy_wali'] ?? '' }}</p>
-        </div>
-    </div>
+    <table class="umum-sign">
+        <tr>
+            <td>
+                <p>Mengetahui,<br>Orang Tua/Wali</p>
+            </td>
+            <td style="padding-top: 30px;">
+                @if(strtoupper($raport->semester ?? '') == 'GENAP')
+                <p>Kepala Sekolah</p>
+                @endif
+            </td>
+            <td>
+                <p>Pekanbaru, {{ $tanggal_cetak ?? date('d F Y') }}<br>Wali Kelas {{ \App\Models\Siswa::getNamaKelas($raport->kelas ?? 0) }}</p>
+            </td>
+        </tr>
+        <tr>
+            <td style="padding-top: 50px;">
+                <p><b>{{ strtoupper($signatures['ortu'] ?? '_______________') }}</b></p>
+            </td>
+            <td style="padding-top: 80px;">
+                @if(strtoupper($raport->semester ?? '') == 'GENAP')
+                <p><b>{{ strtoupper($signatures['kepala_sekolah'] ?? 'KASMIDAR, S.Pd') }}</b><br>{{ $signatures['niy_kepala'] ?? 'NIY. 2403001' }}</p>
+                @endif
+            </td>
+            <td style="padding-top: 50px;">
+                <p><b>{{ strtoupper($signatures['wali_kelas'] ?? '_______________') }}</b><br>{{ $signatures['niy_wali'] ?? '' }}</p>
+            </td>
+        </tr>
+    </table>
 
     <!-- TOMBOL CETAK -->
     <div class="no-print" style="margin-top: 30px; text-align: center;">
