@@ -62,7 +62,7 @@
             z-index: 1;
             opacity: 0.06;
             /* Absolutely NO gaps - Larger Font 17 - Tight Layout */
-            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 42 22'%3E%3Ctext x='21' y='17' fill='black' font-size='15' font-weight='bold' font-family='sans-serif' text-anchor='middle'%3ESD AL QUR%27AN LANTABUR PEKANBARU %3C/text%3E%3C/svg%3E");
+            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 42 22'%3E%3Ctext x='21' y='17' fill='black' font-size='15' font-weight='bold' font-family='sans-serif' text-anchor='middle'%3ESD AL QUR%27AN LANTABUR %3C/text%3E%3C/svg%3E");
             background-repeat: repeat;
             background-size: 25% 20px;
             background-position: 0 0;
