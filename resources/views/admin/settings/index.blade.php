@@ -40,50 +40,6 @@
         </form>
     </div>
 
-    {{-- Rentang Predikat --}}
-    <div class="bg-white rounded-xl shadow border border-gray-100 p-6">
-        <h2 class="text-lg font-semibold text-gray-800 mb-1">Rentang Nilai Predikat</h2>
-        <p class="text-sm text-gray-500 mb-4">Atur batas minimal nilai untuk mendapatkan predikat A, B, dan C per tahun ajaran.</p>
-
-        <div class="border border-gray-100 rounded-xl overflow-hidden shadow-sm">
-            <div class="max-h-64 overflow-y-auto">
-                <table class="w-full text-sm">
-                    <thead class="bg-gray-50 border-b border-gray-100 sticky top-0 z-10">
-                        <tr>
-                            <th class="px-4 py-3 text-left font-semibold text-gray-600">Tahun Ajaran</th>
-                            <th class="px-4 py-3 text-center font-semibold text-gray-600">Min A</th>
-                            <th class="px-4 py-3 text-center font-semibold text-gray-600">Min B</th>
-                            <th class="px-4 py-3 text-center font-semibold text-gray-600">Min C</th>
-                            <th class="px-4 py-3 text-right font-semibold text-gray-600">Aksi</th>
-                        </tr>
-                    </thead>
-                    <tbody class="divide-y divide-gray-50">
-                        @foreach($tahunAjaranList as $t)
-                        <form action="{{ route('admin.settings.rentang-predikat.store') }}" method="POST">
-                            @csrf
-                            <input type="hidden" name="id" value="{{ $t->id }}">
-                            <tr>
-                                <td class="px-4 py-3 text-gray-700 font-medium">{{ $t->nama }} @if($t->is_aktif) <span class="ml-1 text-[10px] bg-green-100 text-green-700 px-1.5 py-0.5 rounded font-bold">AKTIF</span> @endif</td>
-                                <td class="px-4 py-3 text-center">
-                                    <input type="number" name="min_a" value="{{ $t->min_a }}" min="0" max="100" class="w-16 px-2 py-1 text-center border rounded focus:ring-1 focus:ring-[#47663D]">
-                                </td>
-                                <td class="px-4 py-3 text-center">
-                                    <input type="number" name="min_b" value="{{ $t->min_b }}" min="0" max="100" class="w-16 px-2 py-1 text-center border rounded focus:ring-1 focus:ring-[#47663D]">
-                                </td>
-                                <td class="px-4 py-3 text-center">
-                                    <input type="number" name="min_c" value="{{ $t->min_c }}" min="0" max="100" class="w-16 px-2 py-1 text-center border rounded focus:ring-1 focus:ring-[#47663D]">
-                                </td>
-                                <td class="px-4 py-3 text-right">
-                                    <button type="submit" class="text-[#47663D] hover:underline font-bold text-xs uppercase tracking-wider">Simpan</button>
-                                </td>
-                            </tr>
-                        </form>
-                        @endforeach
-                    </tbody>
-                </table>
-            </div>
-        </div>
-    </div>
 
     {{-- Wali Kelas --}}
     <div class="bg-white rounded-xl shadow border border-gray-100 p-6">

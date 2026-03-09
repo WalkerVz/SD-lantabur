@@ -80,6 +80,45 @@ class SettingsController extends Controller
         return redirect()->route('admin.settings.accounts')->with('success', 'Password akun ' . $user->name . ' berhasil direset.');
     }
 
+    public function updateAccount(Request $request, $id)
+    {
+        $user = User::findOrFail($id);
+
+        $request->validate([
+            'name' => 'required|string|max:255',
+            'username' => 'required|string|max:255|unique:users,username,' . $user->id,
+            'role' => 'required|in:admin,guru,bendahara,kepsek',
+        ], [
+            'username.unique' => 'Username sudah digunakan oleh akun lain.',
+        ]);
+
+        // Prevent changing own role if admin
+        if ($user->id === auth()->id() && $request->role !== 'admin' && $user->role === 'admin') {
+            return back()->withErrors(['role' => 'Anda tidak bisa mengubah role Anda sendiri dari Admin.']);
+        }
+
+        $user->update([
+            'name' => $request->name,
+            'username' => $request->username,
+            'role' => $request->role,
+        ]);
+
+        return redirect()->route('admin.settings.accounts')->with('success', 'Data akun berhasil diperbarui.');
+    }
+
+    public function destroyAccount($id)
+    {
+        $user = User::findOrFail($id);
+        
+        if ($user->id === auth()->id()) {
+            return back()->with('error', 'Anda tidak dapat menghapus akun Anda sendiri.');
+        }
+
+        $user->delete();
+
+        return redirect()->route('admin.settings.accounts')->with('success', 'Akun berhasil dihapus.');
+    }
+
     public function accessibility()
     {
         $roles = [
@@ -136,10 +175,18 @@ class SettingsController extends Controller
             'settings' => ['view', 'accounts', 'contact', 'accessibility'],
         ];
 
-        $rules = $request->input('rules', []);
+        $rulesKeyMap = [];
+        $rawRules = $request->all();
+        // Since input names like rules[guru][dashboard.view] get parsed as arrays, let's flat fetch them
+        if (isset($rawRules['rules'])) {
+            $rulesKeyMap = $rawRules['rules'];
+        }
+        
+        \Log::info("Rules payload:", $rulesKeyMap);
 
         foreach ($roles as $role) {
-            foreach ($features as $menuKey => $actions) {
+             $roleRules = $rulesKeyMap[$role] ?? [];
+             foreach ($features as $menuKey => $actions) {
                 foreach ($actions as $action) {
                     $fullKey = $menuKey . '.' . $action;
 
@@ -151,7 +198,12 @@ class SettingsController extends Controller
                         continue;
                     }
 
-                    $allowed = (bool) data_get($rules, $role . '.' . $fullKey, false);
+                    // Laravel preserves the dots in keys when handling form inputs as nested arrays gracefully depending on how it's sent. Let's check both for safety.
+                    $inputKey = $fullKey;
+                    $inputKeyUnderscore = str_replace('.', '_', $fullKey);
+                    
+                    $allowed = !empty($roleRules[$inputKey]) || !empty($roleRules[$inputKeyUnderscore]);
+                    
                     FeatureAccess::updateOrCreate(
                         ['role' => $role, 'feature' => $fullKey],
                         ['allowed' => $allowed]
@@ -159,6 +211,8 @@ class SettingsController extends Controller
                 }
             }
         }
+
+        FeatureAccess::clearCache();
 
         return redirect()->route('admin.settings.accessibility')->with('success', 'Pengaturan akses berhasil disimpan.');
     }

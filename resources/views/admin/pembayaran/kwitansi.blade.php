@@ -16,7 +16,8 @@
             padding: 20px;
         }
         .page {
-            width: 210mm;
+            max-width: 210mm;
+            width: 100%;
             /* Height removed to just flow naturally, prevents print cut-offs.
                min-height ensures it looks like A5 on screen */
             min-height: 148mm; 
@@ -210,7 +211,7 @@
 
         @media print {
             @page {
-                size: A5 landscape;
+                size: portrait;
                 margin: 0;
             }
             body {

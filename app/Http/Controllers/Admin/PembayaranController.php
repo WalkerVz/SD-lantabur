@@ -348,4 +348,106 @@ class PembayaranController extends Controller
 
         return $pdf->download($filename);
     }
+
+    public function exportSemuaPdf(Request $request)
+    {
+        $tahunAjaran = $request->get('tahun_ajaran');
+        $siswaId = (int) $request->get('siswa_id');
+        $kelas = (int) $request->get('kelas');
+
+        if ($siswaId < 1 || $kelas < 1 || $kelas > 6) {
+            return redirect()->route('admin.pembayaran.index')->with('error', 'Parameter tidak valid.');
+        }
+
+        $siswa = Siswa::findOrFail($siswaId);
+        
+        // Ambil semua riwayat lintas jenis pembayaran
+        $riwayat = Pembayaran::where('siswa_id', $siswaId)
+            ->where(function($q) use ($tahunAjaran, $kelas) {
+                // Untuk SPP & Kegiatan Tahunan, filter berdasarkan tahun_ajaran dan kelas
+                $q->whereIn('jenis_pembayaran', ['spp', 'kegiatan_tahunan'])
+                  ->where('tahun_ajaran', $tahunAjaran)
+                  ->where('kelas', $kelas);
+                  
+                // Untuk Seragam & Sarana Prasarana (biasanya sekali bayar di awal), ambil semua tanpa filter kelas
+                $q->orWhereIn('jenis_pembayaran', ['seragam', 'sarana_prasarana']);
+            })
+            ->orderByDesc('tahun')
+            ->orderByDesc('bulan')
+            ->get();
+
+        $ringkasanTagihan = [];
+        foreach (self::JENIS_PEMBAYARAN as $jenis => $label) {
+            $totalTagihan = $siswa->getTotalTagihan($jenis);
+            
+            if (in_array($jenis, ['seragam', 'sarana_prasarana'])) {
+                $totalTerbayar = Pembayaran::where('siswa_id', $siswaId)
+                                           ->where('jenis_pembayaran', $jenis)
+                                           ->sum('nominal');
+            } else {
+                $totalTerbayar = $riwayat->where('jenis_pembayaran', $jenis)->sum('nominal');
+            }
+            
+            $sisaTagihan = max(0, $totalTagihan - $totalTerbayar);
+            $ringkasanTagihan[$jenis] = [
+                'label'          => $label,
+                'total_tagihan'  => $totalTagihan,
+                'total_terbayar' => (int) $totalTerbayar,
+                'sisa_tagihan'   => $sisaTagihan,
+                'lunas'          => $totalTagihan > 0 && $sisaTagihan <= 0,
+            ];
+        }
+
+        $filename = 'laporan_semua_pembayaran_' . str_replace('/', '-', $tahunAjaran) . '_' . $siswa->nama . '_Kelas' . $kelas . '_' . date('Y-m-d_His') . '.pdf';
+
+        $pdf = Pdf::loadView('admin.pembayaran.export-semua-pdf', [
+            'siswa' => $siswa,
+            'riwayat' => $riwayat,
+            'tahun_ajaran' => $tahunAjaran,
+            'kelas' => $kelas,
+            'ringkasan_tagihan' => $ringkasanTagihan,
+            'jenis_pembayaran_list' => self::JENIS_PEMBAYARAN,
+        ])->setPaper('a4', 'portrait');
+
+        return $pdf->download($filename);
+    }
+
+    public function rekapSemuaPdfPerKelas(Request $request)
+    {
+        $tahunAjaran = $request->get('tahun_ajaran');
+        $kelas = (int) $request->get('kelas');
+
+        if (!$tahunAjaran || $kelas < 1 || $kelas > 6) {
+            return redirect()->route('admin.pembayaran.index')->with('error', 'Parameter tidak valid.');
+        }
+
+        $siswaList = Enrollment::where('tahun_ajaran', $tahunAjaran)
+            ->where('kelas', $kelas)
+            ->with(['siswa.pembayaran' => function($q) use ($tahunAjaran, $kelas) {
+                // Sama seperti export individual, ambil SPP/Kegiatan sesuai filter, Seragam dkk ambil semua
+                $q->where(function($query) use ($tahunAjaran, $kelas) {
+                    $query->whereIn('jenis_pembayaran', ['spp', 'kegiatan_tahunan'])
+                          ->where('tahun_ajaran', $tahunAjaran)
+                          ->where('kelas', $kelas);
+                          
+                    $query->orWhereIn('jenis_pembayaran', ['seragam', 'sarana_prasarana']);
+                });
+            }])
+            ->get()
+            ->pluck('siswa')
+            ->filter()
+            ->sortBy(fn ($s) => strtolower($s->nama ?? ''))
+            ->values();
+
+        $filename = 'rekap_semua_pembayaran_Kelas' . $kelas . '_' . str_replace('/', '-', $tahunAjaran) . '_' . date('Ymd_His') . '.pdf';
+
+        $pdf = Pdf::loadView('admin.pembayaran.rekap-semua-pdf', [
+            'siswa_list' => $siswaList,
+            'tahun_ajaran' => $tahunAjaran,
+            'kelas' => $kelas,
+            'jenis_pembayaran_list' => self::JENIS_PEMBAYARAN,
+        ])->setPaper('a4', 'landscape');
+
+        return $pdf->download($filename);
+    }
 }

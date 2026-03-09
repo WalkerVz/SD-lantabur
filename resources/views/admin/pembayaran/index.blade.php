@@ -265,15 +265,16 @@
         <div x-show="rekapModalOpen" x-cloak class="fixed inset-0 z-50 overflow-y-auto" role="dialog">
             <div class="flex min-h-screen items-center justify-center p-4">
                 <div x-show="rekapModalOpen" class="fixed inset-0 bg-gray-900/60" @click="rekapModalOpen = false"></div>
-                <div x-show="rekapModalOpen" x-transition class="relative bg-white rounded-2xl shadow-2xl max-w-sm w-full p-6">
+                <div x-show="rekapModalOpen" x-transition class="relative bg-white rounded-2xl shadow-2xl max-w-sm w-full p-6" x-data="{ jenisRekap: 'semua' }">
                     <h3 class="text-lg font-bold text-gray-900 mb-4">Cetak Rekap per Kelas</h3>
-                    <form action="{{ route('admin.pembayaran.rekapPdf') }}" method="GET" target="_blank" @submit="rekapModalOpen = false">
+                    <form :action="jenisRekap === 'semua' ? '{{ route('admin.pembayaran.rekapSemuaPdf') }}' : '{{ route('admin.pembayaran.rekapPdf') }}'" method="GET" target="_blank" @submit="rekapModalOpen = false">
                         <input type="hidden" name="tahun_ajaran" value="{{ $tahun_ajaran }}">
                         <input type="hidden" name="kelas" value="{{ $kelas }}">
                         <div class="space-y-4">
                             <div>
                                 <label class="block text-sm font-medium text-gray-700 mb-1">Pilih Jenis Pembayaran</label>
-                                <select name="jenis_pembayaran" required class="w-full px-3 py-2 rounded-lg border border-gray-300 focus:ring-2 focus:ring-[#47663D] focus:border-[#47663D]">
+                                <select name="jenis_pembayaran" x-model="jenisRekap" required class="w-full px-3 py-2 rounded-lg border border-gray-300 focus:ring-2 focus:ring-[#47663D] focus:border-[#47663D]">
+                                    <option value="semua">Semua Pembayaran</option>
                                     @foreach($jenis_pembayaran_list as $k => $v)
                                         <option value="{{ $k }}">{{ $v }}</option>
                                     @endforeach
@@ -296,9 +297,9 @@
         <div x-show="exportSiswaModalOpen" x-cloak class="fixed inset-0 z-50 overflow-y-auto" role="dialog">
             <div class="flex min-h-screen items-center justify-center p-4">
                 <div x-show="exportSiswaModalOpen" class="fixed inset-0 bg-gray-900/60" @click="exportSiswaModalOpen = false"></div>
-                <div x-show="exportSiswaModalOpen" x-transition class="relative bg-white rounded-2xl shadow-2xl max-w-sm w-full p-6">
+                <div x-show="exportSiswaModalOpen" x-transition class="relative bg-white rounded-2xl shadow-2xl max-w-sm w-full p-6" x-data="{ jenisExport: 'semua' }">
                     <h3 class="text-lg font-bold text-gray-900 mb-4">Export Rekap Siswa</h3>
-                    <form action="{{ route('admin.pembayaran.export.pdf') }}" method="GET" target="_blank" @submit="exportSiswaModalOpen = false">
+                    <form :action="jenisExport === 'semua' ? '{{ route('admin.pembayaran.exportSemuaPdf') }}' : '{{ route('admin.pembayaran.export.pdf') }}'" method="GET" target="_blank" @submit="exportSiswaModalOpen = false">
                         <input type="hidden" name="tahun_ajaran" value="{{ $tahun_ajaran }}">
                         <input type="hidden" name="kelas" value="{{ $kelas }}">
                         <input type="hidden" name="siswa_id" value="{{ $siswa_id }}">
@@ -306,7 +307,8 @@
                         <div class="space-y-4">
                             <div>
                                 <label class="block text-sm font-medium text-gray-700 mb-1">Pilih Jenis Pembayaran</label>
-                                <select name="jenis_pembayaran" required class="w-full px-3 py-2 rounded-lg border border-gray-300 focus:ring-2 focus:ring-[#47663D] focus:border-[#47663D]">
+                                <select name="jenis_pembayaran" x-model="jenisExport" required class="w-full px-3 py-2 rounded-lg border border-gray-300 focus:ring-2 focus:ring-[#47663D] focus:border-[#47663D]">
+                                    <option value="semua">Semua Pembayaran</option>
                                     @foreach($jenis_pembayaran_list as $k => $v)
                                         <option value="{{ $k }}">{{ $v }}</option>
                                     @endforeach

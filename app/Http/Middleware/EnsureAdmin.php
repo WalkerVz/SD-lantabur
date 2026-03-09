@@ -15,18 +15,19 @@ class EnsureAdmin
      * Route yang tidak terdaftar di sini bebas diakses oleh semua role yang login.
      */
     protected array $featureMap = [
-        'admin.sdm.'          => 'sdm',
-        'admin.struktur.'     => 'sdm',
-        'admin.siswa.'        => 'siswa',
-        'admin.pembayaran.'   => 'pembayaran',
-        'admin.raport.'       => 'raport',
-        'admin.mapel.'        => 'mapel',
-        'admin.news.'         => 'halaman_depan',
-        'admin.gallery.'      => 'halaman_depan',
-        'admin.slider.'       => 'halaman_depan',
-        'admin.video.'        => 'halaman_depan',
-        'admin.settings.'     => 'settings',
-        'admin.dashboard'     => 'dashboard',
+        'admin.settings.accessibility' => 'settings.accessibility',
+        'admin.sdm.'                   => 'sdm',
+        'admin.struktur.'             => 'sdm',
+        'admin.siswa.'                => 'siswa',
+        'admin.pembayaran.'           => 'pembayaran',
+        'admin.raport.'               => 'raport',
+        'admin.mapel.'                => 'mapel',
+        'admin.news.'                 => 'halaman_depan',
+        'admin.gallery.'              => 'halaman_depan',
+        'admin.slider.'               => 'halaman_depan',
+        'admin.video.'                => 'halaman_depan',
+        'admin.settings.'             => 'settings',
+        'admin.dashboard'             => 'dashboard',
     ];
 
     public function handle(Request $request, Closure $next): Response

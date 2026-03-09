@@ -92,7 +92,7 @@ class Siswa extends Model
     /**
      * Get formatted class name with surah name
      */
-    public static function getNamaKelas(int $kelas): string
+    public static function getNamaKelas($kelas): string
     {
         // Try to eager load if this was an instance method, but since it's static we keep querying DB or we should use relationship elsewhere.
         $master = \App\Models\MasterKelas::where('tingkat', $kelas)->first();

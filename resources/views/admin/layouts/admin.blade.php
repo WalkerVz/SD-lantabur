@@ -202,10 +202,12 @@
                     </div>
                 </div>
 
+                @if(\App\Models\FeatureAccess::can($currentRole, 'settings.accessibility'))
                 <a href="{{ route('admin.settings.accessibility') }}" class="flex items-center gap-3 px-4 py-3 rounded-lg {{ request()->routeIs('admin.settings.accessibility') ? 'bg-[#47663D] text-white' : 'text-gray-700 hover:bg-gray-100' }}">
                     <svg class="w-5 h-5 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0l3.5 3.5M12 12l-3.5 3.5M5 4h14a2 2 0 012 2v12a2 2 0 01-2 2H5a2 2 0 01-2-2V6a2 2 0 012-2z"/></svg>
                     <span x-show="!sidebarCollapsed" x-transition>Accessibility</span>
                 </a>
+                @endif
                 @endif
             </nav>
         </aside>

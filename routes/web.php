@@ -72,7 +72,9 @@ Route::prefix('admin')->name('admin.')->group(function () {
         Route::put('pembayaran/{id}', [PembayaranController::class, 'update'])->name('pembayaran.update');
         Route::delete('pembayaran/{id}', [PembayaranController::class, 'destroy'])->name('pembayaran.destroy');
         Route::get('pembayaran/export/pdf', [PembayaranController::class, 'exportPdf'])->name('pembayaran.export.pdf');
+        Route::get('pembayaran/export/semua-pdf', [PembayaranController::class, 'exportSemuaPdf'])->name('pembayaran.exportSemuaPdf');
         Route::get('pembayaran/rekap-pdf', [PembayaranController::class, 'rekapPdfPerKelas'])->name('pembayaran.rekapPdf');
+        Route::get('pembayaran/rekap-semua-pdf', [PembayaranController::class, 'rekapSemuaPdfPerKelas'])->name('pembayaran.rekapSemuaPdf');
         Route::get('pembayaran/{id}/kwitansi', [PembayaranController::class, 'kwitansi'])->name('pembayaran.kwitansi');
         Route::get('raport', [RaportController::class, 'index'])->name('raport.index');
         Route::get('raport/kelas/{kelas}', [RaportController::class, 'byKelas'])->name('raport.byKelas');
@@ -124,6 +126,8 @@ Route::prefix('admin')->name('admin.')->group(function () {
         Route::get('settings', [SettingsController::class, 'index'])->name('settings.index');
         Route::get('settings/accounts', [SettingsController::class, 'accounts'])->name('settings.accounts');
         Route::post('settings/accounts', [SettingsController::class, 'storeAccount'])->name('settings.accounts.store');
+        Route::put('settings/accounts/{id}', [SettingsController::class, 'updateAccount'])->name('settings.accounts.update');
+        Route::delete('settings/accounts/{id}', [SettingsController::class, 'destroyAccount'])->name('settings.accounts.destroy');
         Route::post('settings/accounts/{id}/reset-password', [SettingsController::class, 'resetAccountPassword'])->name('settings.accounts.reset-password');
         Route::get('settings/accessibility', [SettingsController::class, 'accessibility'])->name('settings.accessibility');
         Route::post('settings/accessibility', [SettingsController::class, 'saveAccessibility'])->name('settings.accessibility.save');

@@ -18,5 +18,15 @@ return Application::configure(basePath: dirname(__DIR__))
         $middleware->trustProxies(at: '*');
     })
     ->withExceptions(function (Exceptions $exceptions): void {
-        //
+        // Tangani 419 Page Expired (CSRF token expired) - redirect ke halaman sebelumnya dengan pesan
+        $exceptions->respond(function (\Symfony\Component\HttpFoundation\Response $response) {
+            if ($response->getStatusCode() === 419) {
+                return redirect()
+                    ->back()
+                    ->exceptInput('password', 'password_confirmation', 'reset_password', 'current_password')
+                    ->withErrors(['token' => 'Sesi telah berakhir. Silakan refresh halaman dan coba lagi.']);
+            }
+
+            return $response;
+        });
     })->create();
