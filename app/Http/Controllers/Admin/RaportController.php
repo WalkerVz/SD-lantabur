@@ -23,7 +23,8 @@ class RaportController extends Controller
     public function index(): View
     {
         $classes = \App\Models\MasterKelas::orderBy('tingkat')->get();
-        return view('admin.raport.index', compact('classes'));
+        $tahunAjaranList = MasterTahunAjaran::orderBy('urutan')->orderByDesc('nama')->get();
+        return view('admin.raport.index', compact('classes', 'tahunAjaranList'));
     }
 
     public function byKelas(int $kelas, Request $request)

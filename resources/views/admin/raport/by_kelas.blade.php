@@ -41,7 +41,8 @@
         </div>
     </div>
 
-    <div class="bg-white rounded-xl shadow border border-gray-100 overflow-hidden">
+    <div class="bg-white rounded-xl shadow border border-gray-100">
+    <div class="bg-white rounded-xl shadow border border-gray-100">
         <div class="overflow-x-auto">
             <table class="w-full text-left text-sm min-w-[600px] sm:min-w-full">
                 <thead class="bg-gray-50 border-b border-gray-200">
@@ -107,93 +108,132 @@
                             <div class="flex items-center justify-end gap-2">
                                 @if($nilai)
                                 {{-- Dropdown Edit --}}
-                                <div class="relative" x-data="{ open: false }" @click.outside="open = false">
-                                    <button @click="open = !open" class="inline-flex items-center gap-1 px-3 py-1.5 bg-blue-50 text-blue-700 rounded-lg text-xs font-semibold hover:bg-blue-100 transition-colors">
+                                <div class="relative" x-data="{ 
+                                    open: false,
+                                    pos: { top: 0, left: 0 },
+                                    toggle() {
+                                        this.open = !this.open;
+                                        if (this.open) {
+                                            let rect = this.$refs.btn.getBoundingClientRect();
+                                            this.pos = { top: rect.bottom + window.scrollY, left: rect.right + window.scrollX - 176 };
+                                        }
+                                    }
+                                }" @click.outside="open = false">
+                                    <button x-ref="btn" @click="toggle()" class="inline-flex items-center gap-1 px-3 py-1.5 bg-blue-50 text-blue-700 rounded-lg text-xs font-semibold hover:bg-blue-100 transition-colors">
                                         <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"/></svg>
                                         Edit
                                         <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/></svg>
                                     </button>
-                                    <div x-show="open" x-transition.opacity.duration.150ms
-                                         class="absolute right-0 z-[9999] mt-1 w-44 bg-white rounded-lg shadow-lg border border-gray-100 py-1 text-sm"
-                                         style="display:none;">
-                                        <a href="{{ route('admin.raport.edit', $nilai->id) }}" class="flex items-center gap-2 px-4 py-2 text-gray-700 hover:bg-blue-50 hover:text-blue-700">
-                                            <span class="w-2 h-2 rounded-full {{ $nilai->isLengkapUmum() ? 'bg-blue-400' : 'bg-gray-300' }}"></span>Nilai Umum
-                                        </a>
-                                        <a href="{{ route('admin.raport.editPraktik', $nilai->id) }}" class="flex items-center gap-2 px-4 py-2 text-gray-700 hover:bg-green-50 hover:text-green-700">
-                                            <span class="w-2 h-2 rounded-full {{ $nilai->isLengkapPraktik() ? 'bg-green-400' : 'bg-gray-300' }}"></span>Praktik
-                                        </a>
-                                        <a href="{{ route('admin.raport.editJilid', [$s->id, 'tahun_ajaran'=>$tahun, 'semester'=>$semester]) }}" class="flex items-center gap-2 px-4 py-2 text-gray-700 hover:bg-purple-50 hover:text-purple-700">
-                                            <span class="w-2 h-2 rounded-full {{ $rj ? 'bg-purple-400' : 'bg-gray-300' }}"></span>{{ $rj ? "Al-Qur'an" : "Isi Al-Qur'an" }}
-                                        </a>
-                                        <a href="{{ route('admin.raport.formTahfidz', [$s->id, 'tahun_ajaran'=>$tahun, 'semester'=>$semester]) }}" class="flex items-center gap-2 px-4 py-2 text-gray-700 hover:bg-cyan-50 hover:text-cyan-700">
-                                            <span class="w-2 h-2 rounded-full {{ $rt ? 'bg-cyan-400' : 'bg-gray-300' }}"></span>{{ $rt ? 'Tahfidz' : 'Isi Tahfidz' }}
-                                        </a>
-                                    </div>
+                                    <template x-teleport="body">
+                                        <div x-show="open" x-transition.opacity.duration.150ms
+                                             class="absolute z-[9999] mt-1 w-44 bg-white rounded-lg shadow-lg border border-gray-100 py-1 text-sm"
+                                             :style="`top: ${pos.top}px; left: ${pos.left}px;`"
+                                             style="display:none;">
+                                            <a href="{{ route('admin.raport.edit', $nilai->id) }}" class="flex items-center gap-2 px-4 py-2 text-gray-700 hover:bg-blue-50 hover:text-blue-700">
+                                                <span class="w-2 h-2 rounded-full {{ $nilai->isLengkapUmum() ? 'bg-blue-400' : 'bg-gray-300' }}"></span>Nilai Umum
+                                            </a>
+                                            <a href="{{ route('admin.raport.editPraktik', $nilai->id) }}" class="flex items-center gap-2 px-4 py-2 text-gray-700 hover:bg-green-50 hover:text-green-700">
+                                                <span class="w-2 h-2 rounded-full {{ $nilai->isLengkapPraktik() ? 'bg-green-400' : 'bg-gray-300' }}"></span>Praktik
+                                            </a>
+                                            <a href="{{ route('admin.raport.editJilid', [$s->id, 'tahun_ajaran'=>$tahun, 'semester'=>$semester]) }}" class="flex items-center gap-2 px-4 py-2 text-gray-700 hover:bg-purple-50 hover:text-purple-700">
+                                                <span class="w-2 h-2 rounded-full {{ $rj ? 'bg-purple-400' : 'bg-gray-300' }}"></span>{{ $rj ? "Al-Qur'an" : "Isi Al-Qur'an" }}
+                                            </a>
+                                            <a href="{{ route('admin.raport.formTahfidz', [$s->id, 'tahun_ajaran'=>$tahun, 'semester'=>$semester]) }}" class="flex items-center gap-2 px-4 py-2 text-gray-700 hover:bg-cyan-50 hover:text-cyan-700">
+                                                <span class="w-2 h-2 rounded-full {{ $rt ? 'bg-cyan-400' : 'bg-gray-300' }}"></span>{{ $rt ? 'Tahfidz' : 'Isi Tahfidz' }}
+                                            </a>
+                                        </div>
+                                    </template>
                                 </div>
 
                                 {{-- Dropdown Cetak --}}
-                                <div class="relative" x-data="{ open: false }" @click.outside="open = false">
-                                    <button @click="open = !open" class="inline-flex items-center gap-1 px-3 py-1.5 bg-amber-50 text-amber-700 rounded-lg text-xs font-semibold hover:bg-amber-100 transition-colors">
+                                <div class="relative" x-data="{ 
+                                    open: false,
+                                    pos: { top: 0, left: 0 },
+                                    toggle() {
+                                        this.open = !this.open;
+                                        if (this.open) {
+                                            let rect = this.$refs.btn.getBoundingClientRect();
+                                            this.pos = { top: rect.bottom + window.scrollY, left: rect.right + window.scrollX - 176 };
+                                        }
+                                    }
+                                }" @click.outside="open = false">
+                                    <button x-ref="btn" @click="toggle()" class="inline-flex items-center gap-1 px-3 py-1.5 bg-amber-50 text-amber-700 rounded-lg text-xs font-semibold hover:bg-amber-100 transition-colors">
                                         <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 17h2a2 2 0 002-2v-4a2 2 0 00-2-2H5a2 2 0 00-2 2v4a2 2 0 002 2h2m2 4h6a2 2 0 002-2v-4a2 2 0 00-2-2H9a2 2 0 00-2 2v4a2 2 0 002 2zm8-12V5a2 2 0 00-2-2H9a2 2 0 00-2 2v4h10z"/></svg>
                                         Cetak
                                         <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/></svg>
                                     </button>
-                                    <div x-show="open" x-transition.opacity.duration.150ms
-                                         class="absolute right-0 z-[9999] mt-1 w-44 bg-white rounded-lg shadow-lg border border-gray-100 py-1 text-sm"
-                                         style="display:none;">
-                                        <a href="{{ route('admin.raport.cetakSemua', $nilai->id) }}" target="_blank" class="flex items-center gap-2 px-4 py-2 text-gray-700 hover:bg-rose-50 hover:text-rose-700 font-bold border-b border-gray-100">
-                                            <span class="w-2 h-2 rounded-full bg-rose-500"></span>Cetak Semua
-                                        </a>
-                                        <a href="{{ route('admin.raport.cetakSiswa', $nilai->id) }}" target="_blank" class="flex items-center gap-2 px-4 py-2 text-gray-700 hover:bg-amber-50 hover:text-amber-700">
-                                            <span class="w-2 h-2 rounded-full bg-amber-400"></span>Raport Umum
-                                        </a>
-                                        <a href="{{ route('admin.raport.cetakPraktik', $nilai->id) }}" target="_blank" class="flex items-center gap-2 px-4 py-2 text-gray-700 hover:bg-green-50 hover:text-green-700">
-                                            <span class="w-2 h-2 rounded-full bg-green-400"></span>Raport Praktik
-                                        </a>
-                                        @if($rj)
-                                        <a href="{{ route('admin.raport.cetakJilid', [$s->id, 'tahun_ajaran'=>$tahun, 'semester'=>$semester]) }}" target="_blank" class="flex items-center gap-2 px-4 py-2 text-gray-700 hover:bg-purple-50 hover:text-purple-700">
-                                            <span class="w-2 h-2 rounded-full bg-purple-400"></span>Al-Qur'an
-                                        </a>
-                                        @else
-                                        <span class="flex items-center gap-2 px-4 py-2 text-gray-300 text-xs italic cursor-not-allowed">
-                                            <span class="w-2 h-2 rounded-full bg-gray-200"></span>Al-Qur'an (belum diisi)
-                                        </span>
-                                        @endif
-                                        @if($rt)
-                                        <a href="{{ route('admin.raport.cetakTahfidz', [$s->id, 'tahun_ajaran'=>$tahun, 'semester'=>$semester]) }}" target="_blank" class="flex items-center gap-2 px-4 py-2 text-gray-700 hover:bg-cyan-50 hover:text-cyan-700">
-                                            <span class="w-2 h-2 rounded-full bg-cyan-400"></span>Raport Tahfidz
-                                        </a>
-                                        @else
-                                        <span class="flex items-center gap-2 px-4 py-2 text-gray-300 text-xs italic cursor-not-allowed">
-                                            <span class="w-2 h-2 rounded-full bg-gray-200"></span>Tahfidz (belum diisi)
-                                        </span>
-                                        @endif
-                                    </div>
+                                    <template x-teleport="body">
+                                        <div x-show="open" x-transition.opacity.duration.150ms
+                                             class="absolute z-[9999] mt-1 w-44 bg-white rounded-lg shadow-lg border border-gray-100 py-1 text-sm"
+                                             :style="`top: ${pos.top}px; left: ${pos.left}px;`"
+                                             style="display:none;">
+                                            <a href="{{ route('admin.raport.cetakSemua', $nilai->id) }}" target="_blank" class="flex items-center gap-2 px-4 py-2 text-gray-700 hover:bg-rose-50 hover:text-rose-700 font-bold border-b border-gray-100">
+                                                <span class="w-2 h-2 rounded-full bg-rose-500"></span>Cetak Semua
+                                            </a>
+                                            <a href="{{ route('admin.raport.cetakSiswa', $nilai->id) }}" target="_blank" class="flex items-center gap-2 px-4 py-2 text-gray-700 hover:bg-amber-50 hover:text-amber-700">
+                                                <span class="w-2 h-2 rounded-full bg-amber-400"></span>Raport Umum
+                                            </a>
+                                            <a href="{{ route('admin.raport.cetakPraktik', $nilai->id) }}" target="_blank" class="flex items-center gap-2 px-4 py-2 text-gray-700 hover:bg-green-50 hover:text-green-700">
+                                                <span class="w-2 h-2 rounded-full bg-green-400"></span>Raport Praktik
+                                            </a>
+                                            @if($rj)
+                                            <a href="{{ route('admin.raport.cetakJilid', [$s->id, 'tahun_ajaran'=>$tahun, 'semester'=>$semester]) }}" target="_blank" class="flex items-center gap-2 px-4 py-2 text-gray-700 hover:bg-purple-50 hover:text-purple-700">
+                                                <span class="w-2 h-2 rounded-full bg-purple-400"></span>Al-Qur'an
+                                            </a>
+                                            @else
+                                            <span class="flex items-center gap-2 px-4 py-2 text-gray-300 text-xs italic cursor-not-allowed">
+                                                <span class="w-2 h-2 rounded-full bg-gray-200"></span>Al-Qur'an (belum diisi)
+                                            </span>
+                                            @endif
+                                            @if($rt)
+                                            <a href="{{ route('admin.raport.cetakTahfidz', [$s->id, 'tahun_ajaran'=>$tahun, 'semester'=>$semester]) }}" target="_blank" class="flex items-center gap-2 px-4 py-2 text-gray-700 hover:bg-cyan-50 hover:text-cyan-700">
+                                                <span class="w-2 h-2 rounded-full bg-cyan-400"></span>Raport Tahfidz
+                                            </a>
+                                            @else
+                                            <span class="flex items-center gap-2 px-4 py-2 text-gray-300 text-xs italic cursor-not-allowed">
+                                                <span class="w-2 h-2 rounded-full bg-gray-200"></span>Tahfidz (belum diisi)
+                                            </span>
+                                            @endif
+                                        </div>
+                                    </template>
                                 </div>
                                 @else
                                     {{-- Dropdown Isi Nilai --}}
-                                    <div class="relative" x-data="{ open: false }" @click.outside="open = false">
-                                        <button @click="open = !open" class="inline-flex items-center gap-1.5 px-4 py-2 bg-gray-100 hover:bg-[#47663D] hover:text-white text-gray-700 rounded-lg transition-all text-xs font-bold uppercase tracking-widest">
+                                    <div class="relative" x-data="{ 
+                                        open: false,
+                                        pos: { top: 0, left: 0 },
+                                        toggle() {
+                                            this.open = !this.open;
+                                            if (this.open) {
+                                                let rect = this.$refs.btn.getBoundingClientRect();
+                                                this.pos = { top: rect.bottom + window.scrollY, left: rect.right + window.scrollX - 176 };
+                                            }
+                                        }
+                                    }" @click.outside="open = false">
+                                        <button x-ref="btn" @click="toggle()" class="inline-flex items-center gap-1.5 px-4 py-2 bg-gray-100 hover:bg-[#47663D] hover:text-white text-gray-700 rounded-lg transition-all text-xs font-bold uppercase tracking-widest">
                                             <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"/></svg>
                                             Isi Nilai
                                             <svg class="w-3 h-3 ml-1" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/></svg>
                                         </button>
-                                        <div x-show="open" x-transition.opacity.duration.150ms
-                                             class="absolute right-0 z-[9999] mt-1 w-44 bg-white rounded-lg shadow-lg border border-gray-100 py-1 text-sm font-normal normal-case tracking-normal"
-                                             style="display:none;">
-                                            <a href="{{ route('admin.raport.create', ['kelas'=>$kelas,'semester'=>$semester,'tahun_ajaran'=>$tahun,'siswa_id'=>$s->id]) }}" class="flex items-center gap-2 px-4 py-2 text-gray-700 hover:bg-blue-50 hover:text-blue-700">
-                                                <span class="w-2 h-2 rounded-full bg-gray-300"></span>Raport Umum
-                                            </a>
-                                            <a href="{{ route('admin.raport.ensureAndEditPraktik', ['siswa_id'=>$s->id, 'kelas'=>$kelas, 'tahun_ajaran'=>$tahun, 'semester'=>$semester]) }}" class="flex items-center gap-2 px-4 py-2 text-gray-700 hover:bg-green-50 hover:text-green-700">
-                                                <span class="w-2 h-2 rounded-full bg-gray-300"></span>Raport Praktik
-                                            </a>
-                                            <a href="{{ route('admin.raport.editJilid', [$s->id, 'tahun_ajaran'=>$tahun, 'semester'=>$semester]) }}" class="flex items-center gap-2 px-4 py-2 text-gray-700 hover:bg-purple-50 hover:text-purple-700">
-                                                <span class="w-2 h-2 rounded-full bg-gray-300"></span>Al-Qur'an (Jilid)
-                                            </a>
-                                            <a href="{{ route('admin.raport.formTahfidz', [$s->id, 'tahun_ajaran'=>$tahun, 'semester'=>$semester]) }}" class="flex items-center gap-2 px-4 py-2 text-gray-700 hover:bg-cyan-50 hover:text-cyan-700">
-                                                <span class="w-2 h-2 rounded-full bg-gray-300"></span>Tahfidz
-                                            </a>
-                                        </div>
+                                        <template x-teleport="body">
+                                            <div x-show="open" x-transition.opacity.duration.150ms
+                                                 class="absolute z-[9999] mt-1 w-44 bg-white rounded-lg shadow-lg border border-gray-100 py-1 text-sm font-normal normal-case tracking-normal"
+                                                 :style="`top: ${pos.top}px; left: ${pos.left}px;`"
+                                                 style="display:none;">
+                                                <a href="{{ route('admin.raport.create', ['kelas'=>$kelas,'semester'=>$semester,'tahun_ajaran'=>$tahun,'siswa_id'=>$s->id]) }}" class="flex items-center gap-2 px-4 py-2 text-gray-700 hover:bg-blue-50 hover:text-blue-700">
+                                                    <span class="w-2 h-2 rounded-full bg-gray-300"></span>Raport Umum
+                                                </a>
+                                                <a href="{{ route('admin.raport.ensureAndEditPraktik', ['siswa_id'=>$s->id, 'kelas'=>$kelas, 'tahun_ajaran'=>$tahun, 'semester'=>$semester]) }}" class="flex items-center gap-2 px-4 py-2 text-gray-700 hover:bg-green-50 hover:text-green-700">
+                                                    <span class="w-2 h-2 rounded-full bg-gray-300"></span>Raport Praktik
+                                                </a>
+                                                <a href="{{ route('admin.raport.editJilid', [$s->id, 'tahun_ajaran'=>$tahun, 'semester'=>$semester]) }}" class="flex items-center gap-2 px-4 py-2 text-gray-700 hover:bg-purple-50 hover:text-purple-700">
+                                                    <span class="w-2 h-2 rounded-full bg-gray-300"></span>Al-Qur'an (Jilid)
+                                                </a>
+                                                <a href="{{ route('admin.raport.formTahfidz', [$s->id, 'tahun_ajaran'=>$tahun, 'semester'=>$semester]) }}" class="flex items-center gap-2 px-4 py-2 text-gray-700 hover:bg-cyan-50 hover:text-cyan-700">
+                                                    <span class="w-2 h-2 rounded-full bg-gray-300"></span>Tahfidz
+                                                </a>
+                                            </div>
+                                        </template>
                                     </div>
                                 @endif
                             </div>
