@@ -47,10 +47,6 @@ class EnsureAdmin
         return $next($request);
     }
 
-    /**
-     * Tentukan nama feature dari route name yang sedang diakses.
-     * Kembalikan null jika route tidak perlu dicek (misalnya logout).
-     */
     protected function resolveFeature(?string $routeName): ?string
     {
         if ($routeName === null) {
@@ -63,6 +59,6 @@ class EnsureAdmin
             }
         }
 
-        return null; // Route tidak terdaftar → tidak dicek
+        return null; 
     }
 }
