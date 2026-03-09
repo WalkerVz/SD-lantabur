@@ -100,10 +100,11 @@ class MapelController extends Controller
             'kelas' => 'required|integer',
             'section' => 'required|string|max:50',
             'kategori' => 'required|string|max:255',
+            'kkm' => 'required|integer|min:0|max:100',
             'urutan' => 'required|integer|min:0',
         ]);
 
-        MasterPraktik::create($request->only('kelas', 'section', 'kategori', 'urutan'));
+        MasterPraktik::create($request->only('kelas', 'section', 'kategori', 'kkm', 'urutan'));
 
         return back()->with('success', 'Kategori praktik berhasil ditambahkan.');
     }
@@ -115,6 +116,7 @@ class MapelController extends Controller
             'kelas' => 'required|integer',
             'section' => 'required|string|max:50',
             'kategori' => 'required|string|max:255',
+            'kkm' => 'required|integer|min:0|max:100',
             'urutan' => 'required|integer|min:0',
         ]);
 
@@ -122,7 +124,7 @@ class MapelController extends Controller
         $oldKategori = $item->kategori;
 
         DB::transaction(function () use ($item, $request, $oldSection, $oldKategori) {
-            $item->update($request->only('kelas', 'section', 'kategori', 'urutan'));
+            $item->update($request->only('kelas', 'section', 'kategori', 'kkm', 'urutan'));
 
             // Cascade rename ke tabel raport_praktik jika ada perubahan nama/seksi
             if ($oldSection !== $item->section || $oldKategori !== $item->kategori) {

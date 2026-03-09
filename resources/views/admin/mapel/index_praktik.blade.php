@@ -56,6 +56,7 @@
                         <th class="px-3 sm:px-6 py-4 text-[10px] sm:text-xs font-bold text-gray-400 uppercase tracking-wider w-16 sm:w-20">Urutan</th>
                         <th class="px-3 sm:px-6 py-4 text-[10px] sm:text-xs font-bold text-gray-400 uppercase tracking-wider w-24 sm:w-32">Section</th>
                         <th class="px-3 sm:px-6 py-4 text-[10px] sm:text-xs font-bold text-gray-400 uppercase tracking-wider">Kategori</th>
+                        <th class="px-3 sm:px-6 py-4 text-[10px] sm:text-xs font-bold text-gray-400 uppercase tracking-wider w-16 sm:w-20 text-center">KKM</th>
                         <th class="px-3 sm:px-6 py-4 text-[10px] sm:text-xs font-bold text-gray-400 uppercase tracking-wider w-32 sm:w-40 text-right">Aksi</th>
                     </tr>
                 </thead>
@@ -68,8 +69,11 @@
                             <td class="px-3 sm:px-6 py-4">
                                 <span class="px-2 sm:px-3 py-0.5 sm:py-1 bg-blue-50 text-blue-700 rounded-lg font-bold text-[10px] sm:text-sm block text-center min-w-[50px]">{{ $m->section }}</span>
                             </td>
-                            <td class="px-3 sm:px-6 py-4">
+                             <td class="px-3 sm:px-6 py-4">
                                 <span class="font-bold text-gray-800 text-sm sm:text-base leading-tight">{{ $m->kategori }}</span>
+                            </td>
+                            <td class="px-3 sm:px-6 py-4 text-center">
+                                <span class="px-2 py-1 bg-amber-50 text-amber-700 rounded-lg font-bold text-xs sm:text-sm">{{ $m->kkm ?? 75 }}</span>
                             </td>
                             <td class="px-3 sm:px-6 py-4 text-right">
                                 <div class="flex justify-end gap-1 sm:gap-2">
@@ -106,17 +110,23 @@
                     <template x-if="editId"><input type="hidden" name="_method" value="PUT"></template>
                     <input type="hidden" name="kelas" value="{{ $selectedKelas }}">
                     <div class="space-y-4">
-                        <div>
+                         <div>
                             <label class="block text-sm font-bold text-gray-700 mb-1">Section</label>
                             <input type="text" name="section" x-model="formData.section" required placeholder="PAI, ADAB, DOA, dll" class="w-full px-4 py-3 rounded-xl border border-gray-200 focus:ring-2 focus:ring-[#47663D] focus:border-transparent outline-none transition">
+                        </div>
+                        <div class="grid grid-cols-2 gap-4">
+                            <div>
+                                <label class="block text-sm font-bold text-gray-700 mb-1">KKM</label>
+                                <input type="number" name="kkm" x-model="formData.kkm" required min="0" max="100" class="w-full px-4 py-3 rounded-xl border border-gray-200 focus:ring-2 focus:ring-[#47663D] focus:border-transparent outline-none transition">
+                            </div>
+                            <div>
+                                <label class="block text-sm font-bold text-gray-700 mb-1">Urutan</label>
+                                <input type="number" name="urutan" x-model="formData.urutan" required min="0" class="w-full px-4 py-3 rounded-xl border border-gray-200 focus:ring-2 focus:ring-[#47663D] focus:border-transparent outline-none transition">
+                            </div>
                         </div>
                         <div>
                             <label class="block text-sm font-bold text-gray-700 mb-1">Kategori</label>
                             <input type="text" name="kategori" x-model="formData.kategori" required class="w-full px-4 py-3 rounded-xl border border-gray-200 focus:ring-2 focus:ring-[#47663D] focus:border-transparent outline-none transition">
-                        </div>
-                        <div>
-                            <label class="block text-sm font-bold text-gray-700 mb-1">Urutan</label>
-                            <input type="number" name="urutan" x-model="formData.urutan" required min="0" class="w-full px-4 py-3 rounded-xl border border-gray-200 focus:ring-2 focus:ring-[#47663D] focus:border-transparent outline-none transition">
                         </div>
                     </div>
                     <div class="mt-8 flex gap-3">
@@ -137,14 +147,14 @@ function praktikPage() {
         editId: null,
         activeSection: 'all',
         sections: @json($items->pluck('section')->unique()->values()),
-        formData: { section: '', kategori: '', urutan: 1 },
+        formData: { section: '', kategori: '', kkm: 75, urutan: 1 },
         openModal(data = null) {
             if (data) {
                 this.editId = data.id;
-                this.formData = { section: data.section, kategori: data.kategori, urutan: data.urutan };
+                this.formData = { section: data.section, kategori: data.kategori, kkm: data.kkm || 75, urutan: data.urutan };
             } else {
                 this.editId = null;
-                this.formData = { section: this.activeSection !== 'all' ? this.activeSection : '', kategori: '', urutan: 1 };
+                this.formData = { section: this.activeSection !== 'all' ? this.activeSection : '', kategori: '', kkm: 75, urutan: 1 };
             }
             this.modalOpen = true;
         },
