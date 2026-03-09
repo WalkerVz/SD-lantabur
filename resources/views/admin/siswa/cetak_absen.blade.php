@@ -255,14 +255,7 @@
             </table>
 
             <div class="footer-sign">
-                <div style="text-align: center; width: 250px;">
-                    <br>
-                    <p>Mengetahui,</p>
-                    <p>Kepala Sekolah</p>
-                    <div class="sig-space"></div>
-                    <p><strong>( KASMIDAR, S.Pd )</strong></p>
-                    <p>NIY. 2403001</p>
-                </div>
+                <div></div>
                 <div style="text-align: center; justify-self: end; width: 250px;">
                     <p>Pekanbaru, ........................... {{ date('Y') }}</p>
                     <p>Wali Kelas,</p>

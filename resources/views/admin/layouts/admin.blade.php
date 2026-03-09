@@ -10,7 +10,36 @@
     <script src="https://cdn.tailwindcss.com"></script>
     <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
-    <style> body { font-family: 'Poppins', sans-serif; } </style>
+    <style> 
+        body { font-family: 'Poppins', sans-serif; } 
+        [x-cloak] { display: none !important; }
+        
+        /* Loading Button Styles */
+        .btn-loading {
+            position: relative;
+            color: transparent !important;
+            pointer-events: none;
+        }
+        .btn-loading::after {
+            content: "";
+            position: absolute;
+            width: 16px;
+            height: 16px;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            margin: auto;
+            border: 2px solid transparent;
+            border-top-color: currentColor;
+            border-radius: 50%;
+            animation: button-loading-spinner 1s ease infinite;
+        }
+        @keyframes button-loading-spinner {
+            from { transform: rotate(0turn); }
+            to { transform: rotate(1turn); }
+        }
+    </style>
 </head>
 <body class="bg-gray-50 min-h-screen" x-data="{
     sidebarOpen: false,
@@ -225,5 +254,24 @@
     </div>
 
     @stack('scripts')
+    <script>
+        // Global Double-Click Prevention for Forms
+        document.addEventListener('submit', function (e) {
+            const form = e.target;
+            const submitBtn = form.querySelector('button[type="submit"]');
+            if (submitBtn && !submitBtn.classList.contains('btn-loading')) {
+                // Add a small delay to allow validation to happen first
+                setTimeout(() => {
+                    submitBtn.classList.add('btn-loading');
+                    // Add a failsafe to remove the loading state if the page doesn't refresh (e.g. download)
+                    setTimeout(() => {
+                        if (submitBtn.classList.contains('btn-loading')) {
+                            submitBtn.classList.remove('btn-loading');
+                        }
+                    }, 5000);
+                }, 10);
+            }
+        });
+    </script>
 </body>
 </html>

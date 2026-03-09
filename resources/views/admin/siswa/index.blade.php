@@ -33,9 +33,10 @@
         @endif
     </div>
 
-    {{-- Tabel Kelas --}}
+    {{-- Tabel/Card Kelas --}}
     <div class="bg-white rounded-xl shadow border border-gray-100 overflow-hidden">
-        <div class="overflow-x-auto">
+        {{-- Desktop View (Table) --}}
+        <div class="hidden md:block overflow-x-auto">
             <table class="w-full text-left">
                 <thead class="bg-[#47663D] text-white">
                     <tr>
@@ -55,15 +56,23 @@
                         <td class="px-4 py-3 text-gray-600">{{ $row->wali_kelas_nama }}</td>
                         <td class="px-4 py-3">
                             <div class="flex items-center gap-1.5">
-                                <button type="button" @click="openListModal({{ $row->kelas }})" class="px-3 py-1.5 bg-[#47663D] text-white rounded-lg text-sm font-medium hover:bg-[#5a7d52] transition shadow-sm">
+                                <button type="button" @click="openListModal({{ $row->kelas }})" 
+                                    :class="{ 'btn-loading': listLoading && modalKelas == {{ $row->kelas }} }"
+                                    class="px-3 py-1.5 bg-[#47663D] text-white rounded-lg text-sm font-medium hover:bg-[#5a7d52] transition shadow-sm">
                                     Siswa
                                 </button>
                                 @if(\App\Models\FeatureAccess::can(auth()->user()->role ?? 'admin', 'siswa.export'))
-                                <a href="{{ route('admin.siswa.export.pdf', ['tahun_ajaran' => $tahun_ajaran, 'kelas' => $row->kelas]) }}" class="inline-flex items-center gap-1 px-2.5 py-1.5 bg-red-600 text-white rounded-lg text-xs font-medium hover:bg-red-700 transition shadow-sm" title="Export PDF Biodata Kelas {{ $row->kelas }}">
+                                <a href="{{ route('admin.siswa.export.pdf', ['tahun_ajaran' => $tahun_ajaran, 'kelas' => $row->kelas]) }}" 
+                                    @click="processing = true; setTimeout(() => processing = false, 3000)"
+                                    :class="{ 'btn-loading': processing }"
+                                    class="inline-flex items-center gap-1 px-2.5 py-1.5 bg-red-600 text-white rounded-lg text-xs font-medium hover:bg-red-700 transition shadow-sm" title="Export PDF Biodata Kelas {{ $row->kelas }}">
                                     <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/></svg>
                                     PDF
                                 </a>
-                                <a href="{{ route('admin.siswa.cetakAbsen', ['kelas' => $row->kelas, 'tahun_ajaran' => $tahun_ajaran]) }}" target="_blank" class="inline-flex items-center gap-1 px-2.5 py-1.5 bg-blue-600 text-white rounded-lg text-xs font-medium hover:bg-blue-700 transition shadow-sm" title="Cetak Daftar Hadir Kelas {{ $row->kelas }}">
+                                <a href="{{ route('admin.siswa.cetakAbsen', ['kelas' => $row->kelas, 'tahun_ajaran' => $tahun_ajaran]) }}" target="_blank" 
+                                    @click="processing = true; setTimeout(() => processing = false, 3000)"
+                                    :class="{ 'btn-loading': processing }"
+                                    class="inline-flex items-center gap-1 px-2.5 py-1.5 bg-blue-600 text-white rounded-lg text-xs font-medium hover:bg-blue-700 transition shadow-sm" title="Cetak Daftar Hadir Kelas {{ $row->kelas }}">
                                     <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 17h2a2 2 0 002-2v-4a2 2 0 00-2-2H5a2 2 0 00-2 2v4a2 2 0 002 2h2m2 4h6a2 2 0 002-2v-4a2 2 0 00-2-2H9a2 2 0 00-2 2v4a2 2 0 002 2zm8-12V5a2 2 0 00-2-2H9a2 2 0 00-2 2v4h10z"/></svg>
                                     Absen
                                 </a>
@@ -74,6 +83,48 @@
                     @endforeach
                 </tbody>
             </table>
+        </div>
+
+        {{-- Mobile View (Cards) --}}
+        <div class="md:hidden divide-y divide-gray-100">
+            @foreach($rows as $idx => $row)
+            <div class="p-4 space-y-3">
+                <div class="flex justify-between items-start">
+                    <div>
+                        <h3 class="text-lg font-bold text-gray-900">{{ \App\Models\Siswa::getNamaKelas($row->kelas) }}</h3>
+                        <p class="text-sm text-gray-500">Wali: {{ $row->wali_kelas_nama }}</p>
+                    </div>
+                    <div class="px-2.5 py-1 bg-[#47663D]/10 text-[#47663D] rounded-full text-xs font-bold uppercase tracking-wider">
+                        {{ $row->jumlah_siswa }} Siswa
+                    </div>
+                </div>
+                
+                <div class="grid grid-cols-3 gap-2">
+                    <button type="button" @click="openListModal({{ $row->kelas }})" 
+                        :class="{ 'btn-loading': listLoading && modalKelas == {{ $row->kelas }} }"
+                        class="flex flex-col items-center justify-center gap-1 p-2 bg-[#47663D] text-white rounded-xl hover:bg-[#5a7d52] transition shadow-sm">
+                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0z"/></svg>
+                        <span class="text-[10px] font-bold uppercase">Siswa</span>
+                    </button>
+                    @if(\App\Models\FeatureAccess::can(auth()->user()->role ?? 'admin', 'siswa.export'))
+                    <a href="{{ route('admin.siswa.export.pdf', ['tahun_ajaran' => $tahun_ajaran, 'kelas' => $row->kelas]) }}" 
+                        @click="processing = true; setTimeout(() => processing = false, 3000)"
+                        :class="{ 'btn-loading': processing }"
+                        class="flex flex-col items-center justify-center gap-1 p-2 bg-red-600 text-white rounded-xl hover:bg-red-700 transition shadow-sm text-center">
+                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 21h10a2 2 0 002-2V9.414a1 1 0 00-.293-.707l-5.414-5.414A1 1 0 0012.586 3H7a2 2 0 00-2 2v14a2 2 0 002 2z"/></svg>
+                        <span class="text-[10px] font-bold uppercase tracking-tighter">Export</span>
+                    </a>
+                    <a href="{{ route('admin.siswa.cetakAbsen', ['kelas' => $row->kelas, 'tahun_ajaran' => $tahun_ajaran]) }}" target="_blank" 
+                        @click="processing = true; setTimeout(() => processing = false, 3000)"
+                        :class="{ 'btn-loading': processing }"
+                        class="flex flex-col items-center justify-center gap-1 p-2 bg-blue-600 text-white rounded-xl hover:bg-blue-700 transition shadow-sm text-center">
+                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-3 7h3m-3 4h3m-6-4h.01M9 16h.01"/></svg>
+                        <span class="text-[10px] font-bold uppercase">Absen</span>
+                    </a>
+                    @endif
+                </div>
+            </div>
+            @endforeach
         </div>
     </div>
 
@@ -100,41 +151,83 @@
                     <template x-if="!listLoading && listSiswa.length === 0">
                         <p class="text-gray-500 text-center py-8">Belum ada siswa di kelas ini.</p>
                     </template>
-                    <div x-show="!listLoading && listSiswa.length > 0" class="overflow-x-auto">
-                        <table class="w-full text-left">
-                            <thead class="bg-gray-50 border-b border-gray-200">
-                                <tr>
-                                    <th class="px-3 py-2 text-xs font-semibold text-gray-600 w-10">No</th>
-                                    <th class="px-3 py-2 text-xs font-semibold text-gray-600">Nama Siswa</th>
-                                    <th class="px-3 py-2 text-xs font-semibold text-gray-600">NIS</th>
-                                    <th class="px-3 py-2 text-xs font-semibold text-gray-600">NISN</th>
-                                    <th class="px-3 py-2 text-xs font-semibold text-gray-600 w-28">Aksi</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                <template x-for="(s, i) in listSiswa" :key="s.id">
-                                    <tr class="border-b border-gray-100 hover:bg-gray-50">
-                                        <td class="px-3 py-2 text-gray-600" x-text="i + 1"></td>
-                                        <td class="px-3 py-2">
-                                            <button type="button" @click="openDetail(s)" class="font-bold text-[#47663D] hover:text-[#5a7d52] hover:underline underline-offset-2 text-left transition-colors" x-text="s.nama"></button>
-                                        </td>
-                                        <td class="px-3 py-2 text-gray-600" x-text="s.nis || '-'"></td>
-                                        <td class="px-3 py-2 text-gray-600" x-text="s.nisn || '-'"></td>
-                                        <td class="px-3 py-2">
-                                            <div class="flex items-center gap-2">
-                                                @if(\App\Models\FeatureAccess::can(auth()->user()->role ?? 'admin', 'siswa.edit'))
-                                                <button type="button" @click="openFormModal(s.id)" class="text-blue-600 hover:text-blue-800 font-medium text-xs uppercase tracking-wider transition-colors">Edit</button>
-                                                <button type="button" @click="confirmRemove(s.id, s.nama)" class="text-amber-600 hover:text-amber-800 font-medium text-xs uppercase tracking-wider transition-colors" title="Cuma hapus dari kelas ini, profil aman">Keluarkan</button>
-                                                @endif
-                                                @if(\App\Models\FeatureAccess::can(auth()->user()->role ?? 'admin', 'siswa.delete'))
-                                                <button type="button" @click="confirmDelete(s.id, s.nama)" class="text-red-600 hover:text-red-800 font-medium text-xs uppercase tracking-wider transition-colors" title="HAPUS PERMANEN (SEMUA DATA HILANG)">Hapus</button>
-                                                @endif
-                                            </div>
-                                        </td>
+                    <div x-show="!listLoading && listSiswa.length > 0">
+                        {{-- Desktop View (Table) --}}
+                        <div class="hidden md:block overflow-x-auto">
+                            <table class="w-full text-left">
+                                <thead class="bg-gray-50 border-b border-gray-200">
+                                    <tr>
+                                        <th class="px-3 py-2 text-xs font-semibold text-gray-600 w-10">No</th>
+                                        <th class="px-3 py-2 text-xs font-semibold text-gray-600">Nama Siswa</th>
+                                        <th class="px-3 py-2 text-xs font-semibold text-gray-600">NIS</th>
+                                        <th class="px-3 py-2 text-xs font-semibold text-gray-600">NISN</th>
+                                        <th class="px-3 py-2 text-xs font-semibold text-gray-600 w-28">Aksi</th>
                                     </tr>
-                                </template>
-                            </tbody>
-                        </table>
+                                </thead>
+                                <tbody>
+                                    <template x-for="(s, i) in listSiswa" :key="s.id">
+                                        <tr class="border-b border-gray-100 hover:bg-gray-50">
+                                            <td class="px-3 py-2 text-gray-600" x-text="i + 1"></td>
+                                            <td class="px-3 py-2">
+                                                <button type="button" @click="openDetail(s)" class="font-bold text-[#47663D] hover:text-[#5a7d52] hover:underline underline-offset-2 text-left transition-colors" x-text="s.nama"></button>
+                                            </td>
+                                            <td class="px-3 py-2 text-gray-600" x-text="s.nis || '-'"></td>
+                                            <td class="px-3 py-2 text-gray-600" x-text="s.nisn || '-'"></td>
+                                            <td class="px-3 py-2">
+                                                <div class="flex items-center gap-2">
+                                                    @if(\App\Models\FeatureAccess::can(auth()->user()->role ?? 'admin', 'siswa.edit'))
+                                                    <button type="button" @click="openFormModal(s.id)" 
+                                                        :class="{ 'btn-loading': processing && formModalEditId == s.id }"
+                                                        class="text-blue-600 hover:text-blue-800 font-medium text-xs uppercase tracking-wider transition-colors">Edit</button>
+                                                    <button type="button" @click="confirmRemove(s.id, s.nama)" 
+                                                        :class="{ 'btn-loading': processing && removeConfirmId == s.id }"
+                                                        class="text-amber-600 hover:text-amber-800 font-medium text-xs uppercase tracking-wider transition-colors" title="Cuma hapus dari kelas ini, profil aman">Keluarkan</button>
+                                                    @endif
+                                                    @if(\App\Models\FeatureAccess::can(auth()->user()->role ?? 'admin', 'siswa.delete'))
+                                                    <button type="button" @click="confirmDelete(s.id, s.nama)" 
+                                                        :class="{ 'btn-loading': processing && deleteConfirmId == s.id }"
+                                                        class="text-red-600 hover:text-red-800 font-medium text-xs uppercase tracking-wider transition-colors" title="HAPUS PERMANEN (SEMUA DATA HILANG)">Hapus</button>
+                                                    @endif
+                                                </div>
+                                            </td>
+                                        </tr>
+                                    </template>
+                                </tbody>
+                            </table>
+                        </div>
+
+                        {{-- Mobile View (Cards) --}}
+                        <div class="md:hidden space-y-3">
+                            <template x-for="(s, i) in listSiswa" :key="s.id">
+                                <div class="bg-gray-50 rounded-xl p-4 border border-gray-100 space-y-3">
+                                    <div class="flex justify-between items-start">
+                                        <div class="flex-1">
+                                            <button type="button" @click="openDetail(s)" class="text-base font-bold text-[#47663D] hover:underline text-left leading-tight" x-text="s.nama"></button>
+                                            <p class="text-xs text-gray-500 mt-0.5" x-text="'NIS: ' + (s.nis || '-') + ' | NISN: ' + (s.nisn || '-')"></p>
+                                        </div>
+                                        <div class="text-[10px] font-bold text-gray-400" x-text="'#' + (i + 1)"></div>
+                                    </div>
+                                    
+                                    <div class="flex items-center gap-2 pt-1 border-t border-gray-200/60">
+                                        @if(\App\Models\FeatureAccess::can(auth()->user()->role ?? 'admin', 'siswa.edit'))
+                                        <button type="button" @click="openFormModal(s.id)" 
+                                            :class="{ 'btn-loading': processing && formModalEditId == s.id }"
+                                            class="flex-1 py-2 bg-blue-50 text-blue-700 rounded-lg text-xs font-bold uppercase tracking-wider hover:bg-blue-100 transition">Edit</button>
+                                        <button type="button" @click="confirmRemove(s.id, s.nama)" 
+                                            :class="{ 'btn-loading': processing && removeConfirmId == s.id }"
+                                            class="flex-1 py-2 bg-amber-50 text-amber-700 rounded-lg text-xs font-bold uppercase tracking-wider hover:bg-amber-100 transition">Keluarkan</button>
+                                        @endif
+                                        @if(\App\Models\FeatureAccess::can(auth()->user()->role ?? 'admin', 'siswa.delete'))
+                                        <button type="button" @click="confirmDelete(s.id, s.nama)" 
+                                            :class="{ 'btn-loading': processing && deleteConfirmId == s.id }"
+                                            class="p-2 bg-red-50 text-red-700 rounded-lg hover:bg-red-100 transition" title="Hapus Permanen">
+                                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"/></svg>
+                                        </button>
+                                        @endif
+                                    </div>
+                                </div>
+                            </template>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -177,8 +270,10 @@
                 </div>
                 <div class="flex gap-3 justify-center">
                     <button type="button" @click="deleteConfirmOpen = false" class="flex-1 px-5 py-2.5 bg-gray-100 text-gray-700 rounded-xl font-medium hover:bg-gray-200 transition">Batal</button>
-                    <button type="button" @click="doDelete()" class="flex-1 px-5 py-2.5 bg-red-600 text-white rounded-xl font-bold hover:bg-red-700 transition shadow-lg shadow-red-200">Ya, Hapus Semua</button>
-                </div>
+                                        <button type="button" @click="doDelete()" 
+                                            :class="{ 'btn-loading': processing }"
+                                            class="flex-1 px-5 py-2.5 bg-red-600 text-white rounded-xl font-bold hover:bg-red-700 transition shadow-lg shadow-red-200">Ya, Hapus Semua</button>
+                                    </div>
             </div>
         </div>
     </div>
@@ -198,8 +293,10 @@
                 </p>
                 <div class="flex gap-3 justify-center">
                     <button type="button" @click="removeConfirmOpen = false" class="flex-1 px-5 py-2.5 bg-gray-100 text-gray-700 rounded-xl font-medium hover:bg-gray-200 transition">Batal</button>
-                    <button type="button" @click="doRemove()" class="flex-1 px-5 py-2.5 bg-amber-500 text-white rounded-xl font-bold hover:bg-amber-600 transition shadow-lg shadow-amber-200">Ya, Keluarkan</button>
-                </div>
+                                        <button type="button" @click="doRemove()" 
+                                            :class="{ 'btn-loading': processing }"
+                                            class="flex-1 px-5 py-2.5 bg-amber-500 text-white rounded-xl font-bold hover:bg-amber-600 transition shadow-lg shadow-amber-200">Ya, Keluarkan</button>
+                                    </div>
             </div>
         </div>
     </div>
@@ -321,6 +418,7 @@ function siswaPage() {
         tahunAjaran: tahunAjaran,
         listSiswa: [],
         listLoading: false,
+        processing: false,
         formModalEditId: null,
         formModalUrl: '',
         deleteConfirmId: null,
@@ -394,6 +492,7 @@ function siswaPage() {
 
         doDelete() {
             if (!this.deleteConfirmId) return;
+            this.processing = true;
             const url = deleteUrl(this.deleteConfirmId) + '?tahun_ajaran=' + encodeURIComponent(tahunAjaran);
             fetch(url, {
                 method: 'DELETE',
@@ -409,7 +508,7 @@ function siswaPage() {
                     this.deleteConfirmId = null;
                     this.openListModal(this.modalKelas);
                 })
-                .catch(() => { this.deleteConfirmOpen = false; });
+                .finally(() => { this.processing = false; });
         },
 
         confirmRemove(id, nama) {
@@ -420,6 +519,7 @@ function siswaPage() {
 
         doRemove() {
             if (!this.removeConfirmId) return;
+            this.processing = true;
             const url = deleteUrl(this.removeConfirmId) + '/remove-from-class?tahun_ajaran=' + encodeURIComponent(tahunAjaran);
             fetch(url, {
                 method: 'DELETE',
@@ -435,7 +535,7 @@ function siswaPage() {
                     this.removeConfirmId = null;
                     this.openListModal(this.modalKelas);
                 })
-                .catch(() => { this.removeConfirmOpen = false; });
+                .finally(() => { this.processing = false; });
         }
     };
 }
