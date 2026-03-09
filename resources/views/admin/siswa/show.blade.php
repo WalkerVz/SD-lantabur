@@ -120,7 +120,9 @@
         </div>
 
         <div class="px-6 pb-6 flex gap-3">
+            @if(\App\Models\FeatureAccess::can(auth()->user()->role ?? 'admin', 'siswa.edit'))
             <a href="{{ route('admin.siswa.edit', $s->id) }}?tahun_ajaran={{ request('tahun_ajaran', date('y').'/'.(date('y')+1)) }}" class="px-4 py-2 bg-[#47663D] text-white rounded-lg hover:bg-[#5a7d52] font-medium text-sm">Edit Data</a>
+            @endif
             <a href="{{ route('admin.siswa.index') }}" class="px-4 py-2 bg-gray-200 text-gray-700 rounded-lg hover:bg-gray-300 font-medium text-sm">Kembali</a>
         </div>
     </div>

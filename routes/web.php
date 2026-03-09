@@ -14,6 +14,7 @@ use App\Http\Controllers\Admin\PembayaranController;
 use App\Http\Controllers\Admin\SettingsController;
 use App\Http\Controllers\Admin\MapelController;
 use App\Http\Controllers\Admin\VideoController;
+use App\Http\Controllers\Admin\MasterKelasController;
 use Illuminate\Support\Facades\Route;
 
 Route::get('/', [PageController::class, 'home']);
@@ -126,6 +127,8 @@ Route::prefix('admin')->name('admin.')->group(function () {
         Route::post('settings/accounts/{id}/reset-password', [SettingsController::class, 'resetAccountPassword'])->name('settings.accounts.reset-password');
         Route::get('settings/accessibility', [SettingsController::class, 'accessibility'])->name('settings.accessibility');
         Route::post('settings/accessibility', [SettingsController::class, 'saveAccessibility'])->name('settings.accessibility.save');
+        Route::get('settings/contact', [SettingsController::class, 'contact'])->name('settings.contact');
+        Route::post('settings/contact', [SettingsController::class, 'updateContact'])->name('settings.contact.store');
         Route::put('settings/profile', [SettingsController::class, 'updateProfile'])->name('settings.profile');
         Route::put('settings/password', [SettingsController::class, 'updatePassword'])->name('settings.password');
         Route::post('settings/tahun-ajaran', [SettingsController::class, 'storeTahunAjaran'])->name('settings.tahun-ajaran.store');
@@ -163,5 +166,8 @@ Route::prefix('admin')->name('admin.')->group(function () {
         Route::get('video/{id}/edit', [VideoController::class, 'edit'])->name('video.edit');
         Route::put('video/{id}', [VideoController::class, 'update'])->name('video.update');
         Route::delete('video/{id}', [VideoController::class, 'destroy'])->name('video.destroy');
+
+        Route::get('master-kelas', [MasterKelasController::class, 'index'])->name('master-kelas.index');
+        Route::put('master-kelas/{id}', [MasterKelasController::class, 'update'])->name('master-kelas.update');
     });
 });

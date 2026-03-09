@@ -62,7 +62,7 @@
             z-index: 1;
             opacity: 0.06;
             /* Absolutely NO gaps - Larger Font 15 - Tight Layout */
-            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 42 22'%3E%3Ctext x='21' y='17' fill='black' font-size='15' font-weight='bold' font-family='sans-serif' text-anchor='middle'%3ESD AL QUR%27AN LANTABUR%3C/text%3E%3C/svg%3E");
+            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 42 22'%3E%3Ctext x='21' y='17' fill='black' font-size='15' font-weight='bold' font-family='sans-serif' text-anchor='middle'%3ESD AL QUR%27AN LANTABUR PEKANBARU%3C/text%3E%3C/svg%3E");
             background-repeat: repeat;
             background-size: 25% 20px;
             background-position: 0 0;
@@ -293,7 +293,7 @@
             <img src="{{ asset('images/logo.png') }}" alt="Logo" class="praktik-header-logo">
             <div class="praktik-header-text">
                 <h3>LAPORAN PENCAPAIAN KOMPETENSI PESERTA DIDIK</h3>
-                <h4>SEKOLAH DASAR AL-QUR'AN LANTABUR</h4>
+                <h4>SEKOLAH DASAR AL-QUR'AN LANTABUR PEKANBARU</h4>
                 <h4>PEKANBARU</h4>
             </div>
         </div>
@@ -307,7 +307,7 @@
                 <td>Kelas</td><td>: {{ $kelas }}</td>
             </tr>
             <tr>
-                <td>Nama Sekolah</td><td>: SD AL-QUR'AN LANTABUR</td>
+                <td>Nama Sekolah</td><td>: SD AL-QUR'AN LANTABUR PEKANBARU</td>
                 <td>Semester</td><td>: {{ strtoupper($semester) }}</td>
             </tr>
             <tr>
@@ -353,7 +353,7 @@
                     @endif
                 </td>
                 <td>
-                    <p>Pekanbaru, {{ $tanggal }}<br>Wali Kelas {{ $kelas }}</p>
+                    <p>Pekanbaru, {{ $tanggal }}<br>Wali Kelas {{ \App\Models\Siswa::getNamaKelas($kelas) }}</p>
                 </td>
             </tr>
             <tr>

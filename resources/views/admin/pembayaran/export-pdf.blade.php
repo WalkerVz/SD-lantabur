@@ -163,6 +163,15 @@
             </div>
         @endif
         
+        {{-- TTD Bendahara --}}
+        <div style="margin-top: 40px; text-align: right; padding-right: 20px; font-size: 12px;">
+            <p>Pekanbaru, {{ now()->locale('id')->translatedFormat('d F Y') }}</p>
+            <p>Mengetahui,</p>
+            <p><strong>Bendahara Sekolah</strong></p>
+            <br><br><br><br>
+            <p><strong>( _______________________ )</strong></p>
+        </div>
+        
         {{-- Footer --}}
         <div class="footer">
             <div class="footer-note">Dokumen ini adalah laporan resmi pembayaran SPP dari SD Al-Qur'an Lantabur Pekanbaru.</div>

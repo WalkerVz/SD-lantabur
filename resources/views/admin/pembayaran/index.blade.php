@@ -55,6 +55,7 @@
                 <p class="text-sm text-gray-600">Siswa: <strong class="text-gray-900">{{ $siswa_terpilih->nama }}</strong> — Kelas {{ $kelas }} ({{ $tahun_ajaran }})</p>
             </div>
             <div class="grid grid-cols-2 sm:flex sm:flex-nowrap gap-2 w-full sm:w-auto">
+                @if(\App\Models\FeatureAccess::can(auth()->user()->role ?? 'admin', 'pembayaran.rekap'))
                 <button type="button" @click="rekapModalOpen = true" class="px-3 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 text-xs sm:text-sm font-semibold inline-flex items-center justify-center gap-2 h-10 transition-colors">
                     <svg class="w-4 h-4 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 17v-2m3 2v-4m3 4v-6m2 10H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/></svg>
                     <span class="text-center">Rekap Kelas</span>
@@ -63,10 +64,13 @@
                     <svg class="w-4 h-4 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 21h10a2 2 0 002-2V9.414a1 1 0 00-.293-.707l-5.414-5.414A1 1 0 0012.586 3H7a2 2 0 00-2 2v14a2 2 0 002 2z"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 9h1m4 0h1m-5 4h5m-5 4h5"/></svg>
                     <span class="text-center">Export PDF</span>
                 </button>
+                @endif
+                @if(\App\Models\FeatureAccess::can(auth()->user()->role ?? 'admin', 'pembayaran.create'))
                 <button type="button" @click="openFormModal()" class="col-span-2 sm:col-span-1 px-4 py-2 bg-[#47663D] text-white rounded-lg hover:bg-[#5a7d52] text-xs sm:text-sm font-semibold h-10 transition-colors inline-flex items-center justify-center gap-2">
                     <svg class="w-4 h-4 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"/></svg>
                     <span>Bayar</span>
                 </button>
+                @endif
             </div>
         </div>
 
@@ -154,9 +158,15 @@
                             <td class="px-4 py-3 text-gray-600 text-sm">{{ $r->kwitansi_no ?? '-' }}</td>
                             <td class="px-4 py-3">
                                 <div class="flex items-center gap-2">
+                                    @if(\App\Models\FeatureAccess::can(auth()->user()->role ?? 'admin', 'pembayaran.edit'))
                                     <button type="button" @click.stop="openEditModal({ id: {{ $r->id }}, jenis_pembayaran: '{{ $r->jenis_pembayaran }}', bulan: '{{ $r->bulan }}', tahun: '{{ $r->tahun }}', nominal: '{{ $r->nominal }}', status: '{{ $r->status }}', tanggal_bayar: '{{ $r->tanggal_bayar ? $r->tanggal_bayar->format('Y-m-d') : '' }}', keterangan: '{{ addslashes($r->keterangan ?? '') }}', actionUrl: '{{ route('admin.pembayaran.update', $r->id) }}' })" class="text-emerald-600 hover:underline text-sm font-medium">Edit</button>
+                                    @endif
+                                    @if(\App\Models\FeatureAccess::can(auth()->user()->role ?? 'admin', 'pembayaran.cetak_kwitansi'))
                                     <a href="{{ route('admin.pembayaran.kwitansi', $r->id) }}" target="_blank" @click.stop class="text-blue-600 hover:underline text-sm font-medium">Cetak</a>
+                                    @endif
+                                    @if(\App\Models\FeatureAccess::can(auth()->user()->role ?? 'admin', 'pembayaran.delete'))
                                     <button type="button" @click.stop="openDeleteModal('{{ route('admin.pembayaran.destroy', $r->id) }}')" class="text-red-600 hover:underline text-sm font-medium">Hapus</button>
+                                    @endif
                                 </div>
                             </td>
                         </tr>

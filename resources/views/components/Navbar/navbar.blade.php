@@ -2,17 +2,25 @@
 <div class="bg-[#47663D]/90 text-white text-sm py-2 px-5">
     <div class="max-w-6xl mx-auto flex justify-between items-center flex-wrap gap-4">
         <div class="flex gap-6 text-xs md:text-sm">
-            <a href="https://wa.me/6282288359565" target="_blank" class="flex items-center gap-2 hover:text-white/70 transition">
-                <i class="fa-brands fa-whatsapp text-green-400"></i>
-                <span>0822-8835-9565</span>
-            </a>
-            <a href="mailto:sdalquranlantabur@gmail.com" class="flex items-center gap-2 hover:text-white/70 transition">
+            <div class="flex flex-col sm:flex-row gap-2 sm:gap-6">
+                <a href="{{ \App\Models\Setting::getWaLink() }}" target="_blank" class="flex items-center gap-2 hover:text-white/70 transition">
+                    <i class="fa-brands fa-whatsapp text-green-400"></i>
+                    <span>{{ \App\Models\Setting::getVal('contact_phone', '0822-8835-9565') }} ({{ \App\Models\Setting::getVal('contact_name', 'Admin') }})</span>
+                </a>
+                @if(\App\Models\Setting::getVal('contact_phone_2'))
+                <a href="{{ \App\Models\Setting::getWaLink('contact_phone_2') }}" target="_blank" class="flex items-center gap-2 hover:text-white/70 transition hidden sm:flex">
+                    <i class="fa-brands fa-whatsapp text-green-400"></i>
+                    <span>{{ \App\Models\Setting::getVal('contact_phone_2') }} ({{ \App\Models\Setting::getVal('contact_name_2', 'TU') }})</span>
+                </a>
+                @endif
+            </div>
+            <a href="mailto:{{ \App\Models\Setting::getVal('contact_email', 'sdalquranlantabur@gmail.com') }}" class="flex items-center gap-2 hover:text-white/70 transition">
                 <i class="fa-solid fa-envelope text-purple-300 "></i>
-                <span>sdalquranlantabur@gmail.com</span>
+                <span>{{ \App\Models\Setting::getVal('contact_email', 'sdalquranlantabur@gmail.com') }}</span>
             </a>
         </div>
         <div class="flex gap-4 items-center">
-            <a href="https://www.instagram.com/sdalquranlantabur/" target="_blank" class="hover:text-white/70 transition flex items-center gap-1">
+            <a href="{{ \App\Models\Setting::getVal('social_instagram', 'https://www.instagram.com/sdalquranlantabur/') }}" target="_blank" class="hover:text-white/70 transition flex items-center gap-1">
                 <i class="fa-brands fa-instagram text-pink-300"></i>
                 <span class="hidden sm:inline">Instagram</span>
             </a>

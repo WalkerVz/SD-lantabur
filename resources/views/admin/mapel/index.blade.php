@@ -9,10 +9,12 @@
             <h1 class="text-2xl sm:text-3xl font-bold text-gray-900 leading-tight">Manajemen Mata Pelajaran</h1>
             <p class="text-gray-600 mt-1 text-sm sm:text-base">Atur mata pelajaran, KKM, dan urutan tampil per kelas.</p>
         </div>
+        @if(\App\Models\FeatureAccess::can(auth()->user()->role ?? 'admin', 'mapel.create'))
         <button type="button" @click="openModal()" class="w-full sm:w-auto px-5 py-2.5 bg-[#47663D] text-white rounded-xl font-semibold hover:bg-[#5a7d52] transition shadow-lg shadow-[#47663D]/20 flex items-center justify-center gap-2">
             <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"/></svg>
             Tambah Mapel
         </button>
+        @endif
     </div>
     {{-- Tab Navigasi Tipe Raport --}}
     <div class="w-full overflow-x-auto mb-6 scrollbar-hide">
@@ -76,15 +78,19 @@
                             </td>
                             <td class="px-3 sm:px-6 py-4 text-right">
                                 <div class="flex justify-end gap-1 sm:gap-2">
+                                    @if(\App\Models\FeatureAccess::can(auth()->user()->role ?? 'admin', 'mapel.edit'))
                                     <button @click='openModal(@json($m))' class="p-1.5 sm:p-2 text-blue-600 hover:bg-blue-50 rounded-lg transition" title="Edit">
                                         <svg class="w-4 h-4 sm:w-5 sm:h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"/></svg>
                                     </button>
+                                    @endif
+                                    @if(\App\Models\FeatureAccess::can(auth()->user()->role ?? 'admin', 'mapel.delete'))
                                     <form action="{{ route('admin.mapel.destroy', $m->id) }}" method="POST" onsubmit="return confirm('Hapus mata pelajaran ini?')">
                                         @csrf @method('DELETE')
                                         <button type="submit" class="p-1.5 sm:p-2 text-red-600 hover:bg-red-50 rounded-lg transition" title="Hapus">
                                             <svg class="w-4 h-4 sm:w-5 sm:h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"/></svg>
                                         </button>
                                     </form>
+                                    @endif
                                 </div>
                             </td>
                         </tr>

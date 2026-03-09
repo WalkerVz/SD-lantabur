@@ -39,6 +39,8 @@ class SettingsController extends Controller
         $roles = [
             'admin' => 'Admin',
             'guru' => 'Guru',
+            'bendahara' => 'Bendahara',
+            'kepsek' => 'Kepala Sekolah',
         ];
 
         return view('admin.settings.accounts', compact('users', 'roles'));
@@ -50,7 +52,7 @@ class SettingsController extends Controller
             'name' => 'required|string|max:255',
             'username' => 'required|string|max:50|unique:users,username',
             'password' => ['required', 'confirmed', Password::defaults()],
-            'role' => 'required|string|in:admin,guru',
+            'role' => 'required|string|in:admin,guru,bendahara,kepsek',
         ]);
 
         User::create([
@@ -83,17 +85,33 @@ class SettingsController extends Controller
         $roles = [
             'admin' => 'Admin',
             'guru' => 'Guru',
+            'bendahara' => 'Bendahara',
+            'kepsek' => 'Kepala Sekolah',
         ];
 
         $features = [
-            'dashboard' => 'Dashboard',
-            'sdm' => 'Manajemen SDM',
-            'siswa' => 'Data Siswa',
-            'pembayaran' => 'Pembayaran',
-            'raport' => 'Raport',
-            'mapel' => 'Mata Pelajaran',
-            'halaman_depan' => 'Halaman Depan',
-            'settings' => 'Pengaturan',
+            'dashboard' => ['label' => 'Dashboard', 'icon' => 'fas fa-home', 'actions' => ['view' => 'Lihat Dashboard']],
+            'sdm' => ['label' => 'Manajemen SDM', 'icon' => 'fas fa-users', 'actions' => [
+                'view' => 'Lihat Data SDM', 'create' => 'Tambah SDM', 'edit' => 'Edit SDM', 'delete' => 'Hapus SDM'
+            ]],
+            'siswa' => ['label' => 'Data Siswa', 'icon' => 'fas fa-user-graduate', 'actions' => [
+                'view' => 'Lihat Data Siswa', 'create' => 'Tambah Siswa', 'edit' => 'Edit Siswa', 'delete' => 'Hapus Siswa', 'export' => 'Ekspor/Cetak PDF'
+            ]],
+            'pembayaran' => ['label' => 'Pembayaran SPP', 'icon' => 'fas fa-wallet', 'actions' => [
+                'view' => 'Lihat Riwayat', 'create' => 'Tambah Pembayaran', 'edit' => 'Edit Pembayaran', 'delete' => 'Hapus Pembayaran', 'cetak_kwitansi' => 'Cetak Kwitansi', 'rekap' => 'Rekap PDF'
+            ]],
+            'raport' => ['label' => 'Raport', 'icon' => 'fas fa-file-contract', 'actions' => [
+                'view' => 'Lihat Raport', 'create' => 'Input Nilai/Raport', 'edit' => 'Edit Nilai', 'delete' => 'Hapus Raport', 'cetak' => 'Cetak Raport'
+            ]],
+            'mapel' => ['label' => 'Mata Pelajaran', 'icon' => 'fas fa-book', 'actions' => [
+                'view' => 'Lihat Mapel', 'create' => 'Tambah Mapel', 'edit' => 'Edit Mapel', 'delete' => 'Hapus Mapel'
+            ]],
+            'halaman_depan' => ['label' => 'Manajemen Halaman Depan', 'icon' => 'fas fa-globe', 'actions' => [
+                'view' => 'Akses Menu News/Gallery/Slider/Video'
+            ]],
+            'settings' => ['label' => 'Pengaturan Basis', 'icon' => 'fas fa-cogs', 'actions' => [
+                'view' => 'Akses Pengaturan (Tahun Ajaran, Biaya,dll)', 'accounts' => 'Kelola Akun', 'contact' => 'Pengaturan Kontak', 'accessibility' => 'Aksesibilitas'
+            ]],
         ];
 
         $existing = FeatureAccess::all()
@@ -105,35 +123,40 @@ class SettingsController extends Controller
 
     public function saveAccessibility(Request $request)
     {
-        $roles = ['admin', 'guru'];
+        $roles = ['admin', 'guru', 'bendahara', 'kepsek'];
+        
         $features = [
-            'dashboard',
-            'sdm',
-            'siswa',
-            'pembayaran',
-            'raport',
-            'mapel',
-            'halaman_depan',
-            'settings',
+            'dashboard' => ['view'],
+            'sdm' => ['view', 'create', 'edit', 'delete'],
+            'siswa' => ['view', 'create', 'edit', 'delete', 'export'],
+            'pembayaran' => ['view', 'create', 'edit', 'delete', 'cetak_kwitansi', 'rekap'],
+            'raport' => ['view', 'create', 'edit', 'delete', 'cetak'],
+            'mapel' => ['view', 'create', 'edit', 'delete'],
+            'halaman_depan' => ['view'],
+            'settings' => ['view', 'accounts', 'contact', 'accessibility'],
         ];
 
         $rules = $request->input('rules', []);
 
         foreach ($roles as $role) {
-            foreach ($features as $feature) {
-                if ($role === 'admin') {
-                    FeatureAccess::updateOrCreate(
-                        ['role' => $role, 'feature' => $feature],
-                        ['allowed' => true]
-                    );
-                    continue;
-                }
+            foreach ($features as $menuKey => $actions) {
+                foreach ($actions as $action) {
+                    $fullKey = $menuKey . '.' . $action;
 
-                $allowed = (bool) data_get($rules, $role . '.' . $feature, false);
-                FeatureAccess::updateOrCreate(
-                    ['role' => $role, 'feature' => $feature],
-                    ['allowed' => $allowed]
-                );
+                    if ($role === 'admin') {
+                        FeatureAccess::updateOrCreate(
+                            ['role' => $role, 'feature' => $fullKey],
+                            ['allowed' => true]
+                        );
+                        continue;
+                    }
+
+                    $allowed = (bool) data_get($rules, $role . '.' . $fullKey, false);
+                    FeatureAccess::updateOrCreate(
+                        ['role' => $role, 'feature' => $fullKey],
+                        ['allowed' => $allowed]
+                    );
+                }
             }
         }
 
@@ -245,6 +268,25 @@ class SettingsController extends Controller
         $tahun->update($request->only('min_a', 'min_b', 'min_c'));
 
         return back()->with('success', 'Rentang predikat untuk tahun ' . $tahun->nama . ' berhasil diperbarui.');
+    }
+
+    public function contact()
+    {
+        return view('admin.settings.contact');
+    }
+
+    public function updateContact(Request $request)
+    {
+        $settings = $request->except(['_token', '_method']);
+
+        foreach ($settings as $key => $value) {
+            \App\Models\Setting::updateOrCreate(
+                ['key' => $key],
+                ['value' => $value]
+            );
+        }
+
+        return back()->with('success', 'Pengaturan kontak berhasil diperbarui.');
     }
 }
 

@@ -100,6 +100,6 @@ class Siswa extends Model
             return "Kelas {$kelas} {$master->nama_surah}";
         }
 
-        return "Kelompok Belajar {$kelas}";
+        return "Kelas {$kelas}";
     }
 }

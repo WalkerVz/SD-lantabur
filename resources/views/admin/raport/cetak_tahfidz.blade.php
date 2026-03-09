@@ -63,7 +63,7 @@
             z-index: 1;
             opacity: 0.06;
             /* Absolutely NO gaps - Larger Font 15 - Tight Layout */
-            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 42 22'%3E%3Ctext x='21' y='17' fill='black' font-size='15' font-weight='bold' font-family='sans-serif' text-anchor='middle'%3ESD AL QUR%27AN LANTABUR%3C/text%3E%3C/svg%3E");
+            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 42 22'%3E%3Ctext x='21' y='17' fill='black' font-size='15' font-weight='bold' font-family='sans-serif' text-anchor='middle'%3ESD AL QUR%27AN LANTABUR PEKANBARU%3C/text%3E%3C/svg%3E");
             background-repeat: repeat;
             background-size: 25% 20px;
             background-position: 0 0;
@@ -267,7 +267,7 @@
             <img src="{{ asset('images/logo-lantabur.png') }}" alt="Logo Lantabur" class="tahfidz-header-logo">
             <div class="tahfidz-header-text">
                 <h3>LAPORAN TAHFIDZUL QUR'AN</h3>
-                <h4>SD AL QUR'AN LANTABUR</h4>
+                <h4>SD AL QUR'AN LANTABUR PEKANBARU</h4>
                 <div class="tp-line">TAHUN PELAJARAN {{ $tahun }}</div>
             </div>
             <img src="{{ asset('images/logo-ummi.png') }}" alt="Logo Ummi" class="tahfidz-header-logo right">
@@ -416,7 +416,7 @@
         <!-- TANDA TANGAN -->
         <div class="tahfidz-sign">
             <div>
-                <p>Mengetahui,<br>Kepala SD Al Qur'an Lantabur</p>
+                <p>Mengetahui,<br>Kepala SD Al Qur'an Lantabur Pekanbaru</p>
                 <br><br>
                 <p><b>{{ $kepala_sekolah ?? 'KASMIDAR, S.PD' }}</b><br>{{ $niy_kepsek ?? '2403001' }}</p>
             </div>

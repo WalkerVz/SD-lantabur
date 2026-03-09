@@ -99,19 +99,27 @@
                     <ul class="space-y-4 text-gray-400">
                         <li class="flex items-start gap-3">
                             <span class="text-xl">📍</span>
-                            <span>JI. Dahlia B8, Harapan Raya, Kec. Tenayan Raya, Kota Pekanbaru</span>
+                            <span>{{ \App\Models\Setting::getVal('contact_address', 'JI. Dahlia B8, Harapan Raya, Kec. Tenayan Raya, Kota Pekanbaru') }}</span>
                         </li>
-                        <li class="flex items-center gap-3">
-                            <i class="fa-brands fa-whatsapp text-green-500 text-xl"></i>
-                            <a href="https://wa.me/6282288359565" target="_blank" class="hover:text-[#FFB81C] transition">0822-8835-9565 (Admin)</a>
+                        <li class="flex flex-col gap-2">
+                            <div class="flex items-center gap-3">
+                                <i class="fa-brands fa-whatsapp text-green-500 text-xl"></i>
+                                <a href="{{ \App\Models\Setting::getWaLink() }}" target="_blank" class="hover:text-[#FFB81C] transition">{{ \App\Models\Setting::getVal('contact_phone', '0822-8835-9565') }} ({{ \App\Models\Setting::getVal('contact_name', 'Admin') }})</a>
+                            </div>
+                            @if(\App\Models\Setting::getVal('contact_phone_2'))
+                            <div class="flex items-center gap-3">
+                                <i class="fa-brands fa-whatsapp text-green-500 text-xl"></i>
+                                <a href="{{ \App\Models\Setting::getWaLink('contact_phone_2') }}" target="_blank" class="hover:text-[#FFB81C] transition">{{ \App\Models\Setting::getVal('contact_phone_2') }} ({{ \App\Models\Setting::getVal('contact_name_2', 'TU') }})</a>
+                            </div>
+                            @endif
                         </li>
                         <li class="flex items-center gap-3">
                             <span class="text-xl">✉️</span>
-                            <a href="mailto:sdalquranlantabur@gmail.com" class="hover:text-[#FFB81C] transition">sdalquranlantabur@gmail.com</a>
+                            <a href="mailto:{{ \App\Models\Setting::getVal('contact_email', 'sdalquranlantabur@gmail.com') }}" class="hover:text-[#FFB81C] transition">{{ \App\Models\Setting::getVal('contact_email', 'sdalquranlantabur@gmail.com') }}</a>
                         </li>
                         <li class="flex items-center gap-3">
                             <i class="fa-brands fa-instagram text-xl text-pink-400"></i>
-                            <a href="https://www.instagram.com/sdalquranlantabur/" target="_blank" class="hover:text-[#FFB81C] transition">@sdalquranlantabur</a>
+                            <a href="{{ \App\Models\Setting::getVal('social_instagram', 'https://www.instagram.com/sdalquranlantabur/') }}" target="_blank" class="hover:text-[#FFB81C] transition">@sdalquranlantabur</a>
                         </li>
                     </ul>
                 </div>

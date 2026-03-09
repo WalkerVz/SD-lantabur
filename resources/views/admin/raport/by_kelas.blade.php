@@ -33,10 +33,12 @@
                 </button>
             </form>
             <div class="pt-4 lg:pt-0 border-t lg:border-t-0 border-gray-100 flex justify-center lg:justify-end">
+                @if(\App\Models\FeatureAccess::can(auth()->user()->role ?? 'admin', 'raport.cetak'))
                 <a href="{{ route('admin.raport.cetakSemuaKelas', ['kelas' => $kelas, 'semester' => $semester, 'tahun_ajaran' => $tahun]) }}" target="_blank" class="w-full lg:w-auto inline-flex items-center justify-center gap-2 px-4 py-2 bg-[#47663D] text-white rounded-lg text-sm font-semibold hover:bg-[#5a7d52] transition shadow-md">
                     <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 17h2a2 2 0 002-2v-4a2 2 0 00-2-2H5a2 2 0 00-2 2v4a2 2 0 002 2h2m2 4h6a2 2 0 002-2v-4a2 2 0 00-2-2H9a2 2 0 00-2 2v4a2 2 0 002 2zm8-12V5a2 2 0 00-2-2H9a2 2 0 00-2 2v4h10z"/></svg>
                     Cetak Semua Rapor
                 </a>
+                @endif
             </div>
         </div>
     </div>
@@ -107,6 +109,7 @@
                             <div class="flex items-center justify-end gap-2">
                                 @if($nilai)
                                 {{-- Dropdown Edit --}}
+                                @if(\App\Models\FeatureAccess::can(auth()->user()->role ?? 'admin', 'raport.edit'))
                                 <div class="relative" x-data="{ open: false }" @click.outside="open = false">
                                     <button @click="open = !open" class="inline-flex items-center gap-1 px-3 py-1.5 bg-blue-50 text-blue-700 rounded-lg text-xs font-semibold hover:bg-blue-100 transition-colors">
                                         <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"/></svg>
@@ -130,8 +133,10 @@
                                         </a>
                                     </div>
                                 </div>
+                                @endif
 
                                 {{-- Dropdown Cetak --}}
+                                @if(\App\Models\FeatureAccess::can(auth()->user()->role ?? 'admin', 'raport.cetak'))
                                 <div class="relative" x-data="{ open: false }" @click.outside="open = false">
                                     <button @click="open = !open" class="inline-flex items-center gap-1 px-3 py-1.5 bg-amber-50 text-amber-700 rounded-lg text-xs font-semibold hover:bg-amber-100 transition-colors">
                                         <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 17h2a2 2 0 002-2v-4a2 2 0 00-2-2H5a2 2 0 00-2 2v4a2 2 0 002 2h2m2 4h6a2 2 0 002-2v-4a2 2 0 00-2-2H9a2 2 0 00-2 2v4a2 2 0 002 2zm8-12V5a2 2 0 00-2-2H9a2 2 0 00-2 2v4h10z"/></svg>
@@ -170,8 +175,10 @@
                                         @endif
                                     </div>
                                 </div>
+                                @endif
                                 @else
                                     {{-- Dropdown Isi Nilai --}}
+                                    @if(\App\Models\FeatureAccess::can(auth()->user()->role ?? 'admin', 'raport.create'))
                                     <div class="relative" x-data="{ open: false }" @click.outside="open = false">
                                         <button @click="open = !open" class="inline-flex items-center gap-1.5 px-4 py-2 bg-gray-100 hover:bg-[#47663D] hover:text-white text-gray-700 rounded-lg transition-all text-xs font-bold uppercase tracking-widest">
                                             <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"/></svg>
@@ -195,6 +202,7 @@
                                             </a>
                                         </div>
                                     </div>
+                                    @endif
                                 @endif
                             </div>
                         </td>

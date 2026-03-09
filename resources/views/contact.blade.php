@@ -22,7 +22,7 @@
             
             <div class="bg-white rounded-xl overflow-hidden shadow-lg border-4 border-[#FFB81C]/30 hover:shadow-2xl transition">
                 <iframe 
-                    src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3989.666840775986!2d101.48279067461377!3d0.4992745994958398!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x31d5af0037cfa133%3A0x6190e937444dc919!2sSD%20Al%20Qur&#39;an%20Lantabur!5e0!3m2!1sid!2sid!4v1769439059828!5m2!1sid!2sid" 
+                    src="{{ \App\Models\Setting::getVal('contact_maps_url', 'https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3989.666840775986!2d101.48279067461377!3d0.4992745994958398!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x31d5af0037cfa133%3A0x6190e937444dc919!2sSD%20Al%20Qur&#39;an%20Lantabur!5e0!3m2!1sid!2sid!4v1769439059828!5m2!1sid!2sid') }}" 
                     width="100%" 
                     height="500" 
                     style="border:0;" 
@@ -44,27 +44,36 @@
                     <div class="bg-white p-8 rounded-xl border-l-4 border-[#FFB81C] shadow-md hover:shadow-lg transition">
                         <h3 class="text-xl font-bold text-[#47663D] mb-3 flex items-center gap-2"><span class="text-2xl">📍</span> Alamat</h3>
                         <p class="text-gray-700">
-                            Jl. Dahlia B8<br>
-                            Harapan Raya<br>
-                            Kec. Tenayan Raya<br>
-                            Kota Pekanbaru
+                            {!! nl2br(e(\App\Models\Setting::getVal('contact_address', "Jl. Dahlia B8\nHarapan Raya\nKec. Tenayan Raya\nKota Pekanbaru"))) !!}
                         </p>
                     </div>
 
                     <div class="bg-white p-8 rounded-xl border-l-4 border-[#FFB81C] shadow-md hover:shadow-lg transition">
                         <h3 class="text-xl font-bold text-[#47663D] mb-3 flex items-center gap-2"><i class="fa-brands fa-whatsapp text-green-500 text-2xl"></i> Telepon / WhatsApp</h3>
-                        <p class="text-gray-700 text-lg">
-                            <a href="https://wa.me/6282288359565" target="_blank" class="hover:text-[#FFB81C] transition font-semibold">
-                                0822-8835-9565
-                            </a>
-                        </p>
+                        <div class="space-y-3">
+                            <p class="text-gray-700 text-lg flex items-center gap-2">
+                                <a href="{{ \App\Models\Setting::getWaLink() }}" target="_blank" class="hover:text-[#FFB81C] transition font-semibold">
+                                    {{ \App\Models\Setting::getVal('contact_phone', '0822-8835-9565') }}
+                                </a>
+                                <span class="bg-[#47663D]/10 text-[#47663D] text-xs px-2 py-1 rounded-md">{{ \App\Models\Setting::getVal('contact_name', 'Admin') }}</span>
+                            </p>
+                            
+                            @if(\App\Models\Setting::getVal('contact_phone_2'))
+                            <p class="text-gray-700 text-lg flex items-center gap-2 border-t pt-3">
+                                <a href="{{ \App\Models\Setting::getWaLink('contact_phone_2') }}" target="_blank" class="hover:text-[#FFB81C] transition font-semibold">
+                                    {{ \App\Models\Setting::getVal('contact_phone_2') }}
+                                </a>
+                                <span class="bg-[#47663D]/10 text-[#47663D] text-xs px-2 py-1 rounded-md">{{ \App\Models\Setting::getVal('contact_name_2', 'TU') }}</span>
+                            </p>
+                            @endif
+                        </div>
                     </div>
 
                     <div class="bg-white p-8 rounded-xl border-l-4 border-[#FFB81C] shadow-md hover:shadow-lg transition">
                         <h3 class="text-xl font-bold text-[#47663D] mb-3 flex items-center gap-2"><span class="text-2xl">✉️</span> Email</h3>
                         <p class="text-gray-700 text-lg">
-                            <a href="mailto:sdalquranlantabur@gmail.com" class="hover:text-[#FFB81C] transition font-semibold">
-                                sdalquranlantabur@gmail.com
+                            <a href="mailto:{{ \App\Models\Setting::getVal('contact_email', 'sdalquranlantabur@gmail.com') }}" class="hover:text-[#FFB81C] transition font-semibold">
+                                {{ \App\Models\Setting::getVal('contact_email', 'sdalquranlantabur@gmail.com') }}
                             </a>
                         </p>
                     </div>
