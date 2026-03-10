@@ -169,6 +169,61 @@
         </div>
     </section>
 
+    {{-- LATEST NEWS --}}
+    @if($latestNews->count() > 0)
+    <section class="py-24 px-5 bg-white">
+        <div class="max-w-6xl mx-auto">
+            <div class="text-center mb-16">
+                <p class="text-[#FFB81C] text-2xl ornament-text mb-4">✦ ✦ ✦</p>
+                <h2 class="text-5xl font-bold mb-4 text-[#47663D]">Berita Terbaru</h2>
+                <p class="text-gray-600 text-lg italic">Informasi dan kegiatan terbaru dari sekolah kami</p>
+            </div>
+            
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+                @foreach($latestNews as $news)
+                <div class="bg-white rounded-2xl shadow-lg border border-gray-100 overflow-hidden group hover:shadow-2xl transition-all duration-300 transform hover:-translate-y-2 flex flex-col h-full">
+                    <div class="relative h-48 overflow-hidden">
+                        <img 
+                            src="{{ $news->gambar ? asset('storage/' . ltrim(str_replace('\\', '/', $news->gambar), '/')) : asset('images/slide-1.jpeg') }}" 
+                            alt="{{ $news->judul }}" 
+                            class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110"
+                            loading="lazy"
+                        >
+                        <div class="absolute top-4 left-4 bg-[#FFB81C] text-[#47663D] px-3 py-1 rounded-full text-xs font-bold shadow-md">
+                            {{ $news->kategori ?? 'Berita' }}
+                        </div>
+                    </div>
+                    
+                    <div class="p-8 flex flex-col flex-grow">
+                        <p class="text-xs text-gray-500 mb-2 flex items-center gap-2">
+                            <span>📅</span> {{ $news->published_at->format('d M Y') }}
+                        </p>
+                        <h3 class="text-xl font-bold mb-4 text-[#47663D] line-clamp-2 min-h-[3.5rem] group-hover:text-[#FFB81C] transition-colors">
+                            {{ $news->judul }}
+                        </h3>
+                        <p class="text-gray-600 text-sm mb-6 line-clamp-3">
+                            {{ Str::limit(strip_tags($news->isi), 120) }}
+                        </p>
+                        <div class="mt-auto">
+                            <a href="{{ route('news.show', $news->id) }}" class="inline-flex items-center gap-2 text-[#47663D] font-bold hover:text-[#FFB81C] transition-colors group">
+                                Baca Selengkapnya 
+                                <span class="transition-transform group-hover:translate-x-2">→</span>
+                            </a>
+                        </div>
+                    </div>
+                </div>
+                @endforeach
+            </div>
+
+            <div class="text-center mt-16">
+                <a href="/news" class="inline-block px-8 py-3 bg-[#47663D] text-white font-bold rounded-lg border-2 border-[#47663D] hover:bg-white hover:text-[#47663D] transition transform hover:scale-105 shadow-md">
+                    Lihat Semua Berita
+                </a>
+            </div>
+        </div>
+    </section>
+    @endif
+
     {{-- CTA --}}
     <section class="bg-gradient-to-r from-[#47663D] via-[#5a7d52] to-[#47663D] py-24 px-5 text-center text-white border-t-4 border-b-4 border-[#FFB81C]">
         <div class="max-w-4xl mx-auto">

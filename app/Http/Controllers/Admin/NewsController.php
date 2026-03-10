@@ -34,14 +34,19 @@ class NewsController extends Controller
             'judul' => 'required|string|max:255',
             'kategori' => 'nullable|string|max:50',
             'isi' => 'nullable|string',
+            'ringkasan' => 'nullable|string',
             'gambar' => 'nullable|image|max:2048',
+            'gambar_dua' => 'nullable|image|max:2048',
             'publish' => 'nullable|boolean',
         ]);
 
-        $data = $request->only(['judul', 'kategori', 'isi']);
+        $data = $request->only(['judul', 'kategori', 'isi', 'ringkasan']);
         $data['published_at'] = $request->boolean('publish') ? now() : null;
         if ($request->hasFile('gambar')) {
             $data['gambar'] = $this->optimizeAndStore($request->file('gambar'), 'berita');
+        }
+        if ($request->hasFile('gambar_dua')) {
+            $data['gambar_dua'] = $this->optimizeAndStore($request->file('gambar_dua'), 'berita');
         }
         Berita::create($data);
         if ($request->wantsJson()) {
@@ -63,17 +68,25 @@ class NewsController extends Controller
             'judul' => 'required|string|max:255',
             'kategori' => 'nullable|string|max:50',
             'isi' => 'nullable|string',
+            'ringkasan' => 'nullable|string',
             'gambar' => 'nullable|image|max:2048',
+            'gambar_dua' => 'nullable|image|max:2048',
             'publish' => 'nullable|boolean',
         ]);
 
-        $data = $request->only(['judul', 'kategori', 'isi']);
+        $data = $request->only(['judul', 'kategori', 'isi', 'ringkasan']);
         $data['published_at'] = $request->boolean('publish') ? ($item->published_at ?? now()) : null;
         if ($request->hasFile('gambar')) {
             if ($item->gambar) {
                 Storage::disk('public')->delete($item->gambar);
             }
             $data['gambar'] = $this->optimizeAndStore($request->file('gambar'), 'berita');
+        }
+        if ($request->hasFile('gambar_dua')) {
+            if ($item->gambar_dua) {
+                Storage::disk('public')->delete($item->gambar_dua);
+            }
+            $data['gambar_dua'] = $this->optimizeAndStore($request->file('gambar_dua'), 'berita');
         }
         $item->update($data);
         if ($request->wantsJson()) {
@@ -87,6 +100,9 @@ class NewsController extends Controller
         $item = Berita::findOrFail($id);
         if ($item->gambar) {
             Storage::disk('public')->delete($item->gambar);
+        }
+        if ($item->gambar_dua) {
+            Storage::disk('public')->delete($item->gambar_dua);
         }
         $item->delete();
         if ($request->wantsJson()) {

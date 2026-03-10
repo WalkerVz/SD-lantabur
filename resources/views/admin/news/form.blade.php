@@ -23,15 +23,34 @@
             <input type="text" name="kategori" value="{{ old('kategori', $item?->kategori) }}" placeholder="Contoh: Akademik, Kegiatan, Pengumuman" class="w-full px-4 py-2 rounded-lg border border-gray-300 focus:ring-2 focus:ring-[#47663D] focus:border-[#47663D]">
         </div>
         <div>
-            <label class="block text-sm font-medium text-gray-700 mb-1">Isi</label>
-            <textarea name="isi" rows="6" class="w-full px-4 py-2 rounded-lg border border-gray-300 focus:ring-2 focus:ring-[#47663D] focus:border-[#47663D]">{{ old('isi', $item?->isi) }}</textarea>
+            <label class="block text-sm font-medium text-gray-700 mb-1">Ringkasan (Short Description)</label>
+            <textarea name="ringkasan" rows="3" class="w-full px-4 py-2 rounded-lg border border-gray-300 focus:ring-2 focus:ring-[#47663D] focus:border-[#47663D]" placeholder="Ringkasan singkat untuk SEO dan tampilan depan...">{{ old('ringkasan', $item?->ringkasan) }}</textarea>
         </div>
         <div>
-            <label class="block text-sm font-medium text-gray-700 mb-1">Gambar</label>
-            @if($item && $item->gambar)
-                <div class="mb-2"><img src="{{ asset('storage/'.$item->gambar) }}" alt="" class="max-h-40 rounded-lg border"></div>
-            @endif
-            <input type="file" name="gambar" accept="image/*" class="w-full px-4 py-2 rounded-lg border border-gray-300">
+            <label class="block text-sm font-medium text-gray-700 mb-1">Isi Berita</label>
+            <textarea name="isi" rows="10" class="w-full px-4 py-2 rounded-lg border border-gray-300 focus:ring-2 focus:ring-[#47663D] focus:border-[#47663D]">{{ old('isi', $item?->isi) }}</textarea>
+        </div>
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div>
+                <label class="block text-sm font-medium text-gray-700 mb-1">Gambar Utama (Featured)</label>
+                @if($item && $item->gambar)
+                    <div class="mb-2 text-xs text-gray-500 italic">Gambar Saat Ini (Click to enlarge):</div>
+                    <div class="mb-2 cursor-pointer" onclick="window.open('{{ asset('storage/'.$item->gambar) }}', '_blank')">
+                        <img src="{{ asset('storage/'.$item->gambar) }}" alt="" class="max-h-24 rounded-lg border shadow-sm hover:ring-2 hover:ring-[#47663D] transition-all">
+                    </div>
+                @endif
+                <input type="file" name="gambar" accept="image/*" class="w-full px-4 py-2 rounded-lg border border-gray-300 text-sm">
+            </div>
+            <div>
+                <label class="block text-sm font-medium text-gray-700 mb-1">Gambar Kedua (Optional)</label>
+                @if($item && $item->gambar_dua)
+                    <div class="mb-2 text-xs text-gray-500 italic">Gambar Saat Ini (Click to enlarge):</div>
+                    <div class="mb-2 cursor-pointer" onclick="window.open('{{ asset('storage/'.$item->gambar_dua) }}', '_blank')">
+                        <img src="{{ asset('storage/'.$item->gambar_dua) }}" alt="" class="max-h-24 rounded-lg border shadow-sm hover:ring-2 hover:ring-[#47663D] transition-all">
+                    </div>
+                @endif
+                <input type="file" name="gambar_dua" accept="image/*" class="w-full px-4 py-2 rounded-lg border border-gray-300 text-sm">
+            </div>
         </div>
         <div>
             <label class="flex items-center gap-2">

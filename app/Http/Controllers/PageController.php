@@ -27,7 +27,9 @@ class PageController extends Controller
                 'image' => $s->gambar ? url('storage/' . ltrim(str_replace('\\', '/', $s->gambar), '/')) : url('images/slide-1.jpeg'),
             ])->values()->all();
 
-        return view('home', compact('slidesData'));
+        $latestNews = Berita::whereNotNull('published_at')->orderByDesc('published_at')->take(3)->get();
+
+        return view('home', compact('slidesData', 'latestNews'));
     }
 
     public function staff()
@@ -55,7 +57,8 @@ class PageController extends Controller
     public function newsShow(string $id)
     {
         $item = Berita::whereNotNull('published_at')->findOrFail($id);
-        return view('news-show', compact('item'));
+        $latestNews = Berita::whereNotNull('published_at')->where('id', '!=', $id)->orderByDesc('published_at')->take(5)->get();
+        return view('news-show', compact('item', 'latestNews'));
     }
 
     public function gallery(Request $request)
