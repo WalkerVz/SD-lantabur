@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Raport {{ \App\Models\Siswa::getNamaKelas($kelas) }} - {{ $semester }} {{ $tahun }}</title>
-    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="{{ asset('js/tailwind.js') }}"></script>
 </head>
 <body class="bg-white text-gray-800 p-6 print:p-4">
     <div class="max-w-4xl mx-auto">

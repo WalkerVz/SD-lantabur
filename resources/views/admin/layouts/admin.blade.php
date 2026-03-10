@@ -6,10 +6,10 @@
     <meta name="csrf-token" content="{{ csrf_token() }}">
     <title>@yield('title', 'Admin') - SD Al-Qur'an Lantabur Pekanbaru</title>
     <link rel="icon" type="image/png" href="{{ asset('images/logo.png') }}">
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap" rel="stylesheet">
-    <script src="https://cdn.tailwindcss.com"></script>
-    <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <link rel="stylesheet" href="{{ asset('css/poppins.css') }}">
+    <script src="{{ asset('js/tailwind.js') }}"></script>
+    <script defer src="{{ asset('js/alpine.min.js') }}"></script>
+    <link rel="stylesheet" href="{{ asset('css/fontawesome-all.min.css') }}">
     <style> 
         body { font-family: 'Poppins', sans-serif; } 
         [x-cloak] { display: none !important; }
