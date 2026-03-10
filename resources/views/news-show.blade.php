@@ -70,24 +70,24 @@
             </div>
         </nav>
 
-        <section class="py-12 px-5 bg-white">
+        <section class="py-8 md:py-12 px-5 bg-white">
             <div class="max-w-6xl mx-auto">
-                <div class="grid grid-cols-1 lg:grid-cols-3 gap-12">
+                <div class="grid grid-cols-1 lg:grid-cols-3 gap-8 md:gap-12">
                     
                     {{-- MAIN CONTENT --}}
                     <div class="lg:col-span-2">
-                        <header class="mb-8">
+                        <header class="mb-6 md:mb-8">
                             @if($item->kategori)
-                                <span class="inline-block bg-[#FFB81C]/20 text-[#47663D] px-3 py-1 rounded-full text-xs font-bold mb-4 uppercase tracking-wider">
+                                <span class="inline-block bg-[#FFB81C]/20 text-[#47663D] px-3 py-1 rounded-full text-[10px] md:text-xs font-bold mb-3 md:mb-4 uppercase tracking-wider">
                                     {{ $item->kategori }}
                                 </span>
                             @endif
-                            <h1 class="text-3xl md:text-5xl font-bold text-[#47663D] leading-tight mb-4">
+                            <h1 class="text-2xl md:text-3xl lg:text-5xl font-bold text-[#47663D] leading-tight mb-3 md:mb-4">
                                 {{ $item->judul }}
                             </h1>
-                            <div class="flex items-center gap-4 text-gray-500 text-sm border-b border-t py-3">
+                            <div class="flex flex-wrap items-center gap-2 md:gap-4 text-gray-500 text-xs md:text-sm border-b border-t py-2 md:py-3">
                                 <span class="flex items-center gap-1">👤 Admin Lantabur</span>
-                                <span class="text-gray-300">|</span>
+                                <span class="text-gray-300 hidden md:inline">|</span>
                                 <span class="flex items-center gap-1">📅 {{ $item->published_at ? $item->published_at->format('l, d F Y H:i') : '' }} WIB</span>
                             </div>
                         </header>

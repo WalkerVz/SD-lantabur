@@ -3,19 +3,19 @@
 @section('content')
     <style>.ornament-text { font-family: 'Georgia', serif; letter-spacing: 2px; }</style>
 
-    <section class="bg-gradient-to-r from-[#47663D] to-[#47663D] text-white py-24 px-5 border-b-4 border-[#FFB81C]">
+    <section class="bg-gradient-to-r from-[#47663D] to-[#47663D] text-white py-16 md:py-24 px-5 border-b-4 border-[#FFB81C]">
         <div class="max-w-4xl mx-auto text-center">
-            <h1 class="text-5xl font-bold mb-6">Galeri Sekolah</h1>
-            <p class="text-xl text-white/80">Dokumentasi kegiatan dan fasilitas SD Al-Qur'an Lantabur Pekanbaru</p>
+            <h1 class="text-3xl md:text-5xl font-bold mb-4 md:mb-6">Galeri Sekolah</h1>
+            <p class="text-lg md:text-xl text-white/80">Dokumentasi kegiatan dan fasilitas SD Al-Qur'an Lantabur Pekanbaru</p>
         </div>
     </section>
 
-    <section class="py-20 px-5">
+    <section class="py-16 md:py-20 px-5">
         <div class="max-w-6xl mx-auto">
-            <div class="text-center mb-12">
-                <p class="text-[#FFB81C] text-2xl ornament-text mb-4">✦ ✦ ✦</p>
-                <h2 class="text-5xl font-bold text-[#47663D] mb-4">Koleksi Galeri</h2>
-                <p class="text-gray-600 text-lg italic">Momen-momen berharga dari kegiatan sekolah kami</p>
+            <div class="text-center mb-10 md:mb-12">
+                <p class="text-[#FFB81C] text-xl md:text-2xl ornament-text mb-2 md:mb-4">✦ ✦ ✦</p>
+                <h2 class="text-3xl md:text-5xl font-bold text-[#47663D] mb-3 md:mb-4">Koleksi Galeri</h2>
+                <p class="text-gray-600 text-base md:text-lg italic">Momen-momen berharga dari kegiatan sekolah kami</p>
             </div>
 
             {{-- Tab Switcher --}}
@@ -116,9 +116,9 @@
         </div>
     </section>
 
-    <section class="bg-gradient-to-r from-[#47663D] via-[#5a7d52] to-[#47663D] py-20 px-5 text-center text-white border-t-4 border-b-4 border-white/20">
-        <h2 class="text-4xl font-bold mb-6">Ingin Melihat Lebih Banyak?</h2>
-        <p class="text-xl mb-10 text-white/60">Ikuti media sosial kami untuk update foto dan kegiatan terbaru</p>
-        <a href="/contact" class="inline-block px-10 py-4 bg-[#FFB81C] text-[#47663D] font-bold rounded-lg hover:bg-[#F0A500] transition transform hover:scale-105">Hubungi Kami</a>
+    <section class="bg-gradient-to-r from-[#47663D] via-[#5a7d52] to-[#47663D] py-16 md:py-20 px-5 text-center text-white border-t-4 border-b-4 border-white/20">
+        <h2 class="text-3xl md:text-4xl font-bold mb-4 md:mb-6">Ingin Melihat Lebih Banyak?</h2>
+        <p class="text-lg md:text-xl mb-8 md:mb-10 text-white/60">Ikuti media sosial kami untuk update foto dan kegiatan terbaru</p>
+        <a href="/contact" class="inline-block px-8 md:px-10 py-3 md:py-4 bg-[#FFB81C] text-[#47663D] font-bold rounded-lg hover:bg-[#F0A500] transition transform hover:scale-105">Hubungi Kami</a>
     </section>
 @endsection

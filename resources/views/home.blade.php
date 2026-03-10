@@ -41,12 +41,12 @@
         {{-- Content --}}
         <div class="relative z-10 w-full h-96 md:h-[550px] lg:h-[660px] flex flex-col justify-center items-center text-center">
             <template x-for="(slide, index) in slides" :key="index">
-                <div x-show="current === index" class="h-full flex flex-col justify-center items-center text-center">
-                    <h1 class="text-4xl md:text-5xl lg:text-6xl font-bold mb-6 leading-tight drop-shadow-lg" x-text="slide.title"></h1>
-                    <p class="max-w-3xl mx-auto mb-10 leading-relaxed text-base md:text-lg text-gray-100 drop-shadow-md" x-text="slide.desc"></p>
-                    <div class="flex gap-4 flex-wrap justify-center">
-                        <a href="/about" class="px-6 md:px-8 py-3 md:py-4 bg-[#FFB81C] text-[#47663D] font-bold text-sm md:text-base rounded-lg hover:bg-[#F0A500] transition transform hover:scale-105 shadow-lg">Pelajari Lebih Lanjut</a>
-                        <a href="/contact" class="px-6 md:px-8 py-3 md:py-4 bg-[#47663D] text-white font-bold text-sm md:text-base rounded-lg border-2 border-white hover:bg-[#47663D] transition transform hover:scale-105 shadow-lg">Hubungi Kami</a>
+                <div x-show="current === index" class="h-full flex flex-col justify-center items-center text-center px-4">
+                    <h1 class="text-3xl md:text-5xl lg:text-6xl font-bold mb-4 md:mb-6 leading-tight drop-shadow-lg" x-text="slide.title"></h1>
+                    <p class="max-w-3xl mx-auto mb-6 md:mb-10 leading-relaxed text-sm md:text-lg text-gray-100 drop-shadow-md" x-text="slide.desc"></p>
+                    <div class="flex gap-3 md:gap-4 flex-wrap justify-center">
+                        <a href="/about" class="px-5 md:px-8 py-3 md:py-4 bg-[#FFB81C] text-[#47663D] font-bold text-xs md:text-base rounded-lg hover:bg-[#F0A500] transition transform hover:scale-105 shadow-lg">Pelajari Lebih Lanjut</a>
+                        <a href="/contact" class="px-5 md:px-8 py-3 md:py-4 bg-[#47663D] text-white font-bold text-xs md:text-base rounded-lg border-2 border-white hover:bg-[#47663D] transition transform hover:scale-105 shadow-lg">Hubungi Kami</a>
                     </div>
                 </div>
             </template>
@@ -78,38 +78,38 @@
     </script>
 
     {{-- SEKAPUR SIRIH --}}
-    <section class="py-16 px-5 bg-gradient-to-r from-[#47663D] to-[#47663D]/90 text-white">
+    <section class="py-12 md:py-16 px-5 bg-gradient-to-r from-[#47663D] to-[#47663D]/90 text-white">
         <div class="max-w-6xl mx-auto">
-            <div class="mb-12 text-center">
-                <p class="text-[#FFB81C] text-2xl ornament-text mb-4">✦ ✦ ✦</p>
-                <h2 class="text-5xl font-bold text-[#FFB81C]">Sekapur Sirih</h2>
+            <div class="mb-8 md:mb-12 text-center">
+                <p class="text-[#FFB81C] text-xl md:text-2xl ornament-text mb-2 md:mb-4">✦ ✦ ✦</p>
+                <h2 class="text-3xl md:text-5xl font-bold text-[#FFB81C]">Sekapur Sirih</h2>
             </div>
             
-            <div class="bg-[#FFB81C]/10 backdrop-blur-sm border-l-4 border-r-4 border-[#FFB81C] p-8 md:p-12 rounded-lg">
-                <div class="grid grid-cols-1 md:grid-cols-4 gap-8 items-center">
+            <div class="bg-[#FFB81C]/10 backdrop-blur-sm border-l-4 border-r-4 border-[#FFB81C] p-6 md:p-12 rounded-lg">
+                <div class="grid grid-cols-1 md:grid-cols-4 gap-6 md:gap-8 items-center">
                     {{-- Logo --}}
                     <div class="flex justify-center md:justify-end">
-                        <div class="bg-white p-4 rounded-lg shadow-lg">
-                            <img src="{{ asset('images/logo.png') }}" alt="Logo SD Al-Qur'an Lantabur Pekanbaru" class="h-32 w-auto" loading="lazy">
+                        <div class="bg-white p-3 md:p-4 rounded-lg shadow-lg">
+                            <img src="{{ asset('images/logo.png') }}" alt="Logo SD Al-Qur'an Lantabur Pekanbaru" class="h-24 md:h-32 w-auto" loading="lazy">
                         </div>
                     </div>
 
                     {{-- Content --}}
                     <div class="md:col-span-3">
-                        <p class="text-lg md:text-xl leading-relaxed text-[#FFB81C] italic text-center md:text-left mb-6">
+                        <p class="text-base md:text-xl leading-relaxed text-[#FFB81C] italic text-center md:text-left mb-4 md:mb-6">
                             Assalamualaikum Warahmatullahi Wabarakatuh
                         </p>
-                        <p class="text-base md:text-lg leading-relaxed text-white/80 text-center md:text-left">
+                        <p class="text-sm md:text-lg leading-relaxed text-white/80 text-center md:text-left">
                             Kami mengucapkan selamat datang dan terima kasih telah memilih SD Al-Qur'an Lantabur Pekanbaru sebagai lembaga pendidikan
                             bagi putra dan putri Anda. Kami berkomitmen untuk menjadi mitra terpercaya dalam membangun generasi yang tidak hanya
                             cerdas secara akademik, tetapi juga memiliki akhlak mulia dan jiwa kepemimpinan yang kuat.
                         </p>
-                        <p class="text-base md:text-lg leading-relaxed text-white/80 text-center md:text-left mt-6">
+                        <p class="text-sm md:text-lg leading-relaxed text-white/80 text-center md:text-left mt-4 md:mt-6">
                             Dengan menggabungkan kurikulum nasional dan nilai-nilai Al-Qur'an, kami menciptakan lingkungan belajar yang aman,
                             inklusif, dan penuh dengan inspirasi. Setiap anak adalah amanah yang berharga, dan kami bekerja keras untuk memaksimalkan
                             potensi setiap individu anak didik kami.
                         </p>
-                        <p class="text-[#FFB81C] text-center md:text-left mt-8 font-semibold text-lg">
+                        <p class="text-[#FFB81C] text-center md:text-left mt-6 md:mt-8 font-semibold text-base md:text-lg">
                             Wassalamualaikum Warahmatullahi Wabarakatuh
                         </p>
                     </div>
@@ -119,17 +119,17 @@
     </section>
 
     {{-- ABOUT --}}
-    <section class="py-24 px-5 bg-white border-t-8 border-b-8 border-[#FFB81C]">
+    <section class="py-16 md:py-24 px-5 bg-white border-t-8 border-b-8 border-[#FFB81C]">
         <div class="max-w-4xl mx-auto text-center">
-            <div class="mb-8">
-                <p class="text-[#47663D] text-2xl ornament-text mb-4">✦ ✦ ✦</p>
-                <h2 class="text-5xl font-bold mb-8 text-[#47663D]">Tentang Kami</h2>
+            <div class="mb-6 md:mb-8">
+                <p class="text-[#47663D] text-xl md:text-2xl ornament-text mb-2 md:mb-4">✦ ✦ ✦</p>
+                <h2 class="text-3xl md:text-5xl font-bold mb-4 md:mb-8 text-[#47663D]">Tentang Kami</h2>
             </div>
-            <p class="text-xl text-gray-700 leading-relaxed mb-6 italic border-l-4 border-[#FFB81C] pl-6">
+            <p class="text-base md:text-xl text-gray-700 leading-relaxed mb-6 italic border-l-4 border-[#FFB81C] pl-4 md:pl-6 text-left md:text-center">
                 "Sesungguhnya membimbing seorang anak lebih baik daripada menyedekahkan seekor onta."
-                <br><span class="text-sm text-gray-500">(HR. Tirmidzi)</span>
+                <br><span class="text-xs md:text-sm text-gray-500 block mt-2">(HR. Tirmidzi)</span>
             </p>
-            <p class="text-lg text-gray-700 leading-relaxed mb-8">
+            <p class="text-base md:text-lg text-gray-700 leading-relaxed mb-8">
                 SD Al-Qur'an Lantabur Pekanbaru berkomitmen memberikan pendidikan terbaik dengan
                 mengedepankan nilai-nilai Al-Qur'an, akhlak mulia, dan teknologi untuk mempersiapkan
                 generasi pemimpin yang berani, cerdas, dan bertakwa kepada Allah SWT.
@@ -139,31 +139,31 @@
     </section>
 
     {{-- KEUNGGULAN --}}
-    <section class="py-24 px-5 bg-gradient-to-b from-gray-50 to-gray-100">
+    <section class="py-16 md:py-24 px-5 bg-gradient-to-b from-gray-50 to-gray-100">
         <div class="max-w-6xl mx-auto">
-            <div class="text-center mb-16">
-                <p class="text-[#FFB81C] text-2xl ornament-text mb-4">✦ ✦ ✦</p>
-                <h2 class="text-5xl font-bold mb-4 text-[#47663D]">Keunggulan Kami</h2>
-                <p class="text-gray-600 text-lg italic">Program pendidikan berbasis Al-Qur'an untuk generasi Qur'ani</p>
+            <div class="text-center mb-10 md:mb-16">
+                <p class="text-[#FFB81C] text-xl md:text-2xl ornament-text mb-2 md:mb-4">✦ ✦ ✦</p>
+                <h2 class="text-3xl md:text-5xl font-bold mb-3 md:mb-4 text-[#47663D]">Keunggulan Kami</h2>
+                <p class="text-gray-600 text-base md:text-lg italic">Program pendidikan berbasis Al-Qur'an untuk generasi Qur'ani</p>
             </div>
-            <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
-                <div class="bg-white p-10 rounded-2xl shadow-lg hover:shadow-2xl transition transform hover:-translate-y-2 border-t-4 border-[#47663D] border-b-4 border-b-[#FFB81C] relative group">
-                    <div class="absolute top-0 right-0 w-20 h-20 text-6xl opacity-10 group-hover:opacity-20 transition">☪</div>
-                    <div class="text-4xl mb-4">📖</div>
-                    <h3 class="text-2xl font-bold mb-4 text-[#47663D]">Tahsin & Tahfiz</h3>
-                    <p class="text-gray-700 leading-relaxed">Program berkualitas untuk memperbaiki bacaan Al-Qur'an dan menghafal dengan metode terbukti efektif.</p>
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-6 md:gap-8">
+                <div class="bg-white p-8 md:p-10 rounded-2xl shadow-lg hover:shadow-2xl transition transform hover:-translate-y-2 border-t-4 border-[#47663D] border-b-4 border-b-[#FFB81C] relative group">
+                    <div class="absolute top-0 right-0 w-16 md:w-20 h-16 md:h-20 text-5xl md:text-6xl opacity-10 group-hover:opacity-20 transition">☪</div>
+                    <div class="text-3xl md:text-4xl mb-4">📖</div>
+                    <h3 class="text-xl md:text-2xl font-bold mb-3 md:mb-4 text-[#47663D]">Tahsin & Tahfiz</h3>
+                    <p class="text-gray-700 text-sm md:text-base leading-relaxed">Program berkualitas untuk memperbaiki bacaan Al-Qur'an dan menghafal dengan metode terbukti efektif.</p>
                 </div>
-                <div class="bg-white p-10 rounded-2xl shadow-lg hover:shadow-2xl transition transform hover:-translate-y-2 border-t-4 border-[#47663D] border-b-4 border-b-[#FFB81C] relative group">
-                    <div class="absolute top-0 right-0 w-20 h-20 text-6xl opacity-10 group-hover:opacity-20 transition">☪</div>
-                    <div class="text-4xl mb-4">👥</div>
-                    <h3 class="text-2xl font-bold mb-4 text-[#47663D]">Karakter Pemimpin</h3>
-                    <p class="text-gray-700 leading-relaxed">Membentuk siswa dengan karakter kepemimpinan Islami yang didasarkan pada nilai-nilai Al-Qur'an.</p>
+                <div class="bg-white p-8 md:p-10 rounded-2xl shadow-lg hover:shadow-2xl transition transform hover:-translate-y-2 border-t-4 border-[#47663D] border-b-4 border-b-[#FFB81C] relative group">
+                    <div class="absolute top-0 right-0 w-16 md:w-20 h-16 md:h-20 text-5xl md:text-6xl opacity-10 group-hover:opacity-20 transition">☪</div>
+                    <div class="text-3xl md:text-4xl mb-4">👥</div>
+                    <h3 class="text-xl md:text-2xl font-bold mb-3 md:mb-4 text-[#47663D]">Karakter Pemimpin</h3>
+                    <p class="text-gray-700 text-sm md:text-base leading-relaxed">Membentuk siswa dengan karakter kepemimpinan Islami yang didasarkan pada nilai-nilai Al-Qur'an.</p>
                 </div>
-                <div class="bg-white p-10 rounded-2xl shadow-lg hover:shadow-2xl transition transform hover:-translate-y-2 border-t-4 border-[#47663D] border-b-4 border-b-[#FFB81C] relative group">
-                    <div class="absolute top-0 right-0 w-20 h-20 text-6xl opacity-10 group-hover:opacity-20 transition">☪</div>
-                    <div class="text-4xl mb-4">✨</div>
-                    <h3 class="text-2xl font-bold mb-4 text-[#47663D]">Akhlak Al-Qur'an</h3>
-                    <p class="text-gray-700 leading-relaxed">Menghasilkan lulusan dengan akhlak mulia yang menjadi panutan dan bermanfaat bagi masyarakat.</p>
+                <div class="bg-white p-8 md:p-10 rounded-2xl shadow-lg hover:shadow-2xl transition transform hover:-translate-y-2 border-t-4 border-[#47663D] border-b-4 border-b-[#FFB81C] relative group">
+                    <div class="absolute top-0 right-0 w-16 md:w-20 h-16 md:h-20 text-5xl md:text-6xl opacity-10 group-hover:opacity-20 transition">☪</div>
+                    <div class="text-3xl md:text-4xl mb-4">✨</div>
+                    <h3 class="text-xl md:text-2xl font-bold mb-3 md:mb-4 text-[#47663D]">Akhlak Al-Qur'an</h3>
+                    <p class="text-gray-700 text-sm md:text-base leading-relaxed">Menghasilkan lulusan dengan akhlak mulia yang menjadi panutan dan bermanfaat bagi masyarakat.</p>
                 </div>
             </div>
         </div>
@@ -171,41 +171,41 @@
 
     {{-- LATEST NEWS --}}
     @if($latestNews->count() > 0)
-    <section class="py-24 px-5 bg-white">
+    <section class="py-16 md:py-24 px-5 bg-white">
         <div class="max-w-6xl mx-auto">
-            <div class="text-center mb-16">
-                <p class="text-[#FFB81C] text-2xl ornament-text mb-4">✦ ✦ ✦</p>
-                <h2 class="text-5xl font-bold mb-4 text-[#47663D]">Berita Terbaru</h2>
-                <p class="text-gray-600 text-lg italic">Informasi dan kegiatan terbaru dari sekolah kami</p>
+            <div class="text-center mb-10 md:mb-16">
+                <p class="text-[#FFB81C] text-xl md:text-2xl ornament-text mb-2 md:mb-4">✦ ✦ ✦</p>
+                <h2 class="text-3xl md:text-5xl font-bold mb-3 md:mb-4 text-[#47663D]">Berita Terbaru</h2>
+                <p class="text-gray-600 text-base md:text-lg italic">Informasi dan kegiatan terbaru dari sekolah kami</p>
             </div>
             
-            <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-6 md:gap-8">
                 @foreach($latestNews as $news)
-                <div class="bg-white rounded-2xl shadow-lg border border-gray-100 overflow-hidden group hover:shadow-2xl transition-all duration-300 transform hover:-translate-y-2 flex flex-col h-full">
-                    <div class="relative h-48 overflow-hidden">
+                <div class="bg-white rounded-2xl shadow-lg border border-gray-100 overflow-hidden group hover:shadow-2xl transition-all duration-300 transform md:hover:-translate-y-2 flex flex-col h-full">
+                    <div class="relative h-40 md:h-48 overflow-hidden">
                         <img 
                             src="{{ $news->gambar ? asset('storage/' . ltrim(str_replace('\\', '/', $news->gambar), '/')) : asset('images/slide-1.jpeg') }}" 
                             alt="{{ $news->judul }}" 
                             class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110"
                             loading="lazy"
                         >
-                        <div class="absolute top-4 left-4 bg-[#FFB81C] text-[#47663D] px-3 py-1 rounded-full text-xs font-bold shadow-md">
+                        <div class="absolute top-3 left-3 bg-[#FFB81C] text-[#47663D] px-3 py-1 rounded-full text-[10px] md:text-xs font-bold shadow-md">
                             {{ $news->kategori ?? 'Berita' }}
                         </div>
                     </div>
                     
-                    <div class="p-8 flex flex-col flex-grow">
-                        <p class="text-xs text-gray-500 mb-2 flex items-center gap-2">
+                    <div class="p-6 md:p-8 flex flex-col flex-grow">
+                        <p class="text-[10px] md:text-xs text-gray-500 mb-2 flex items-center gap-2">
                             <span>📅</span> {{ $news->published_at->format('d M Y') }}
                         </p>
-                        <h3 class="text-xl font-bold mb-4 text-[#47663D] line-clamp-2 min-h-[3.5rem] group-hover:text-[#FFB81C] transition-colors">
+                        <h3 class="text-lg md:text-xl font-bold mb-3 md:mb-4 text-[#47663D] line-clamp-2 md:min-h-[3.5rem] group-hover:text-[#FFB81C] transition-colors">
                             {{ $news->judul }}
                         </h3>
-                        <p class="text-gray-600 text-sm mb-6 line-clamp-3">
-                            {{ Str::limit(strip_tags($news->isi), 120) }}
+                        <p class="text-gray-600 text-xs md:text-sm mb-4 md:mb-6 line-clamp-3">
+                            {{ Str::limit(strip_tags($news->isi), 100) }}
                         </p>
                         <div class="mt-auto">
-                            <a href="{{ route('news.show', $news->id) }}" class="inline-flex items-center gap-2 text-[#47663D] font-bold hover:text-[#FFB81C] transition-colors group">
+                            <a href="{{ route('news.show', $news->id) }}" class="inline-flex items-center gap-2 text-sm md:text-base text-[#47663D] font-bold hover:text-[#FFB81C] transition-colors group">
                                 Baca Selengkapnya 
                                 <span class="transition-transform group-hover:translate-x-2">→</span>
                             </a>
@@ -215,8 +215,8 @@
                 @endforeach
             </div>
 
-            <div class="text-center mt-16">
-                <a href="/news" class="inline-block px-8 py-3 bg-[#47663D] text-white font-bold rounded-lg border-2 border-[#47663D] hover:bg-white hover:text-[#47663D] transition transform hover:scale-105 shadow-md">
+            <div class="text-center mt-10 md:mt-16">
+                <a href="/news" class="inline-block px-6 md:px-8 py-3 bg-[#47663D] text-white font-bold rounded-lg border-2 border-[#47663D] hover:bg-white hover:text-[#47663D] transition transform hover:scale-105 shadow-md">
                     Lihat Semua Berita
                 </a>
             </div>
@@ -225,18 +225,18 @@
     @endif
 
     {{-- CTA --}}
-    <section class="bg-gradient-to-r from-[#47663D] via-[#5a7d52] to-[#47663D] py-24 px-5 text-center text-white border-t-4 border-b-4 border-[#FFB81C]">
+    <section class="bg-gradient-to-r from-[#47663D] via-[#5a7d52] to-[#47663D] py-16 md:py-24 px-5 text-center text-white border-t-4 border-b-4 border-[#FFB81C]">
         <div class="max-w-4xl mx-auto">
-            <p class="text-[#FFB81C] text-2xl ornament-text mb-6">✦ ✦ ✦</p>
-            <h2 class="text-5xl font-bold mb-6">Bergabung Bersama Kami</h2>
-            <p class="text-xl mb-4 leading-relaxed italic text-white/80">
+            <p class="text-[#FFB81C] text-xl md:text-2xl ornament-text mb-4 md:mb-6">✦ ✦ ✦</p>
+            <h2 class="text-3xl md:text-5xl font-bold mb-4 md:mb-6">Bergabung Bersama Kami</h2>
+            <p class="text-lg md:text-xl mb-4 leading-relaxed italic text-white/80">
                 "Sebaik-baik kalian adalah mereka yang belajar Al-Qur'an dan mengajarkannya"
             </p>
-            <p class="text-lg mb-10 text-white/70">
+            <p class="text-base md:text-lg mb-8 md:mb-10 text-white/70">
                 Daftarkan putra-putri Anda dan wujudkan masa depan yang gemilang bersama
                 SD Al-Qur'an Lantabur Pekanbaru, tempat hati menjadi qur'ani dan ilmu menjadi amal.
             </p>
-            <a href="/contact" class="inline-block px-10 py-4 bg-[#FFB81C] text-[#47663D] font-bold text-lg rounded-lg hover:bg-[#F0A500] transition transform hover:scale-105 shadow-lg">
+            <a href="/contact" class="inline-block px-8 md:px-10 py-3 md:py-4 bg-[#FFB81C] text-[#47663D] font-bold text-base md:text-lg rounded-lg hover:bg-[#F0A500] transition transform hover:scale-105 shadow-lg">
                 Hubungi Kami Sekarang
             </a>
         </div>
