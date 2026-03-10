@@ -73,13 +73,14 @@ class RaportNilai extends Model
 
     public function isLengkapPraktik(): bool
     {
-        // Cache master subjects to avoid repeated queries
-        static $masterPraktikCache = null;
-        if ($masterPraktikCache === null) {
-            $masterPraktikCache = MasterPraktik::all(['section', 'kategori']);
+        // Cache master categories per class to avoid repeated queries and context leakage
+        static $masterPraktikCache = [];
+        if (!isset($masterPraktikCache[$this->kelas])) {
+            $masterPraktikCache[$this->kelas] = MasterPraktik::where('kelas', $this->kelas)
+                ->get(['section', 'kategori']);
         }
 
-        foreach ($masterPraktikCache as $master) {
+        foreach ($masterPraktikCache[$this->kelas] as $master) {
             $filled = $this->praktik->where('section', $master->section)
                 ->where('kategori', $master->kategori)
                 ->filter(fn($p) => !is_null($p->nilai) && $p->nilai !== '')

@@ -800,7 +800,7 @@ class RaportController extends Controller
     {
         $siswa = Siswa::findOrFail($siswa_id);
         $reports = RaportNilai::where('siswa_id', $siswa_id)
-            ->with('mapelNilai')
+            ->with(['mapelNilai', 'praktik'])
             ->orderByRaw("CAST(SUBSTRING_INDEX(tahun_ajaran, '/', 1) AS UNSIGNED) DESC")
             ->orderBy('semester', 'desc')
             ->get();
