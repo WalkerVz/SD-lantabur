@@ -24,8 +24,9 @@
     <meta name="twitter:image" content="@yield('meta_image', asset('images/logo.png'))">
 
     <link rel="icon" type="image/png" href="{{ asset('images/logo.png') }}">
-    <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
-    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="{{ asset('css/poppins.css') }}">
+    <script defer src="{{ asset('js/alpine.min.js') }}"></script>
+    <script src="{{ asset('js/tailwind.js') }}"></script>
 
 <script>
   tailwind.config = {
@@ -52,7 +53,7 @@
     }
   }
 </style>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <link rel="stylesheet" href="{{ asset('css/fontawesome-all.min.css') }}">
     
 </head>
 <body class="font-sans" x-data="{ pageLoading: true, navigationLoading: false }" 

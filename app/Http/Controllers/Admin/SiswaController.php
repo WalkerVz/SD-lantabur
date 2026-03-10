@@ -418,31 +418,4 @@ class SiswaController extends Controller
             return back()->with('error', 'Gagal memindahkan siswa: ' . $e->getMessage());
         }
     }
-
-    public function cetakAbsen(string $kelas)
-    {
-        $tahun_ajaran = request('tahun_ajaran', session('selected_tahun_ajaran', MasterTahunAjaran::getAktif()));
-        
-        $siswa = Enrollment::where('tahun_ajaran', $tahun_ajaran)
-            ->where('kelas', $kelas)
-            ->with('siswa')
-            ->get()
-            ->pluck('siswa')
-            ->filter()
-            ->sortBy(fn ($s) => strtolower($s->nama ?? ''))
-            ->values();
-
-        $nama_kelas = Siswa::getNamaKelas($kelas);
-        $tanggal_cetak = now()->locale('id')->translatedFormat('d F Y');
-
-        // Ambil Wali Kelas dari TahunKelas (Historis)
-        $tahunKelas = \App\Models\TahunKelas::where('tahun_ajaran', $tahun_ajaran)
-            ->where('kelas', $kelas)
-            ->with('waliKelas')
-            ->first();
-
-        $wali_kelas = $tahunKelas && $tahunKelas->waliKelas ? $tahunKelas->waliKelas->nama : '_______________________';
-
-        return view('admin.siswa.cetak_absen', compact('siswa', 'kelas', 'nama_kelas', 'tahun_ajaran', 'tanggal_cetak', 'wali_kelas'));
-    }
 }

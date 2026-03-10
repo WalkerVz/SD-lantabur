@@ -14,6 +14,12 @@
         @if($item) @method('PUT') @endif
         @if(request('tahun_ajaran'))<input type="hidden" name="tahun_ajaran" value="{{ request('tahun_ajaran') }}">@endif
 
+        {{-- Notifikasi error validasi di paling atas form --}}
+        <div id="form-siswa-alert" class="hidden mb-4 p-4 rounded-xl border border-red-200 bg-red-50 text-red-800 text-sm">
+            <p class="font-semibold mb-1">Terdapat kesalahan:</p>
+            <ul id="form-siswa-alert-list" class="list-disc list-inside space-y-0.5"></ul>
+        </div>
+
         <div class="space-y-4">
             <div>
                 <label class="block text-sm font-medium text-gray-700 mb-1">Nama Siswa <span class="text-red-500">*</span></label>
@@ -210,9 +216,30 @@
                     return;
                 }
                 if (res.status === 422 && res.data.errors) {
-                    for (var field in res.data.errors) {
-                        var el = document.getElementById('err-' + field);
-                        if (el) { el.textContent = res.data.errors[field][0]; el.classList.remove('hidden'); }
+                    var alertBox = document.getElementById('form-siswa-alert');
+                    var alertList = document.getElementById('form-siswa-alert-list');
+                    if (alertBox && alertList) {
+                        alertList.innerHTML = '';
+                        var messages = [];
+                        for (var field in res.data.errors) {
+                            var msg = res.data.errors[field][0];
+                            messages.push(msg);
+                            var el = document.getElementById('err-' + field);
+                            if (el) { el.textContent = msg; el.classList.remove('hidden'); }
+                        }
+                        messages.forEach(function(m) {
+                            var li = document.createElement('li');
+                            li.textContent = m;
+                            alertList.appendChild(li);
+                        });
+                        alertBox.classList.remove('hidden');
+                        window.scrollTo(0, 0);
+                        alertBox.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                    } else {
+                        for (var field in res.data.errors) {
+                            var el = document.getElementById('err-' + field);
+                            if (el) { el.textContent = res.data.errors[field][0]; el.classList.remove('hidden'); }
+                        }
                     }
                 }
             })
