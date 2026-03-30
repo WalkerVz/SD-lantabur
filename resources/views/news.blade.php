@@ -4,19 +4,19 @@
     <style>.ornament-text { font-family: 'Georgia', serif; letter-spacing: 2px; }</style>
 
     {{-- HERO NEWS --}}
-    <section class="bg-gradient-to-r from-[#47663D] to-[#47663D] text-white py-24 px-5 border-b-4 border-[#FFB81C]">
+    <section class="bg-gradient-to-r from-[#47663D] to-[#47663D] text-white py-16 md:py-24 px-5 border-b-4 border-[#FFB81C]">
         <div class="max-w-4xl mx-auto text-center">
-            <h1 class="text-5xl font-bold mb-6">Berita & Informasi</h1>
-            <p class="text-xl text-white/60">Dapatkan update terbaru dari SD Al-Qur'an Lantabur Pekanbaru</p>
+            <h1 class="text-3xl md:text-5xl font-bold mb-4 md:mb-6">Berita & Informasi</h1>
+            <p class="text-lg md:text-xl text-white/60">Dapatkan update terbaru dari SD Al-Qur'an Lantabur Pekanbaru</p>
         </div>
     </section>
 
-    <section class="py-24 px-5 bg-white">
+    <section class="py-16 md:py-24 px-5 bg-white">
         <div class="max-w-6xl mx-auto">
-            <div class="text-center mb-16">
-                <p class="text-[#FFB81C] text-2xl ornament-text mb-4">✦ ✦ ✦</p>
-                <h2 class="text-5xl font-bold text-[#47663D] mb-4">Berita & Informasi</h2>
-                <p class="text-gray-600 text-lg italic">Update terbaru dari komunitas SD Al-Qur'an Lantabur Pekanbaru</p>
+            <div class="text-center mb-10 md:mb-16">
+                <p class="text-[#FFB81C] text-xl md:text-2xl ornament-text mb-2 md:mb-4">✦ ✦ ✦</p>
+                <h2 class="text-3xl md:text-5xl font-bold text-[#47663D] mb-3 md:mb-4">Berita & Informasi</h2>
+                <p class="text-gray-600 text-base md:text-lg italic">Update terbaru dari komunitas SD Al-Qur'an Lantabur Pekanbaru</p>
             </div>
 
             <form method="get" action="/news" class="mb-12 flex gap-4 flex-wrap justify-center">
@@ -70,17 +70,17 @@
         </div>
     </section>
 
-    <section class="bg-gray-100 py-16 px-5">
+    <section class="bg-gray-100 py-12 md:py-16 px-5">
         <div class="max-w-2xl mx-auto text-center">
-            <h2 class="text-3xl font-bold text-[#47663D] mb-4">Dapatkan Berita Terbaru</h2>
-            <p class="text-gray-700 mb-8">Kunjungi halaman ini secara berkala untuk update terbaru tentang kegiatan dan informasi penting SD Al-Qur'an Lantabur Pekanbaru.</p>
-            <a href="/contact" class="inline-block px-8 py-3 bg-[#47663D] text-white font-bold rounded-lg hover:bg-[#5a7d52] transition">Hubungi Kami</a>
+            <h2 class="text-2xl md:text-3xl font-bold text-[#47663D] mb-3 md:mb-4">Dapatkan Berita Terbaru</h2>
+            <p class="text-sm md:text-base text-gray-700 mb-6 md:mb-8">Kunjungi halaman ini secara berkala untuk update terbaru tentang kegiatan dan informasi penting SD Al-Qur'an Lantabur Pekanbaru.</p>
+            <a href="/contact" class="inline-block px-6 md:px-8 py-3 bg-[#47663D] text-white font-bold rounded-lg hover:bg-[#5a7d52] transition">Hubungi Kami</a>
         </div>
     </section>
 
-    <section class="bg-gradient-to-r from-[#47663D] via-[#5a7d52] to-[#47663D] py-20 px-5 text-center text-white border-t-4 border-b-4 border-white/20">
-        <h2 class="text-4xl font-bold mb-6">Ada Pertanyaan?</h2>
-        <p class="text-xl mb-10 text-white/60">Hubungi kami untuk informasi lebih lanjut</p>
-        <a href="/contact" class="inline-block px-10 py-4 bg-white text-[#47663D] font-bold rounded-lg hover:bg-gray-100 transition transform hover:scale-105">Hubungi Kami</a>
+    <section class="bg-gradient-to-r from-[#47663D] via-[#5a7d52] to-[#47663D] py-16 md:py-20 px-5 text-center text-white border-t-4 border-b-4 border-white/20">
+        <h2 class="text-3xl md:text-4xl font-bold mb-4 md:mb-6">Ada Pertanyaan?</h2>
+        <p class="text-lg md:text-xl mb-8 md:mb-10 text-white/60">Hubungi kami untuk informasi lebih lanjut</p>
+        <a href="/contact" class="inline-block px-8 md:px-10 py-3 md:py-4 bg-white text-[#47663D] font-bold rounded-lg hover:bg-gray-100 transition transform hover:scale-105">Hubungi Kami</a>
     </section>
 @endsection

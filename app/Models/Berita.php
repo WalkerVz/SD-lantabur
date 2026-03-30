@@ -8,7 +8,7 @@ class Berita extends Model
 {
     protected $table = 'berita';
 
-    protected $fillable = ['judul', 'kategori', 'isi', 'gambar', 'published_at'];
+    protected $fillable = ['judul', 'kategori', 'isi', 'ringkasan', 'gambar', 'gambar_dua', 'published_at'];
 
     protected $casts = [
         'published_at' => 'datetime',
