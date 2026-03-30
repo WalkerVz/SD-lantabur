@@ -3,12 +3,13 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
-use App\Models\Spesialisasi;
+use App\Exports\SdmExport;
 use App\Models\StaffSdm;
 use Barryvdh\DomPDF\Facade\Pdf;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
 use App\Traits\ImageOptimization;
+use Maatwebsite\Excel\Facades\Excel;
 
 class SdmController extends Controller
 {
@@ -16,42 +17,38 @@ class SdmController extends Controller
     public function index(Request $request)
     {
         $tahunAktif = \App\Models\MasterTahunAjaran::getAktif();
-        $query = StaffSdm::with(['spesialisasi', 'tahunKelas' => function($q) use ($tahunAktif) {
+        $query = StaffSdm::with(['tahunKelas' => function($q) use ($tahunAktif) {
             $q->where('tahun_ajaran', $tahunAktif);
         }]);
-        if ($request->filled('spesialisasi_id')) {
-            $query->where('spesialisasi_id', $request->spesialisasi_id);
-        }
         $allStaff = $query->get();
 
-        // Sort berdasarkan prioritas jabatan: Kepala Sekolah → Wakil → lainnya (abjad)
+        // Sort berdasarkan prioritas jabatan: Kepala Sekolah → Wakil → Wali Kelas → Guru Bidang Studi → Staff Administrasi → lainnya → Satpam
         $jabatanPriority = function ($jabatan) {
             $jabatan = strtolower($jabatan ?? '');
             if (str_contains($jabatan, 'kepala sekolah') && !str_contains($jabatan, 'wakil')) return 0;
             if (str_contains($jabatan, 'wakil kepala') || str_contains($jabatan, 'wakil')) return 1;
             if (str_contains($jabatan, 'wali kelas')) return 2;
-            return 3;
+            if (str_contains($jabatan, 'guru bidang studi')) return 3;
+            if (str_contains($jabatan, 'staff administrasi')) return 4;
+            if (str_contains($jabatan, 'satpam')) return 999;
+            return 900;
         };
 
-        $staff = $allStaff->sortBy([
-            fn ($s) => $jabatanPriority($s->jabatan),
-            fn ($s) => $s->nama,
-        ])->values();
+        $staff = $allStaff
+            ->sortBy(function ($s) use ($jabatanPriority) {
+                $p = $jabatanPriority($s->jabatan);
+                $n = strtolower(trim((string) ($s->nama ?? '')));
+                return str_pad((string) $p, 4, '0', STR_PAD_LEFT) . '|' . $n;
+            })
+            ->values();
 
-        $spesialisasi = Spesialisasi::orderBy('nama')->get();
         $totalAll = StaffSdm::count();
-        $countBySpesialisasi = StaffSdm::selectRaw('spesialisasi_id, count(*) as total')
-            ->groupBy('spesialisasi_id')
-            ->get()
-            ->keyBy('spesialisasi_id');
-
-        return view('admin.sdm.index', compact('staff', 'spesialisasi', 'countBySpesialisasi', 'totalAll'));
+        return view('admin.sdm.index', compact('staff', 'totalAll'));
     }
 
     public function create()
     {
-        $spesialisasi = Spesialisasi::orderBy('nama')->get();
-        return view('admin.sdm.form', ['item' => null, 'spesialisasi' => $spesialisasi]);
+        return view('admin.sdm.form', ['item' => null]);
     }
 
     public function store(Request $request)
@@ -59,10 +56,10 @@ class SdmController extends Controller
         $request->validate([
             'nama' => 'required|string|max:255',
             'jabatan' => 'required|string|max:255',
+            'bidang_studi' => 'nullable|required_if:jabatan,Guru Bidang Studi|string|max:255',
             'niy' => 'nullable|string|max:50',
             'email' => 'nullable|email',
             'nomor_handphone' => 'nullable|string|max:20',
-            'spesialisasi_id' => 'nullable|exists:spesialisasi,id',
             'foto' => 'nullable|image|max:2048',
             'jenis_kelamin' => 'nullable|string|max:20',
             'tempat_lahir' => 'nullable|string|max:100',
@@ -71,7 +68,10 @@ class SdmController extends Controller
             'agama' => 'nullable|string|max:30',
         ]);
 
-        $data = $request->only(['nama', 'jabatan', 'niy', 'email', 'nomor_handphone', 'spesialisasi_id', 'jenis_kelamin', 'tempat_lahir', 'tanggal_lahir', 'alamat', 'agama']);
+        $data = $request->only(['nama', 'jabatan', 'bidang_studi', 'niy', 'email', 'nomor_handphone', 'jenis_kelamin', 'tempat_lahir', 'tanggal_lahir', 'alamat', 'agama']);
+        if (($data['jabatan'] ?? '') !== 'Guru Bidang Studi') {
+            $data['bidang_studi'] = null;
+        }
         if ($request->hasFile('foto')) {
             $data['foto'] = $this->optimizeAndStore($request->file('foto'), 'staff_sdm');
         }
@@ -86,8 +86,7 @@ class SdmController extends Controller
     public function edit(string $id)
     {
         $item = StaffSdm::findOrFail($id);
-        $spesialisasi = Spesialisasi::orderBy('nama')->get();
-        return view('admin.sdm.form', ['item' => $item, 'spesialisasi' => $spesialisasi]);
+        return view('admin.sdm.form', ['item' => $item]);
     }
 
     public function update(Request $request, string $id)
@@ -96,10 +95,10 @@ class SdmController extends Controller
         $request->validate([
             'nama' => 'required|string|max:255',
             'jabatan' => 'required|string|max:255',
+            'bidang_studi' => 'nullable|required_if:jabatan,Guru Bidang Studi|string|max:255',
             'niy' => 'nullable|string|max:50',
             'email' => 'nullable|email',
             'nomor_handphone' => 'nullable|string|max:20',
-            'spesialisasi_id' => 'nullable|exists:spesialisasi,id',
             'foto' => 'nullable|image|max:2048',
             'jenis_kelamin' => 'nullable|string|max:20',
             'tempat_lahir' => 'nullable|string|max:100',
@@ -108,7 +107,10 @@ class SdmController extends Controller
             'agama' => 'nullable|string|max:30',
         ]);
 
-        $data = $request->only(['nama', 'jabatan', 'niy', 'email', 'nomor_handphone', 'spesialisasi_id', 'jenis_kelamin', 'tempat_lahir', 'tanggal_lahir', 'alamat', 'agama']);
+        $data = $request->only(['nama', 'jabatan', 'bidang_studi', 'niy', 'email', 'nomor_handphone', 'jenis_kelamin', 'tempat_lahir', 'tanggal_lahir', 'alamat', 'agama']);
+        if (($data['jabatan'] ?? '') !== 'Guru Bidang Studi') {
+            $data['bidang_studi'] = null;
+        }
         if ($request->hasFile('foto')) {
             if ($item->foto) {
                 Storage::disk('public')->delete($item->foto);
@@ -144,11 +146,7 @@ class SdmController extends Controller
     public function exportPdf(Request $request)
     {
         try {
-            $query = StaffSdm::with('spesialisasi');
-            if ($request->filled('spesialisasi_id')) {
-                $query->where('spesialisasi_id', $request->spesialisasi_id);
-            }
-            $allStaff = $query->get();
+            $allStaff = StaffSdm::query()->get();
 
             // Sort berdasarkan prioritas jabatan sama seperti di halaman web
             $jabatanPriority = function ($jabatan) {
@@ -156,13 +154,19 @@ class SdmController extends Controller
                 if (str_contains($jabatan, 'kepala sekolah') && !str_contains($jabatan, 'wakil')) return 0;
                 if (str_contains($jabatan, 'wakil kepala') || str_contains($jabatan, 'wakil')) return 1;
                 if (str_contains($jabatan, 'wali kelas')) return 2;
-                return 3;
+                if (str_contains($jabatan, 'guru bidang studi')) return 3;
+                if (str_contains($jabatan, 'staff administrasi')) return 4;
+                if (str_contains($jabatan, 'satpam')) return 999;
+                return 900;
             };
 
-            $rows = $allStaff->sortBy([
-                fn ($s) => $jabatanPriority($s->jabatan),
-                fn ($s) => strtolower($s->nama ?? ''),
-            ])->values();
+            $rows = $allStaff
+                ->sortBy(function ($s) use ($jabatanPriority) {
+                    $p = $jabatanPriority($s->jabatan);
+                    $n = strtolower(trim((string) ($s->nama ?? '')));
+                    return str_pad((string) $p, 4, '0', STR_PAD_LEFT) . '|' . $n;
+                })
+                ->values();
 
             $pdf = Pdf::loadView('admin.export.sdm-pdf', compact('rows'));
             return $pdf->download('data_sdm_' . date('Y-m-d_His') . '.pdf');
@@ -170,5 +174,32 @@ class SdmController extends Controller
             report($e);
             return redirect()->route('admin.sdm.index')->with('error', 'Export gagal: ' . $e->getMessage());
         }
+    }
+
+    public function exportExcel(Request $request)
+    {
+        $allStaff = StaffSdm::query()->get();
+
+        // Sort berdasarkan prioritas jabatan sama seperti di halaman web
+        $jabatanPriority = function ($jabatan) {
+            $jabatan = strtolower($jabatan ?? '');
+            if (str_contains($jabatan, 'kepala sekolah') && !str_contains($jabatan, 'wakil')) return 0;
+            if (str_contains($jabatan, 'wakil kepala') || str_contains($jabatan, 'wakil')) return 1;
+            if (str_contains($jabatan, 'wali kelas')) return 2;
+            if (str_contains($jabatan, 'guru bidang studi')) return 3;
+            if (str_contains($jabatan, 'staff administrasi')) return 4;
+            if (str_contains($jabatan, 'satpam')) return 999;
+            return 900;
+        };
+
+        $rows = $allStaff
+            ->sortBy(function ($s) use ($jabatanPriority) {
+                $p = $jabatanPriority($s->jabatan);
+                $n = strtolower(trim((string) ($s->nama ?? '')));
+                return str_pad((string) $p, 4, '0', STR_PAD_LEFT) . '|' . $n;
+            })
+            ->values();
+
+        return Excel::download(new SdmExport($rows), 'data_sdm_' . date('Y-m-d_His') . '.xlsx');
     }
 }

@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Berita;
 use App\Models\StaffSdm;
+use App\Models\MasterTahunAjaran;
 use App\Models\Gallery;
 use App\Models\Slider;
 use App\Models\VideoYoutube;
@@ -32,7 +33,28 @@ class PageController extends Controller
 
     public function staff()
     {
-        $staff = StaffSdm::with('spesialisasi')->orderBy('nama')->get();
+        $tahunAktif = MasterTahunAjaran::getAktif() ?? MasterTahunAjaran::getFallback();
+
+        $staff = StaffSdm::with(['tahunKelas' => function ($q) use ($tahunAktif) {
+            $q->where('tahun_ajaran', $tahunAktif)->orderBy('kelas');
+        }])->get();
+
+        $prioritas = [
+            'Kepala Sekolah' => 0,
+            'Wakil Kepala Sekolah' => 1,
+            'Wali Kelas' => 2,
+            'Guru Bidang Studi' => 3,
+            'Staff Administrasi' => 4,
+            'Satpam' => 999,
+        ];
+
+        $staff = $staff
+            ->sortBy(function ($s) use ($prioritas) {
+                $p = $prioritas[$s->jabatan ?? ''] ?? 900;
+                $n = strtolower(trim((string) ($s->nama ?? '')));
+                return str_pad((string) $p, 4, '0', STR_PAD_LEFT) . '|' . $n;
+            })
+            ->values();
         return view('staff', compact('staff'));
     }
 

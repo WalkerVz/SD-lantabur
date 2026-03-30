@@ -7,6 +7,8 @@
     <title>@yield('title', 'Form') - SD Al-Qur'an Lantabur Pekanbaru</title>
     <link rel="stylesheet" href="{{ asset('css/poppins.css') }}">
     <script src="{{ asset('js/tailwind.js') }}"></script>
+    <script defer src="{{ asset('js/alpine.min.js') }}"></script>
+    <style>[x-cloak]{display:none!important}</style>
     <style> body { font-family: 'Poppins', sans-serif; } </style>
 </head>
 <body class="bg-white">

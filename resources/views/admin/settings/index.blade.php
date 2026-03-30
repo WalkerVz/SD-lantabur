@@ -42,70 +42,74 @@
 
 
     {{-- Wali Kelas --}}
-    <div class="bg-white rounded-xl shadow border border-gray-100 p-6">
+    <div id="wali-kelas" class="bg-white rounded-xl shadow border border-gray-100 p-6 scroll-mt-4">
         <h2 class="text-lg font-semibold text-gray-800 mb-1">Wali Kelas</h2>
-        <p class="text-sm text-gray-500 mb-4">Tetapkan wali kelas per kelas dan tahun ajaran</p>
+        <p class="text-sm text-gray-500 mb-4">
+            Tetapkan wali kelas per kelas untuk <strong>{{ $tahunTerpilih }}</strong>.
+        </p>
 
         {{-- Form Assign --}}
         <form action="{{ route('admin.settings.wali-kelas.store') }}" method="POST">
             @csrf
-            <div class="flex flex-wrap items-end gap-3">
-                <div>
+            <div class="grid grid-cols-1 md:grid-cols-12 gap-3 items-end">
+                <div class="md:col-span-2">
                     <label class="block text-xs font-medium text-gray-600 mb-1">Tahun Ajaran</label>
-                    <select name="tahun_ajaran" required class="px-3 py-2 rounded-lg border border-gray-300 focus:ring-2 focus:ring-[#47663D] focus:border-[#47663D] text-sm">
+                    <select name="tahun_ajaran" id="wali-kelas-tahun" required data-base-url="{{ route('admin.settings.index') }}"
+                            class="w-full h-10 px-3 rounded-lg border border-gray-300 focus:ring-2 focus:ring-[#47663D] focus:border-[#47663D] text-sm">
                         @foreach($tahunAjaranList as $t)
-                            <option value="{{ $t->nama }}" {{ $t->is_aktif ? 'selected' : '' }}>
+                            <option value="{{ $t->nama }}" {{ (string)$t->nama === (string)$tahunTerpilih ? 'selected' : '' }}>
                                 {{ $t->nama }}{{ $t->is_aktif ? ' (Aktif)' : '' }}
                             </option>
                         @endforeach
                     </select>
                 </div>
-                <div>
+                <div class="md:col-span-2">
                     <label class="block text-xs font-medium text-gray-600 mb-1">Kelas</label>
-                    <select name="kelas" required class="px-3 py-2 rounded-lg border border-gray-300 focus:ring-2 focus:ring-[#47663D] focus:border-[#47663D] text-sm">
+                    <select name="kelas" required
+                            class="w-full h-10 px-3 rounded-lg border border-gray-300 focus:ring-2 focus:ring-[#47663D] focus:border-[#47663D] text-sm">
                         @for($k = 1; $k <= 6; $k++)
                             <option value="{{ $k }}">Kelas {{ $k }}</option>
                         @endfor
                     </select>
                 </div>
-                <div>
+                <div class="md:col-span-6">
                     <label class="block text-xs font-medium text-gray-600 mb-1">Wali Kelas</label>
-                    <select name="wali_kelas_id" class="px-3 py-2 rounded-lg border border-gray-300 focus:ring-2 focus:ring-[#47663D] focus:border-[#47663D] text-sm min-w-[200px]">
+                    <select name="wali_kelas_id"
+                            class="w-full h-10 px-3 rounded-lg border border-gray-300 focus:ring-2 focus:ring-[#47663D] focus:border-[#47663D] text-sm min-w-0">
                         <option value="">-- Hapus / Belum ada --</option>
                         @foreach($staffList as $staff)
                             <option value="{{ $staff->id }}">{{ $staff->nama }}</option>
                         @endforeach
                     </select>
                 </div>
-                <button type="submit" class="px-4 py-2 bg-[#47663D] text-white rounded-lg hover:bg-[#5a7d52] text-sm font-medium">
-                    Simpan
-                </button>
+                <div class="md:col-span-2 flex justify-end">
+                    <button type="submit"
+                            class="w-full md:w-auto h-10 px-4 bg-[#47663D] text-white rounded-lg hover:bg-[#5a7d52] text-sm font-medium">
+                        Simpan
+                    </button>
+                </div>
             </div>
         </form>
 
-        {{-- Tabel Rekap --}}
+        {{-- Rekap untuk tahun pilihan --}}
         @php
             $adaData = $waliKelasTahun->isNotEmpty();
         @endphp
         @if($adaData)
-        <div class="mt-6 border border-gray-100 rounded-xl overflow-hidden max-h-64 overflow-y-auto">
+        <div class="mt-6 border border-gray-100 rounded-xl overflow-hidden">
             <table class="w-full text-sm">
                 <thead class="bg-gray-50 border-b border-gray-100 sticky top-0">
                     <tr>
-                        <th class="px-4 py-2 text-left text-xs font-semibold text-gray-500">Tahun Ajaran</th>
                         <th class="px-4 py-2 text-left text-xs font-semibold text-gray-500">Kelas</th>
                         <th class="px-4 py-2 text-left text-xs font-semibold text-gray-500">Wali Kelas</th>
                     </tr>
                 </thead>
                 <tbody>
-                    @foreach($waliKelasTahun->sortBy(fn($r) => $r->tahun_ajaran . '-' . $r->kelas) as $row)
-                    @if($row->waliKelas)
+                    @foreach($waliKelasTahun->sortBy('kelas') as $row)
                     <tr class="border-t border-gray-50 hover:bg-gray-50/50">
-                        <td class="px-4 py-2 text-gray-600">{{ $row->tahun_ajaran }}</td>
                         <td class="px-4 py-2 text-gray-700 font-medium">Kelas {{ $row->kelas }}</td>
-                        <td class="px-4 py-2 text-gray-800">{{ $row->waliKelas->nama }}</td>
+                        <td class="px-4 py-2 text-gray-800">{{ $row->waliKelas?->nama ?? '—' }}</td>
                     </tr>
-                    @endif
                     @endforeach
                 </tbody>
             </table>
@@ -160,4 +164,22 @@
         <p class="mt-1">Username tidak dapat diubah dari halaman ini.</p>
     </div>
 </div>
+
+@push('scripts')
+<script>
+(function () {
+    var tahunSelect = document.getElementById('wali-kelas-tahun');
+    if (!tahunSelect) return;
+
+    var baseUrl = tahunSelect.getAttribute('data-base-url') || '';
+    if (!baseUrl) return;
+
+    tahunSelect.addEventListener('change', function () {
+        var val = tahunSelect.value || '';
+        var next = baseUrl + '?tahun_ajaran=' + encodeURIComponent(val) + '#wali-kelas';
+        window.location.href = next;
+    });
+})();
+</script>
+@endpush
 @endsection

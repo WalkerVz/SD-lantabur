@@ -113,7 +113,16 @@ function sliderPage() {
         formIframeLoaded() {
             if (window._sliderMessageHandler) window.removeEventListener('message', window._sliderMessageHandler);
             var self = this;
-            window._sliderMessageHandler = function(e) { if (e.data && e.data.type === 'slider:saved') { self.closeFormModal(); window.location.reload(); } };
+            window._sliderMessageHandler = function(e) {
+                if (!e.data || !e.data.type) return;
+                if (e.data.type === 'slider:saved') {
+                    self.closeFormModal();
+                    window.location.reload();
+                }
+                if (e.data.type === 'slider:close') {
+                    self.closeFormModal();
+                }
+            };
             window.addEventListener('message', window._sliderMessageHandler);
         },
         confirmDelete(id, nama) { this.deleteConfirmId = id; this.deleteConfirmNama = nama || 'slider ini'; this.deleteConfirmOpen = true; },

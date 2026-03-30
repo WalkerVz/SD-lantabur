@@ -107,7 +107,16 @@ function videoPage() {
         formIframeLoaded() {
             if (window._videoMsgHandler) window.removeEventListener('message', window._videoMsgHandler);
             var self = this;
-            window._videoMsgHandler = function(e) { if (e.data && e.data.type === 'video:saved') { self.closeFormModal(); window.location.reload(); } };
+            window._videoMsgHandler = function(e) {
+                if (!e.data || !e.data.type) return;
+                if (e.data.type === 'video:saved') {
+                    self.closeFormModal();
+                    window.location.reload();
+                }
+                if (e.data.type === 'video:close') {
+                    self.closeFormModal();
+                }
+            };
             window.addEventListener('message', window._videoMsgHandler);
         },
         confirmDelete(id, nama) { this.deleteConfirmId = id; this.deleteConfirmNama = nama||'video ini'; this.deleteConfirmOpen = true; },

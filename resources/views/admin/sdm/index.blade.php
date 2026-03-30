@@ -24,22 +24,12 @@
 
     <div class="bg-white rounded-xl shadow-sm border border-gray-100 p-4 mb-6">
         <div class="flex flex-col md:flex-row md:items-end justify-between gap-6">
-            <div class="flex-1 overflow-hidden">
-                <p class="text-xs font-bold text-gray-400 uppercase tracking-widest mb-3">Filter Spesialisasi</p>
-                <div class="flex overflow-x-auto pb-2 -mb-2 gap-2 no-scrollbar">
-                    <a href="{{ route('admin.sdm.index') }}" class="whitespace-nowrap px-4 py-2 rounded-full text-sm font-medium transition-all {{ !request('spesialisasi_id') ? 'bg-[#47663D] text-white shadow-md' : 'bg-gray-100 text-gray-600 hover:bg-gray-200 border border-transparent' }}">
-                        Semua <span class="ml-1 opacity-75">({{ $totalAll }})</span>
-                    </a>
-                    @foreach($spesialisasi as $s)
-                        @php $cnt = $countBySpesialisasi->get($s->id)?->total ?? 0; @endphp
-                        <a href="{{ route('admin.sdm.index', ['spesialisasi_id' => $s->id]) }}" class="whitespace-nowrap px-4 py-2 rounded-full text-sm font-medium transition-all {{ request('spesialisasi_id') == $s->id ? 'bg-[#47663D] text-white shadow-md' : 'bg-gray-100 text-gray-600 hover:bg-gray-200 border border-transparent' }}">
-                            {{ $s->nama }} <span class="ml-1 opacity-75">({{ $cnt }})</span>
-                        </a>
-                    @endforeach
-                </div>
+            <div class="flex-1">
+                <p class="text-sm text-gray-600 font-medium">Total SDM: <span class="font-bold text-gray-900">{{ $totalAll }}</span></p>
+                <p class="text-xs text-gray-400 mt-1">Tip: gunakan detail modal untuk melihat informasi lengkap.</p>
             </div>
             <div class="flex items-center gap-2">
-                <a href="{{ route('admin.sdm.export.pdf', request()->only('spesialisasi_id')) }}" class="flex-1 md:flex-none justify-center px-4 py-2.5 bg-red-50 text-red-600 border border-red-100 rounded-xl hover:bg-red-100 text-sm font-bold transition flex items-center gap-2">
+                <a href="{{ route('admin.sdm.export.pdf') }}" class="flex-1 md:flex-none justify-center px-4 py-2.5 bg-red-50 text-red-600 border border-red-100 rounded-xl hover:bg-red-100 text-sm font-bold transition flex items-center gap-2">
                     <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/></svg>
                     <span>Export</span>
                 </a>
@@ -62,7 +52,7 @@
                         <th class="px-4 py-3 text-sm font-semibold text-gray-700">Nama</th>
                         <th class="px-4 py-3 text-sm font-semibold text-gray-700">Jabatan</th>
                         <th class="px-4 py-3 text-sm font-semibold text-gray-700">NIY</th>
-                        <th class="px-4 py-3 text-sm font-semibold text-gray-700">Spesialisasi</th>
+                        <th class="px-4 py-3 text-sm font-semibold text-gray-700">Bidang Studi</th>
                         <th class="px-4 py-3 text-sm font-semibold text-gray-700">Email</th>
                         <th class="px-4 py-3 text-sm font-semibold text-gray-700">No. HP</th>
                         <th class="px-4 py-3 text-sm font-semibold text-gray-700">Wali Kelas</th>
@@ -88,7 +78,7 @@
                                         'niy' => $s->niy,
                                         'email' => $s->email,
                                         'nomor_handphone' => $s->nomor_handphone,
-                                        'spesialisasi' => $s->spesialisasi?->nama,
+                                        'bidang_studi' => $s->bidang_studi,
                                         'jenis_kelamin' => $s->jenis_kelamin,
                                         'tempat_lahir' => $s->tempat_lahir,
                                         'tanggal_lahir' => $s->tanggal_lahir?->format('d/m/Y'),
@@ -103,7 +93,7 @@
                         </td>
                         <td class="px-4 py-3 text-gray-700 text-sm">{{ $s->jabatan }}</td>
                         <td class="px-4 py-3 text-gray-600">{{ $s->niy ?? '-' }}</td>
-                        <td class="px-4 py-3 text-gray-600">{{ $s->spesialisasi?->nama ?? '-' }}</td>
+                        <td class="px-4 py-3 text-gray-600">{{ $s->bidang_studi ?? '-' }}</td>
                         <td class="px-4 py-3 text-gray-600 text-sm">{{ $s->email ?? '-' }}</td>
                         <td class="px-4 py-3 text-gray-600">{{ $s->nomor_handphone ?? '-' }}</td>
                         <td class="px-4 py-3">
@@ -155,8 +145,8 @@
                         <div>
                             <h2 class="text-xl font-bold text-white leading-tight" x-text="detailData.nama"></h2>
                             <p class="text-green-100 mt-1 text-sm font-medium" x-text="detailData.jabatan"></p>
-                            <template x-if="detailData.spesialisasi">
-                                <span class="inline-block mt-2 px-2.5 py-0.5 bg-white/20 text-white text-xs rounded-full" x-text="detailData.spesialisasi"></span>
+                            <template x-if="detailData.bidang_studi">
+                                <span class="inline-block mt-2 px-2.5 py-0.5 bg-white/20 text-white text-xs rounded-full" x-text="'Bidang: ' + detailData.bidang_studi"></span>
                             </template>
                         </div>
                     </div>
@@ -334,9 +324,13 @@ function sdmPage() {
             if (window._sdmMessageHandler) window.removeEventListener('message', window._sdmMessageHandler);
             var self = this;
             window._sdmMessageHandler = function(e) {
-                if (e.data && e.data.type === 'sdm:saved') {
+                if (!e.data || !e.data.type) return;
+                if (e.data.type === 'sdm:saved') {
                     self.closeFormModal();
                     window.location.reload();
+                }
+                if (e.data.type === 'sdm:close') {
+                    self.closeFormModal();
                 }
             };
             window.addEventListener('message', window._sdmMessageHandler);

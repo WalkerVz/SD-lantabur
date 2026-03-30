@@ -34,9 +34,16 @@
                                 <div class="w-32 h-32 rounded-full bg-[#47663D]/10 flex items-center justify-center text-4xl font-bold text-[#47663D] mb-4">{{ strtoupper(substr($s->nama, 0, 1)) }}</div>
                             @endif
                             <h3 class="text-xl font-bold text-[#47663D] mb-1">{{ $s->nama }}</h3>
+                            <p class="text-xs text-gray-500 mb-2">NIY: {{ $s->niy ?? '-' }}</p>
                             <p class="text-[#FFB81C] font-semibold text-sm mb-2">{{ $s->jabatan }}</p>
-                            @if($s->spesialisasi)
-                                <span class="text-xs bg-[#47663D]/10 text-[#47663D] px-2 py-1 rounded-full mb-3">{{ $s->spesialisasi->nama }}</span>
+                            @php
+                                $waliKelasClasses = $s->tahunKelas?->pluck('kelas')->filter()->values()->all() ?? [];
+                            @endphp
+                            @if(!empty($waliKelasClasses))
+                                <span class="text-xs bg-[#FFB81C]/15 text-[#FFB81C] px-2 py-1 rounded-full mb-3 font-semibold">Wali Kelas: Kelas {{ implode(', ', $waliKelasClasses) }}</span>
+                            @endif
+                            @if($s->jabatan === 'Guru Bidang Studi' && $s->bidang_studi)
+                                <span class="text-xs bg-[#47663D]/10 text-[#47663D] px-2 py-1 rounded-full mb-3">Bidang: {{ $s->bidang_studi }}</span>
                             @endif
                             @if($s->email)
                                 <a href="mailto:{{ $s->email }}" class="text-gray-600 text-sm hover:text-[#47663D] flex items-center justify-center gap-1">

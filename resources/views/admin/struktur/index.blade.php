@@ -221,9 +221,13 @@ function strukturPage() {
             if (window._strukturMessageHandler) window.removeEventListener('message', window._strukturMessageHandler);
             var self = this;
             window._strukturMessageHandler = function(e) {
-                if (e.data && e.data.type === 'struktur:saved') {
+                if (!e.data || !e.data.type) return;
+                if (e.data.type === 'struktur:saved') {
                     self.closeFormModal();
                     window.location.reload();
+                }
+                if (e.data.type === 'struktur:close') {
+                    self.closeFormModal();
                 }
             };
             window.addEventListener('message', window._strukturMessageHandler);

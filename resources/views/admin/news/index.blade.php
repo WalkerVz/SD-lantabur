@@ -125,7 +125,14 @@ function newsPage() {
             if (window._newsMessageHandler) window.removeEventListener('message', window._newsMessageHandler);
             var self = this;
             window._newsMessageHandler = function(e) {
-                if (e.data && e.data.type === 'news:saved') { self.closeFormModal(); window.location.reload(); }
+                if (!e.data || !e.data.type) return;
+                if (e.data.type === 'news:saved') {
+                    self.closeFormModal();
+                    window.location.reload();
+                }
+                if (e.data.type === 'news:close') {
+                    self.closeFormModal();
+                }
             };
             window.addEventListener('message', window._newsMessageHandler);
         },

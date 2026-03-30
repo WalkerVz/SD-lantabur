@@ -96,7 +96,16 @@ function galleryPage() {
         formIframeLoaded() {
             if (window._galleryMessageHandler) window.removeEventListener('message', window._galleryMessageHandler);
             var self = this;
-            window._galleryMessageHandler = function(e) { if (e.data && e.data.type === 'gallery:saved') { self.closeFormModal(); window.location.reload(); } };
+            window._galleryMessageHandler = function(e) {
+                if (!e.data || !e.data.type) return;
+                if (e.data.type === 'gallery:saved') {
+                    self.closeFormModal();
+                    window.location.reload();
+                }
+                if (e.data.type === 'gallery:close') {
+                    self.closeFormModal();
+                }
+            };
             window.addEventListener('message', window._galleryMessageHandler);
         },
         confirmDelete(id, nama) { this.deleteConfirmId = id; this.deleteConfirmNama = nama || 'foto ini'; this.deleteConfirmOpen = true; },

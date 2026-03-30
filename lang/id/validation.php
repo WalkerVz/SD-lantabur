@@ -119,10 +119,10 @@ return [
     'attributes' => [
         'nama' => 'Nama',
         'jabatan' => 'Jabatan',
+        'bidang_studi' => 'Bidang Studi',
         'email' => 'Email',
         'foto' => 'Foto',
         'nomor_handphone' => 'No. Handphone',
-        'spesialisasi_id' => 'Bidang/Spesialisasi',
         'jenis_kelamin' => 'Jenis Kelamin',
         'tempat_lahir' => 'Tempat Lahir',
         'tanggal_lahir' => 'Tanggal Lahir',

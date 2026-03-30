@@ -17,20 +17,29 @@ use Illuminate\Validation\Rules\Password;
 
 class SettingsController extends Controller
 {
-    public function index()
+    public function index(\Illuminate\Http\Request $request)
     {
         $tahunAjaranList = MasterTahunAjaran::orderBy('urutan')->orderByDesc('nama')->get();
         $tahunAktif = MasterTahunAjaran::getAktif();
+        $tahunTerpilih = $request->get('tahun_ajaran');
         $mapels = []; // Akan dipindah ke menu baru
         
         // Ambil data Biaya SPP (Fitur Teman)
         $biayaSpp = BiayaSpp::all()->keyBy(fn ($r) => $r->tahun_ajaran . '-' . $r->kelas);
 
-        // Ambil data Wali Kelas per tahun (TahunKelas)
-        $waliKelasTahun = TahunKelas::with('waliKelas')->get()->keyBy(fn ($r) => $r->tahun_ajaran . '-' . $r->kelas);
+        $tahunNamaList = $tahunAjaranList->pluck('nama')->filter()->values()->all();
+        if (!$tahunTerpilih || !in_array($tahunTerpilih, $tahunNamaList, true)) {
+            $tahunTerpilih = $tahunAktif;
+        }
+
+        // Ambil data Wali Kelas hanya untuk tahun ajaran yang dipilih
+        $waliKelasTahun = TahunKelas::with('waliKelas')
+            ->where('tahun_ajaran', $tahunTerpilih)
+            ->get()
+            ->keyBy(fn ($r) => $r->tahun_ajaran . '-' . $r->kelas);
         $staffList = StaffSdm::orderBy('nama')->get();
 
-        return view('admin.settings.index', compact('tahunAjaranList', 'tahunAktif', 'biayaSpp', 'waliKelasTahun', 'staffList'));
+        return view('admin.settings.index', compact('tahunAjaranList', 'tahunAktif', 'tahunTerpilih', 'biayaSpp', 'waliKelasTahun', 'staffList'));
     }
 
     public function accounts()
@@ -306,7 +315,9 @@ class SettingsController extends Controller
             ['wali_kelas_id' => $request->wali_kelas_id]
         );
 
-        return back()->with('success', 'Wali kelas berhasil disimpan untuk tahun ajaran ' . $request->tahun_ajaran . '.');
+        return redirect()
+            ->route('admin.settings.index', ['tahun_ajaran' => $request->tahun_ajaran])
+            ->with('success', 'Wali kelas berhasil disimpan untuk tahun ajaran ' . $request->tahun_ajaran . '.');
     }
 
     public function updatePredicateRanges(Request $request)

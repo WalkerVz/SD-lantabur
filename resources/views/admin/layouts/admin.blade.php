@@ -49,7 +49,7 @@
     settingsOpen: {{ request()->routeIs('admin.settings.index', 'admin.settings.accounts', 'admin.settings.contact') ? 'true' : 'false' }}
 }">
     <header class="bg-[#47663D] text-white shadow-lg sticky top-0 z-50 w-full">
-        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div class="w-full px-4 sm:px-6 lg:px-8">
             <div class="flex justify-between items-center h-16">
                 <div class="flex items-center gap-3">
                     <button @click="sidebarOpen = !sidebarOpen" type="button" class="lg:hidden p-2 rounded-lg hover:bg-white/10" aria-label="Buka menu">
