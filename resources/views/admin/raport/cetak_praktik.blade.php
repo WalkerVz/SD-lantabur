@@ -256,7 +256,7 @@
 
             @page {
                 size: A4 portrait;
-                margin: 0; /* Menghilangkan Header/Footer bawaan browser (Tanggal, URL, dll) */
+                margin: 0; 
             }
 
             .praktik-container {
@@ -264,7 +264,7 @@
                 margin: 0 !important;
             }
             .content {
-                padding: 15mm 18mm !important; /* Dikecilkan */
+                padding: 15mm 18mm !important; 
             }
         }
 

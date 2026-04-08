@@ -4,6 +4,9 @@
 
 @section('content')
 <div class="max-w-7xl mx-auto" x-data="videoPage()">
+    {{-- Notifikasi injeksi via JS (sama dengan style layout admin) --}}
+    <div id="video-notice"></div>
+
     <div class="flex flex-wrap justify-between items-center gap-4 mb-6">
         <div>
             <h1 class="text-2xl font-bold text-gray-800">Manajemen Video YouTube</h1>
@@ -14,10 +17,6 @@
             Tambah Video
         </button>
     </div>
-
-    @if(session('success'))
-        <div class="mb-4 p-3 bg-green-50 border border-green-200 text-green-700 rounded-lg text-sm">{{ session('success') }}</div>
-    @endif
 
     <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
         @forelse($items as $item)
@@ -110,6 +109,8 @@ function videoPage() {
             window._videoMsgHandler = function(e) {
                 if (!e.data || !e.data.type) return;
                 if (e.data.type === 'video:saved') {
+                    var msg = self.formModalEditId ? 'Video berhasil diperbarui.' : 'Video berhasil ditambahkan.';
+                    sessionStorage.setItem('video_success', msg);
                     self.closeFormModal();
                     window.location.reload();
                 }
@@ -124,10 +125,28 @@ function videoPage() {
             if (!this.deleteConfirmId) return;
             var token = document.querySelector('meta[name="csrf-token"]')?.getAttribute('content');
             fetch(deleteUrl(this.deleteConfirmId), { method: 'DELETE', headers: { 'Accept': 'application/json', 'X-CSRF-TOKEN': token||'', 'X-Requested-With': 'XMLHttpRequest' } })
-                .then(r => r.json()).then(() => window.location.reload()).catch(() => window.location.reload());
+                .then(r => r.json()).then(() => {
+                    sessionStorage.setItem('video_success', 'Video berhasil dihapus.');
+                    window.location.reload();
+                }).catch(() => window.location.reload());
         }
     };
 }
+</script>
+
+<script>
+    // Tampilkan notifikasi sukses sama seperti flash message layout admin
+    document.addEventListener('DOMContentLoaded', function () {
+        var msg = sessionStorage.getItem('video_success');
+        if (msg) {
+            sessionStorage.removeItem('video_success');
+            var notice = document.getElementById('video-notice');
+            if (notice) {
+                notice.innerHTML = '<div class="mb-4 p-4 bg-green-50 border border-green-200 text-green-800 rounded-lg">' + msg + '</div>';
+                setTimeout(function () { notice.innerHTML = ''; }, 5000);
+            }
+        }
+    });
 </script>
 @endpush
 @endsection

@@ -4,6 +4,8 @@
 
 @section('content')
 <div class="max-w-7xl mx-auto" x-data="newsPage()">
+    {{-- Notifikasi injeksi via JS --}}
+    <div id="news-notice"></div>
     <div class="flex flex-wrap justify-between items-center gap-4 mb-6">
         <div>
             <h1 class="text-2xl font-bold text-gray-800">Manajemen Berita</h1>
@@ -156,6 +158,8 @@ function newsPage() {
             window._newsMessageHandler = function(e) {
                 if (!e.data || !e.data.type) return;
                 if (e.data.type === 'news:saved') {
+                    var msg = self.formModalEditId ? 'Berita berhasil diubah.' : 'Berita berhasil ditambahkan.';
+                    sessionStorage.setItem('news_success', msg);
                     self.closeFormModal();
                     window.location.reload();
                 }
@@ -174,10 +178,27 @@ function newsPage() {
             if (!this.deleteConfirmId) return;
             var token = document.querySelector('meta[name="csrf-token"]')?.getAttribute('content');
             fetch(deleteUrl(this.deleteConfirmId), { method: 'DELETE', headers: { 'Accept': 'application/json', 'X-CSRF-TOKEN': token || '', 'X-Requested-With': 'XMLHttpRequest' } })
-                .then(function(r) { return r.json(); }).then(function() { window.location.reload(); }).catch(function() { window.location.reload(); });
+                .then(function(r) { return r.json(); }).then(function() {
+                    sessionStorage.setItem('news_success', 'Berita berhasil dihapus.');
+                    window.location.reload();
+                }).catch(function() { window.location.reload(); });
         }
     };
 }
+</script>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        var msg = sessionStorage.getItem('news_success');
+        if (msg) {
+            sessionStorage.removeItem('news_success');
+            var notice = document.getElementById('news-notice');
+            if (notice) {
+                notice.innerHTML = '<div class="mb-4 p-4 bg-green-50 border border-green-200 text-green-800 rounded-lg">' + msg + '</div>';
+                setTimeout(function () { notice.innerHTML = ''; }, 5000);
+            }
+        }
+    });
 </script>
 @endpush
 @endsection

@@ -611,6 +611,15 @@ class RaportController extends Controller
             'b_min' => $tahunAjaran->min_b ?? 75,
             'c_min' => $tahunAjaran->min_c ?? 66,
         ];
+        $ummi_ranges = [
+            'a'      => $tahunAjaran->ummi_a      ?? 90,
+            'bplus'  => $tahunAjaran->ummi_bplus  ?? 85,
+            'b'      => $tahunAjaran->ummi_b      ?? 80,
+            'bminus' => $tahunAjaran->ummi_bminus ?? 75,
+            'cplus'  => $tahunAjaran->ummi_cplus  ?? 70,
+            'c'      => $tahunAjaran->ummi_c      ?? 65,
+            'cminus' => $tahunAjaran->ummi_cminus ?? 60,
+        ];
 
         return view('admin.raport.cetak_jilid', [
             'tahun'       => $tahun,
@@ -626,6 +635,7 @@ class RaportController extends Controller
             'ortu'        => strtoupper($namaOrtu),
             'tanggal'     => now()->locale('id')->translatedFormat('d F Y'),
             'ranges'      => $ranges,
+            'ummi_ranges' => $ummi_ranges,
         ]);
     }
 
@@ -776,6 +786,15 @@ class RaportController extends Controller
             'b_min' => $tahunAjaran->min_b ?? 75,
             'c_min' => $tahunAjaran->min_c ?? 66,
         ];
+        $ummi_ranges = [
+            'a'      => $tahunAjaran->ummi_a      ?? 90,
+            'bplus'  => $tahunAjaran->ummi_bplus  ?? 85,
+            'b'      => $tahunAjaran->ummi_b      ?? 80,
+            'bminus' => $tahunAjaran->ummi_bminus ?? 75,
+            'cplus'  => $tahunAjaran->ummi_cplus  ?? 70,
+            'c'      => $tahunAjaran->ummi_c      ?? 65,
+            'cminus' => $tahunAjaran->ummi_cminus ?? 60,
+        ];
 
         return view('admin.raport.cetak_tahfidz', [
             'tahun'    => $tahun,
@@ -792,6 +811,7 @@ class RaportController extends Controller
             'niy_guru'  => $niyGuru,
             'tanggal'  => now()->locale('id')->translatedFormat('d F Y'),
             'ranges'   => $ranges,
+            'ummi_ranges' => $ummi_ranges,
         ]);
     }
 

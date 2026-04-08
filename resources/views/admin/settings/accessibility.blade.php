@@ -11,12 +11,6 @@
         </p>
     </div>
 
-    @if(session('success'))
-        <div class="bg-green-50 text-green-700 p-4 rounded-lg flex items-center gap-3">
-            <i class="fas fa-check-circle"></i> {{ session('success') }}
-        </div>
-    @endif
-
     <form action="{{ route('admin.settings.accessibility.save') }}" method="POST">
         @csrf
         <div class="bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden">

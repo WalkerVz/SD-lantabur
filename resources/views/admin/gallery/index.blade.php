@@ -4,6 +4,8 @@
 
 @section('content')
 <div class="max-w-7xl mx-auto" x-data="galleryPage()">
+    {{-- Notifikasi injeksi via JS --}}
+    <div id="gallery-notice"></div>
     <div class="flex flex-wrap justify-between items-center gap-4 mb-6">
         <div>
             <h1 class="text-2xl font-bold text-gray-800">Manajemen Galeri</h1>
@@ -99,6 +101,8 @@ function galleryPage() {
             window._galleryMessageHandler = function(e) {
                 if (!e.data || !e.data.type) return;
                 if (e.data.type === 'gallery:saved') {
+                    var msg = self.formModalEditId ? 'Foto galeri berhasil diubah.' : 'Foto galeri berhasil ditambahkan.';
+                    sessionStorage.setItem('gallery_success', msg);
                     self.closeFormModal();
                     window.location.reload();
                 }
@@ -113,10 +117,27 @@ function galleryPage() {
             if (!this.deleteConfirmId) return;
             var token = document.querySelector('meta[name="csrf-token"]')?.getAttribute('content');
             fetch(deleteUrl(this.deleteConfirmId), { method: 'DELETE', headers: { 'Accept': 'application/json', 'X-CSRF-TOKEN': token || '', 'X-Requested-With': 'XMLHttpRequest' } })
-                .then(function(r) { return r.json(); }).then(function() { window.location.reload(); }).catch(function() { window.location.reload(); });
+                .then(function(r) { return r.json(); }).then(function() {
+                    sessionStorage.setItem('gallery_success', 'Foto galeri berhasil dihapus.');
+                    window.location.reload();
+                }).catch(function() { window.location.reload(); });
         }
     };
 }
+</script>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        var msg = sessionStorage.getItem('gallery_success');
+        if (msg) {
+            sessionStorage.removeItem('gallery_success');
+            var notice = document.getElementById('gallery-notice');
+            if (notice) {
+                notice.innerHTML = '<div class="mb-4 p-4 bg-green-50 border border-green-200 text-green-800 rounded-lg">' + msg + '</div>';
+                setTimeout(function () { notice.innerHTML = ''; }, 5000);
+            }
+        }
+    });
 </script>
 @endpush
 @endsection

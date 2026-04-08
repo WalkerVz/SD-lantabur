@@ -319,17 +319,17 @@
                 @php
                     $printedJilids = [];
                     if (!function_exists('getPredikatUmmi')) {
-                        function getPredikatUmmi($nilai, $ranges) {
+                        function getPredikatUmmi($nilai, $ummi_ranges) {
                             if (!$nilai || !is_numeric($nilai)) return $nilai;
                             $n = (int)$nilai;
 
-                            if ($n >= 90) return 'A';
-                            if ($n >= 85) return 'B+';
-                            if ($n >= 80) return 'B';
-                            if ($n >= 75) return 'B-';
-                            if ($n >= 70) return 'C+';
-                            if ($n >= 65) return 'C';
-                            if ($n >= 60) return 'C-';
+                            if ($n >= $ummi_ranges['a'])      return 'A';
+                            if ($n >= $ummi_ranges['bplus'])  return 'B+';
+                            if ($n >= $ummi_ranges['b'])      return 'B';
+                            if ($n >= $ummi_ranges['bminus']) return 'B-';
+                            if ($n >= $ummi_ranges['cplus'])  return 'C+';
+                            if ($n >= $ummi_ranges['c'])      return 'C';
+                            if ($n >= $ummi_ranges['cminus']) return 'C-';
                             return 'D';
                         }
                     }
@@ -348,7 +348,7 @@
                     <td class="center" rowspan="{{ $jilidCounts[$jilid] ?? 1 }}" style="vertical-align: middle;">{{ $jilid }}</td>
                     @endif
                     <td>{{ $item['materi'] ?? '-' }}</td>
-                    <td class="center">{{ getPredikatUmmi($item['nilai'] ?? null, $ranges) }}</td>
+                    <td class="center">{{ getPredikatUmmi($item['nilai'] ?? null, $ummi_ranges) }}</td>
                     <td>{{ $item['keterangan'] ?? '' }}</td>
                 </tr>
                 @empty

@@ -94,12 +94,15 @@ class Siswa extends Model
      */
     public static function getNamaKelas($kelas): string
     {
-        // Try to eager load if this was an instance method, but since it's static we keep querying DB or we should use relationship elsewhere.
-        $master = \App\Models\MasterKelas::where('tingkat', $kelas)->first();
-        if ($master && $master->nama_surah) {
-            return "Kelas {$kelas} {$master->nama_surah}";
+        static $cache = [];
+
+        if (!isset($cache[$kelas])) {
+            $master = \App\Models\MasterKelas::where('tingkat', $kelas)->first();
+            $cache[$kelas] = ($master && $master->nama_surah)
+                ? "Kelas {$kelas} {$master->nama_surah}"
+                : "Kelas {$kelas}";
         }
 
-        return "Kelas {$kelas}";
+        return $cache[$kelas];
     }
 }

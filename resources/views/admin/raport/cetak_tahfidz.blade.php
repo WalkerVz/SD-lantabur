@@ -289,18 +289,18 @@
 
         @php
             if (!function_exists('getVal')) {
-                function getVal($materi, $idx, $ranges) {
+                function getVal($materi, $idx, $ummi_ranges) {
                     $nilai = $materi[$idx]['nilai'] ?? '';
                     if (!$nilai || !is_numeric($nilai)) return $nilai;
                     $n = (int)$nilai;
-                    
-                    if ($n >= 90) return 'A';
-                    if ($n >= 85) return 'B+';
-                    if ($n >= 80) return 'B';
-                    if ($n >= 75) return 'B-';
-                    if ($n >= 70) return 'C+';
-                    if ($n >= 65) return 'C';
-                    if ($n >= 60) return 'C-';
+
+                    if ($n >= $ummi_ranges['a'])      return 'A';
+                    if ($n >= $ummi_ranges['bplus'])  return 'B+';
+                    if ($n >= $ummi_ranges['b'])      return 'B';
+                    if ($n >= $ummi_ranges['bminus']) return 'B-';
+                    if ($n >= $ummi_ranges['cplus'])  return 'C+';
+                    if ($n >= $ummi_ranges['c'])      return 'C';
+                    if ($n >= $ummi_ranges['cminus']) return 'C-';
                     return 'D';
                 }
             }
@@ -320,33 +320,33 @@
                         </tr>
                     </thead>
                     <tbody>
-                        <tr><td class="center">1</td><td>An Naas</td><td class="center font-bold" rowspan="4">1</td><td class="center font-bold">{{ getVal($materi, 0, $ranges) }}</td></tr>
-                        <tr><td class="center">2</td><td>Al Falaq</td><td class="center font-bold">{{ getVal($materi, 1, $ranges) }}</td></tr>
-                        <tr><td class="center">3</td><td>Al Ikhlas</td><td class="center font-bold">{{ getVal($materi, 2, $ranges) }}</td></tr>
-                        <tr><td class="center">4</td><td>Al Lahab</td><td class="center font-bold">{{ getVal($materi, 3, $ranges) }}</td></tr>
+                        <tr><td class="center">1</td><td>An Naas</td><td class="center font-bold" rowspan="4">1</td><td class="center font-bold">{{ getVal($materi, 0, $ummi_ranges) }}</td></tr>
+                        <tr><td class="center">2</td><td>Al Falaq</td><td class="center font-bold">{{ getVal($materi, 1, $ummi_ranges) }}</td></tr>
+                        <tr><td class="center">3</td><td>Al Ikhlas</td><td class="center font-bold">{{ getVal($materi, 2, $ummi_ranges) }}</td></tr>
+                        <tr><td class="center">4</td><td>Al Lahab</td><td class="center font-bold">{{ getVal($materi, 3, $ummi_ranges) }}</td></tr>
                         
-                        <tr><td class="center">5</td><td>An Nasr</td><td class="center font-bold" rowspan="3">2</td><td class="center font-bold">{{ getVal($materi, 4, $ranges) }}</td></tr>
-                        <tr><td class="center">6</td><td>Al Kafirun</td><td class="center font-bold">{{ getVal($materi, 5, $ranges) }}</td></tr>
-                        <tr><td class="center">7</td><td>Al Kautsar</td><td class="center font-bold">{{ getVal($materi, 6, $ranges) }}</td></tr>
+                        <tr><td class="center">5</td><td>An Nasr</td><td class="center font-bold" rowspan="3">2</td><td class="center font-bold">{{ getVal($materi, 4, $ummi_ranges) }}</td></tr>
+                        <tr><td class="center">6</td><td>Al Kafirun</td><td class="center font-bold">{{ getVal($materi, 5, $ummi_ranges) }}</td></tr>
+                        <tr><td class="center">7</td><td>Al Kautsar</td><td class="center font-bold">{{ getVal($materi, 6, $ummi_ranges) }}</td></tr>
                         
-                        <tr><td class="center">8</td><td>Al Ma'un</td><td class="center font-bold" rowspan="3">3</td><td class="center font-bold">{{ getVal($materi, 7, $ranges) }}</td></tr>
-                        <tr><td class="center">9</td><td>Al Quraisy</td><td class="center font-bold">{{ getVal($materi, 8, $ranges) }}</td></tr>
-                        <tr><td class="center">10</td><td>Al Fiil</td><td class="center font-bold">{{ getVal($materi, 9, $ranges) }}</td></tr>
+                        <tr><td class="center">8</td><td>Al Ma'un</td><td class="center font-bold" rowspan="3">3</td><td class="center font-bold">{{ getVal($materi, 7, $ummi_ranges) }}</td></tr>
+                        <tr><td class="center">9</td><td>Al Quraisy</td><td class="center font-bold">{{ getVal($materi, 8, $ummi_ranges) }}</td></tr>
+                        <tr><td class="center">10</td><td>Al Fiil</td><td class="center font-bold">{{ getVal($materi, 9, $ummi_ranges) }}</td></tr>
                         
-                        <tr><td class="center">11</td><td>Al Humazah</td><td class="center font-bold" rowspan="3">4</td><td class="center font-bold">{{ getVal($materi, 10, $ranges) }}</td></tr>
-                        <tr><td class="center">12</td><td>Al 'Asr</td><td class="center font-bold">{{ getVal($materi, 11, $ranges) }}</td></tr>
-                        <tr><td class="center">13</td><td>At Takatsur</td><td class="center font-bold">{{ getVal($materi, 12, $ranges) }}</td></tr>
+                        <tr><td class="center">11</td><td>Al Humazah</td><td class="center font-bold" rowspan="3">4</td><td class="center font-bold">{{ getVal($materi, 10, $ummi_ranges) }}</td></tr>
+                        <tr><td class="center">12</td><td>Al 'Asr</td><td class="center font-bold">{{ getVal($materi, 11, $ummi_ranges) }}</td></tr>
+                        <tr><td class="center">13</td><td>At Takatsur</td><td class="center font-bold">{{ getVal($materi, 12, $ummi_ranges) }}</td></tr>
                         
-                        <tr><td class="center">14</td><td>Al Qori'ah</td><td class="center font-bold" rowspan="2">5</td><td class="center font-bold">{{ getVal($materi, 13, $ranges) }}</td></tr>
-                        <tr><td class="center">15</td><td>Al 'Adiyat</td><td class="center font-bold">{{ getVal($materi, 14, $ranges) }}</td></tr>
+                        <tr><td class="center">14</td><td>Al Qori'ah</td><td class="center font-bold" rowspan="2">5</td><td class="center font-bold">{{ getVal($materi, 13, $ummi_ranges) }}</td></tr>
+                        <tr><td class="center">15</td><td>Al 'Adiyat</td><td class="center font-bold">{{ getVal($materi, 14, $ummi_ranges) }}</td></tr>
                         
-                        <tr><td class="center">16</td><td>Al Zalzalah</td><td class="center font-bold" rowspan="2">6</td><td class="center font-bold">{{ getVal($materi, 15, $ranges) }}</td></tr>
-                        <tr><td class="center">17</td><td>Al Bayyinah</td><td class="center font-bold">{{ getVal($materi, 16, $ranges) }}</td></tr>
+                        <tr><td class="center">16</td><td>Al Zalzalah</td><td class="center font-bold" rowspan="2">6</td><td class="center font-bold">{{ getVal($materi, 15, $ummi_ranges) }}</td></tr>
+                        <tr><td class="center">17</td><td>Al Bayyinah</td><td class="center font-bold">{{ getVal($materi, 16, $ummi_ranges) }}</td></tr>
                         
-                        <tr><td class="center">18</td><td>Al Qodr</td><td class="center font-bold" rowspan="2">Al Qur'an</td><td class="center font-bold">{{ getVal($materi, 17, $ranges) }}</td></tr>
-                        <tr><td class="center">19</td><td>Al 'Alaq</td><td class="center font-bold">{{ getVal($materi, 18, $ranges) }}</td></tr>
+                        <tr><td class="center">18</td><td>Al Qodr</td><td class="center font-bold" rowspan="2">Al Qur'an</td><td class="center font-bold">{{ getVal($materi, 17, $ummi_ranges) }}</td></tr>
+                        <tr><td class="center">19</td><td>Al 'Alaq</td><td class="center font-bold">{{ getVal($materi, 18, $ummi_ranges) }}</td></tr>
                         
-                        <tr><td class="center">20</td><td>At Tiin</td><td class="center">Ghorib 1-14<br>(Ghorib 1)</td><td class="center font-bold">{{ getVal($materi, 19, $ranges) }}</td></tr>
+                        <tr><td class="center">20</td><td>At Tiin</td><td class="center">Ghorib 1-14<br>(Ghorib 1)</td><td class="center font-bold">{{ getVal($materi, 19, $ummi_ranges) }}</td></tr>
                     </tbody>
                 </table>
             </div>
@@ -363,30 +363,30 @@
                         </tr>
                     </thead>
                     <tbody>
-                        <tr><td class="center">21</td><td>Al Insyiroh</td><td class="center" rowspan="2">Ghorib 1-14<br>(Ghorib 1)</td><td class="center font-bold">{{ getVal($materi, 20, $ranges) }}</td></tr>
-                        <tr><td class="center">22</td><td>Adh Dhuha</td><td class="center font-bold">{{ getVal($materi, 21, $ranges) }}</td></tr>
+                        <tr><td class="center">21</td><td>Al Insyiroh</td><td class="center" rowspan="2">Ghorib 1-14<br>(Ghorib 1)</td><td class="center font-bold">{{ getVal($materi, 20, $ummi_ranges) }}</td></tr>
+                        <tr><td class="center">22</td><td>Adh Dhuha</td><td class="center font-bold">{{ getVal($materi, 21, $ummi_ranges) }}</td></tr>
                         
-                        <tr><td class="center">23</td><td>Al Lail</td><td class="center" rowspan="2">Ghorib 15-28<br>(Ghorib 2)</td><td class="center font-bold">{{ getVal($materi, 22, $ranges) }}</td></tr>
-                        <tr><td class="center">24</td><td>Asy Syams</td><td class="center font-bold">{{ getVal($materi, 23, $ranges) }}</td></tr>
+                        <tr><td class="center">23</td><td>Al Lail</td><td class="center" rowspan="2">Ghorib 15-28<br>(Ghorib 2)</td><td class="center font-bold">{{ getVal($materi, 22, $ummi_ranges) }}</td></tr>
+                        <tr><td class="center">24</td><td>Asy Syams</td><td class="center font-bold">{{ getVal($materi, 23, $ummi_ranges) }}</td></tr>
                         
-                        <tr><td class="center">25</td><td>Al Balad</td><td class="center" rowspan="2">Ghorib-Tajwid<br>(Tajwid 1)</td><td class="center font-bold">{{ getVal($materi, 24, $ranges) }}</td></tr>
-                        <tr><td class="center">26</td><td>Al Fajr</td><td class="center font-bold">{{ getVal($materi, 25, $ranges) }}</td></tr>
+                        <tr><td class="center">25</td><td>Al Balad</td><td class="center" rowspan="2">Ghorib-Tajwid<br>(Tajwid 1)</td><td class="center font-bold">{{ getVal($materi, 24, $ummi_ranges) }}</td></tr>
+                        <tr><td class="center">26</td><td>Al Fajr</td><td class="center font-bold">{{ getVal($materi, 25, $ummi_ranges) }}</td></tr>
                         
-                        <tr><td class="center">27</td><td>Al Ghosyiyah</td><td class="center" rowspan="2">Ghorib-Tajwid<br>(Tajwid 2)</td><td class="center font-bold">{{ getVal($materi, 26, $ranges) }}</td></tr>
-                        <tr><td class="center">28</td><td>Al A'la</td><td class="center font-bold">{{ getVal($materi, 27, $ranges) }}</td></tr>
+                        <tr><td class="center">27</td><td>Al Ghosyiyah</td><td class="center" rowspan="2">Ghorib-Tajwid<br>(Tajwid 2)</td><td class="center font-bold">{{ getVal($materi, 26, $ummi_ranges) }}</td></tr>
+                        <tr><td class="center">28</td><td>Al A'la</td><td class="center font-bold">{{ getVal($materi, 27, $ummi_ranges) }}</td></tr>
                         
-                        <tr><td class="center">29</td><td>Ath Thoriq</td><td class="center" rowspan="9">Pengembangan<br>1</td><td class="center font-bold">{{ getVal($materi, 28, $ranges) }}</td></tr>
-                        <tr><td class="center">30</td><td>Al Buruj</td><td class="center font-bold">{{ getVal($materi, 29, $ranges) }}</td></tr>
-                        <tr><td class="center">31</td><td>Al Insyiqoq</td><td class="center font-bold">{{ getVal($materi, 30, $ranges) }}</td></tr>
-                        <tr><td class="center">32</td><td>Al Mutoffifin</td><td class="center font-bold">{{ getVal($materi, 31, $ranges) }}</td></tr>
-                        <tr><td class="center">33</td><td>Al Infithor</td><td class="center font-bold">{{ getVal($materi, 32, $ranges) }}</td></tr>
-                        <tr><td class="center">34</td><td>At Takwir</td><td class="center font-bold">{{ getVal($materi, 33, $ranges) }}</td></tr>
-                        <tr><td class="center">35</td><td>Abasa</td><td class="center font-bold">{{ getVal($materi, 34, $ranges) }}</td></tr>
-                        <tr><td class="center">36</td><td>An Nazi'at</td><td class="center font-bold">{{ getVal($materi, 35, $ranges) }}</td></tr>
-                        <tr><td class="center">37</td><td>An Naba'</td><td class="center font-bold">{{ getVal($materi, 36, $ranges) }}</td></tr>
+                        <tr><td class="center">29</td><td>Ath Thoriq</td><td class="center" rowspan="9">Pengembangan<br>1</td><td class="center font-bold">{{ getVal($materi, 28, $ummi_ranges) }}</td></tr>
+                        <tr><td class="center">30</td><td>Al Buruj</td><td class="center font-bold">{{ getVal($materi, 29, $ummi_ranges) }}</td></tr>
+                        <tr><td class="center">31</td><td>Al Insyiqoq</td><td class="center font-bold">{{ getVal($materi, 30, $ummi_ranges) }}</td></tr>
+                        <tr><td class="center">32</td><td>Al Mutoffifin</td><td class="center font-bold">{{ getVal($materi, 31, $ummi_ranges) }}</td></tr>
+                        <tr><td class="center">33</td><td>Al Infithor</td><td class="center font-bold">{{ getVal($materi, 32, $ummi_ranges) }}</td></tr>
+                        <tr><td class="center">34</td><td>At Takwir</td><td class="center font-bold">{{ getVal($materi, 33, $ummi_ranges) }}</td></tr>
+                        <tr><td class="center">35</td><td>Abasa</td><td class="center font-bold">{{ getVal($materi, 34, $ummi_ranges) }}</td></tr>
+                        <tr><td class="center">36</td><td>An Nazi'at</td><td class="center font-bold">{{ getVal($materi, 35, $ummi_ranges) }}</td></tr>
+                        <tr><td class="center">37</td><td>An Naba'</td><td class="center font-bold">{{ getVal($materi, 36, $ummi_ranges) }}</td></tr>
                         
-                        <tr><td class="center">1</td><td>Pemeliharaan hafalan juz 30</td><td class="center" rowspan="2">Pengembangan<br>2</td><td class="center font-bold">{{ getVal($materi, 37, $ranges) }}</td></tr>
-                        <tr><td class="center">2</td><td>Penambahan hafalan baru juz 29</td><td class="center font-bold">{{ getVal($materi, 38, $ranges) }}</td></tr>
+                        <tr><td class="center">1</td><td>Pemeliharaan hafalan juz 30</td><td class="center" rowspan="2">Pengembangan<br>2</td><td class="center font-bold">{{ getVal($materi, 37, $ummi_ranges) }}</td></tr>
+                        <tr><td class="center">2</td><td>Penambahan hafalan baru juz 29</td><td class="center font-bold">{{ getVal($materi, 38, $ummi_ranges) }}</td></tr>
                     </tbody>
                 </table>
             </div>

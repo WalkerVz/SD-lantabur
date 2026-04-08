@@ -323,14 +323,32 @@ class SettingsController extends Controller
     public function updatePredicateRanges(Request $request)
     {
         $request->validate([
-            'id' => 'required|exists:master_tahun_ajaran,id',
-            'min_a' => 'required|integer|min:0|max:100',
-            'min_b' => 'required|integer|min:0|max:100',
-            'min_c' => 'required|integer|min:0|max:100',
+            'id'           => 'required|exists:master_tahun_ajaran,id',
+            'min_a'        => 'required|integer|min:0|max:100',
+            'min_b'        => 'required|integer|min:0|max:100',
+            'min_c'        => 'required|integer|min:0|max:100',
+            'ummi_a'       => 'nullable|integer|min:0|max:100',
+            'ummi_bplus'   => 'nullable|integer|min:0|max:100',
+            'ummi_b'       => 'nullable|integer|min:0|max:100',
+            'ummi_bminus'  => 'nullable|integer|min:0|max:100',
+            'ummi_cplus'   => 'nullable|integer|min:0|max:100',
+            'ummi_c'       => 'nullable|integer|min:0|max:100',
+            'ummi_cminus'  => 'nullable|integer|min:0|max:100',
         ]);
 
         $tahun = MasterTahunAjaran::findOrFail($request->id);
-        $tahun->update($request->only('min_a', 'min_b', 'min_c'));
+
+        $data = $request->only('min_a', 'min_b', 'min_c');
+
+        // Update ummi_* hanya jika dikirim (dari form box kanan)
+        $ummiFields = ['ummi_a', 'ummi_bplus', 'ummi_b', 'ummi_bminus', 'ummi_cplus', 'ummi_c', 'ummi_cminus'];
+        foreach ($ummiFields as $field) {
+            if ($request->filled($field)) {
+                $data[$field] = $request->input($field);
+            }
+        }
+
+        $tahun->update($data);
 
         return back()->with('success', 'Rentang predikat untuk tahun ' . $tahun->nama . ' berhasil diperbarui.');
     }
