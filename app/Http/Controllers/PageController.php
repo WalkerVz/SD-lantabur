@@ -62,7 +62,16 @@ class PageController extends Controller
 
     public function news(Request $request)
     {
-        $query = Berita::whereNotNull('published_at')->orderByDesc('published_at');
+        $sort = $request->get('sort', 'desc'); // default to descending (newest first)
+        $query = Berita::whereNotNull('published_at');
+        
+        // Apply sorting
+        if ($sort === 'asc') {
+            $query->orderBy('published_at', 'asc');
+        } else {
+            $query->orderByDesc('published_at');
+        }
+        
         if ($request->filled('q')) {
             $query->where(function ($q) use ($request) {
                 $q->where('judul', 'like', '%' . $request->q . '%')

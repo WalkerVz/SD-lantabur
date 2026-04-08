@@ -191,7 +191,7 @@
 
         /* ---- Tanda Tangan ---- */
         .jilid-sign-wrap {
-            margin-top: 8px;
+            margin-top: 30px;
         }
         .jilid-sign-table {
             width: 100%;
@@ -318,13 +318,18 @@
             <tbody>
                 @php
                     $printedJilids = [];
-                    if (!function_exists('getPredikat')) {
-                        function getPredikat($nilai, $ranges) {
+                    if (!function_exists('getPredikatUmmi')) {
+                        function getPredikatUmmi($nilai, $ranges) {
                             if (!$nilai || !is_numeric($nilai)) return $nilai;
                             $n = (int)$nilai;
-                            if ($n >= $ranges['a_min']) return 'A';
-                            if ($n >= $ranges['b_min']) return 'B';
-                            if ($n >= $ranges['c_min']) return 'C';
+
+                            if ($n >= 90) return 'A';
+                            if ($n >= 85) return 'B+';
+                            if ($n >= 80) return 'B';
+                            if ($n >= 75) return 'B-';
+                            if ($n >= 70) return 'C+';
+                            if ($n >= 65) return 'C';
+                            if ($n >= 60) return 'C-';
                             return 'D';
                         }
                     }
@@ -343,7 +348,7 @@
                     <td class="center" rowspan="{{ $jilidCounts[$jilid] ?? 1 }}" style="vertical-align: middle;">{{ $jilid }}</td>
                     @endif
                     <td>{{ $item['materi'] ?? '-' }}</td>
-                    <td class="center">{{ getPredikat($item['nilai'] ?? null, $ranges) }}</td>
+                    <td class="center">{{ getPredikatUmmi($item['nilai'] ?? null, $ranges) }}</td>
                     <td>{{ $item['keterangan'] ?? '' }}</td>
                 </tr>
                 @empty

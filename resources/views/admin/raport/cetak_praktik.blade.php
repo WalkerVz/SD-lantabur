@@ -17,13 +17,13 @@
             font-size: 11pt;
             color: #000;
             background: #fff;
-            line-height: 1.2; /* Dikecilkan */
+            line-height: 1.2;
         }
 
         /* Container untuk A4 */
         .praktik-container {
             width: 100%;
-            max-width: 190mm; /* For screen preview */
+            max-width: 210mm; /* For screen preview */
             min-height: 297mm;
             margin: 0 auto;
             background: white;
@@ -61,7 +61,6 @@
             pointer-events: none;
             z-index: 1;
             opacity: 0.06;
-            /* Absolutely NO gaps - Larger Font 15 - Tight Layout */
             background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 42 22'%3E%3Ctext x='21' y='17' fill='black' font-size='15' font-weight='bold' font-family='sans-serif' text-anchor='middle'%3ESD AL QUR%27AN LANTABUR%3C/text%3E%3C/svg%3E");
             background-repeat: repeat;
             background-size: 25% 20px;
@@ -72,7 +71,7 @@
         .content {
             position: relative;
             z-index: 10;
-            padding: 10mm 10mm; /* Dikecilkan */
+            padding: 15mm 18mm; /* Dikecilkan */
         }
 
         /* Header */
@@ -99,7 +98,7 @@
         }
 
         .praktik-header h3 {
-            font-size: 13pt; /* Dikecilkan dikit agar muat 1 baris */
+            font-size: 13pt;
             font-weight: bold;
             text-transform: uppercase;
             letter-spacing: 0.5px;
@@ -163,7 +162,7 @@
             text-align: left;
             padding: 2px 4px;
             font-size: 8pt;
-            line-height: 1.1; 
+            line-height: 1.1;
             word-wrap: break-word;
             overflow-wrap: break-word;
         }
@@ -191,7 +190,7 @@
 
         /* Signature Section */
         .praktik-sign {
-            margin-top: 15px;
+            margin-top: 30px;
             width: 100%;
             border-collapse: collapse;
             table-layout: fixed;
@@ -265,7 +264,7 @@
                 margin: 0 !important;
             }
             .content {
-                padding: 10mm 10mm !important; /* Dikecilkan */
+                padding: 15mm 18mm !important; /* Dikecilkan */
             }
         }
 
@@ -297,8 +296,6 @@
                 <h4>PEKANBARU</h4>
             </div>
         </div>
-
-        <div class="report-title">RAPOR PRAKTIK</div>
 
         <!-- INFO SISWA -->
         <table class="praktik-info">

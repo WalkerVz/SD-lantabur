@@ -140,6 +140,7 @@ Route::prefix('admin')->name('admin.')->group(function () {
         Route::post('mapel', [MapelController::class, 'store'])->name('mapel.store');
         Route::put('mapel/{id}', [MapelController::class, 'update'])->name('mapel.update');
         Route::delete('mapel/{id}', [MapelController::class, 'destroy'])->name('mapel.destroy');
+        Route::get('mapel/predikat', [MapelController::class, 'indexPredikat'])->name('mapel.predikat');
 
         // Praktik CRUD
         Route::get('mapel/praktik', [MapelController::class, 'indexPraktik'])->name('mapel.praktik');

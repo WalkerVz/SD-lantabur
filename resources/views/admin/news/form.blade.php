@@ -20,7 +20,15 @@
         </div>
         <div>
             <label class="block text-sm font-medium text-gray-700 mb-1">Kategori</label>
-            <input type="text" name="kategori" value="{{ old('kategori', $item?->kategori) }}" placeholder="Contoh: Akademik, Kegiatan, Pengumuman" class="w-full px-4 py-2 rounded-lg border border-gray-300 focus:ring-2 focus:ring-[#47663D] focus:border-[#47663D]">
+            <select name="kategori" class="w-full px-4 py-2 rounded-lg border border-gray-300 focus:ring-2 focus:ring-[#47663D] focus:border-[#47663D]">
+                <option value="">-- Pilih Kategori --</option>
+                <option value="Akademik" {{ old('kategori', $item?->kategori) == 'Akademik' ? 'selected' : '' }}>Akademik</option>
+                <option value="Kegiatan" {{ old('kategori', $item?->kategori) == 'Kegiatan' ? 'selected' : '' }}>Kegiatan</option>
+                <option value="Pengumuman" {{ old('kategori', $item?->kategori) == 'Pengumuman' ? 'selected' : '' }}>Pengumuman</option>
+                <option value="Prestasi" {{ old('kategori', $item?->kategori) == 'Prestasi' ? 'selected' : '' }}>Prestasi</option>
+                <option value="Umum" {{ old('kategori', $item?->kategori) == 'Umum' ? 'selected' : '' }}>Umum</option>
+            </select>
+            @error('kategori')<p class="text-red-500 text-sm mt-1">{{ $message }}</p>@enderror
         </div>
         <div>
             <label class="block text-sm font-medium text-gray-700 mb-1">Ringkasan (Short Description)</label>

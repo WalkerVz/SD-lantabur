@@ -33,24 +33,21 @@
                             @else
                                 <div class="w-24 h-24 md:w-32 md:h-32 rounded-full bg-[#47663D]/10 flex items-center justify-center text-3xl md:text-4xl font-bold text-[#47663D] mb-4">{{ strtoupper(substr($s->nama, 0, 1)) }}</div>
                             @endif
-<<<<<<< HEAD
-                            <h3 class="text-xl font-bold text-[#47663D] mb-1">{{ $s->nama }}</h3>
-                            <p class="text-xs text-gray-500 mb-2">NIY: {{ $s->niy ?? '-' }}</p>
-                            <p class="text-[#FFB81C] font-semibold text-sm mb-2">{{ $s->jabatan }}</p>
+                            <h3 class="text-lg md:text-xl font-bold text-[#47663D] mb-1">{{ $s->nama }}</h3>
+                            <p class="text-[10px] md:text-xs text-gray-500 mb-2">NIY: {{ $s->niy ?? '-' }}</p>
+                            <p class="text-[#FFB81C] font-semibold text-xs md:text-sm mb-2">{{ $s->jabatan }}</p>
+                            
                             @php
                                 $waliKelasClasses = $s->tahunKelas?->pluck('kelas')->filter()->values()->all() ?? [];
                             @endphp
                             @if(!empty($waliKelasClasses))
-                                <span class="text-xs bg-[#FFB81C]/15 text-[#FFB81C] px-2 py-1 rounded-full mb-3 font-semibold">Wali Kelas: Kelas {{ implode(', ', $waliKelasClasses) }}</span>
+                                <span class="text-[10px] md:text-xs bg-[#FFB81C]/15 text-[#FFB81C] px-2 py-1 rounded-full mb-3 font-semibold">Wali Kelas: Kelas {{ implode(', ', $waliKelasClasses) }}</span>
                             @endif
-                            @if($s->jabatan === 'Guru Bidang Studi' && $s->bidang_studi)
-                                <span class="text-xs bg-[#47663D]/10 text-[#47663D] px-2 py-1 rounded-full mb-3">Bidang: {{ $s->bidang_studi }}</span>
-=======
-                            <h3 class="text-lg md:text-xl font-bold text-[#47663D] mb-1">{{ $s->nama }}</h3>
-                            <p class="text-[#FFB81C] font-semibold text-xs md:text-sm mb-2">{{ $s->jabatan }}</p>
-                            @if($s->spesialisasi)
+                            
+                            @if($s->bidang_studi)
+                                <span class="text-[10px] md:text-xs bg-[#47663D]/10 text-[#47663D] px-2 py-1 rounded-full mb-3">Bidang: {{ $s->bidang_studi }}</span>
+                            @elseif($s->spesialisasi)
                                 <span class="text-[10px] md:text-xs bg-[#47663D]/10 text-[#47663D] px-2 py-1 rounded-full mb-3">{{ $s->spesialisasi->nama }}</span>
->>>>>>> f7167079ff551d041d38924d0c1659bc1abce235
                             @endif
                             @if($s->email)
                                 <a href="mailto:{{ $s->email }}" class="text-gray-600 text-xs md:text-sm hover:text-[#47663D] flex flex-wrap items-center justify-center gap-1 mt-2">

@@ -16,21 +16,21 @@
 
         body {
             font-family: 'Times New Roman', Times, serif;
-            font-size: 11pt;
+            font-size: 13pt;
             background: #f5f5f5;
             color: #222;
         }
 
         .tahfidz-wrapper {
             width: 100%;
-            max-width: 190mm; /* For screen preview */
+            max-width: 210mm; /* Increased for better screen preview */
             min-height: 297mm;
-            margin: 30px auto;
+            margin: {{ isset($is_cetak_semua) ? '0' : '30px' }} auto;
             background: #fff;
-            border: 1px solid #ccc;
-            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            border: {{ isset($is_cetak_semua) ? 'none' : '1px solid #ccc' }};
+            box-shadow: {{ isset($is_cetak_semua) ? 'none' : '0 2px 10px rgba(0,0,0,0.1)' }};
             position: relative;
-            padding: 0; /* Remove padding from wrapper */
+            padding: 0;
         }
 
         /* Watermark Logo */
@@ -121,10 +121,10 @@
         }
 
         /* ---- Identitas ---- */
-        .tahfidz-identitas {
+        .tahfidz-wrapper .tahfidz-identitas {
             width: 100%;
-            border-collapse: collapse;
-            margin-bottom: 4px;
+            margin-bottom: 8px;
+            font-size: 12pt;
         }
         .tahfidz-identitas td {
             border: none;
@@ -147,10 +147,10 @@
             color: #fff;
         }
         .tahfidz-tabel-nilai td, .tahfidz-tabel-nilai th {
-            padding: 1px 4px;
+            padding: 2px 5px;
             border: 1px solid #000;
             vertical-align: middle;
-            font-size: 9.5pt;
+            font-size: 11pt;
         }
         .tahfidz-tabel-nilai th {
             text-align: center;
@@ -167,12 +167,12 @@
         .tahfidz-tabel-legenda {
             width: 100%;
             border-collapse: collapse;
-            margin-top: 5px;
-            font-size: 9pt;
+            margin-top: 10px;
+            font-size: 11pt;
         }
         .tahfidz-tabel-legenda th, .tahfidz-tabel-legenda td {
             border: 1px solid #000;
-            padding: 1px 4px;
+            padding: 2px 5px;
             text-align: center;
         }
         .tahfidz-tabel-legenda thead tr {
@@ -182,11 +182,11 @@
 
         /* ---- Tanda Tangan ---- */
         .tahfidz-sign {
-            margin-top: 10px;
+            margin-top: 20px;
             display: flex;
             justify-content: space-between;
             text-align: center;
-            font-size: 10pt;
+            font-size: 11.5pt;
         }
 
         .tahfidz-sign div {
@@ -293,24 +293,29 @@
                     $nilai = $materi[$idx]['nilai'] ?? '';
                     if (!$nilai || !is_numeric($nilai)) return $nilai;
                     $n = (int)$nilai;
-                    if ($n >= $ranges['a_min']) return 'A';
-                    if ($n >= $ranges['b_min']) return 'B';
-                    if ($n >= $ranges['c_min']) return 'C';
+                    
+                    if ($n >= 90) return 'A';
+                    if ($n >= 85) return 'B+';
+                    if ($n >= 80) return 'B';
+                    if ($n >= 75) return 'B-';
+                    if ($n >= 70) return 'C+';
+                    if ($n >= 65) return 'C';
+                    if ($n >= 60) return 'C-';
                     return 'D';
                 }
             }
         @endphp
 
         <!-- GRID DUA KOLOM -->
-        <div style="display: flex; justify-content: space-between; gap: 15px;">
+        <div style="display: flex; justify-content: space-between; gap: 10px;">
             <!-- Tabel Kiri -->
-            <div style="width: 48%;">
+            <div style="width: 49%;">
                 <table class="tahfidz-tabel-nilai">
                     <thead>
                         <tr>
                             <th width="30px">NO</th>
                             <th>HAFALAN SURAT</th>
-                            <th width="85px">JILID</th>
+                            <th width="100px">JILID</th>
                             <th width="50px">NILAI</th>
                         </tr>
                     </thead>
@@ -353,7 +358,7 @@
                         <tr>
                             <th width="30px">NO</th>
                             <th>HAFALAN SURAT</th>
-                            <th width="125px">JILID</th>
+                            <th width="100px">JILID</th>
                             <th width="50px">NILAI</th>
                         </tr>
                     </thead>
@@ -387,23 +392,8 @@
             </div>
         </div>
 
-        <!-- LEGENDA & DESKRIPSI -->
+        <!-- DESKRIPSI -->
         <div style="width: 50%; margin-top: 15px;">
-            <table class="tahfidz-tabel-legenda">
-                <thead>
-                    <tr>
-                        <th width="30px">NO</th>
-                        <th>PENILAIAN</th>
-                        <th>HURUF</th>
-                        <th>PREDIKAT</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <tr><td>1</td><td>{{ $ranges['a_min'] }}-100</td><td>A</td><td>Mumtaz</td></tr>
-                    <tr><td>2</td><td>{{ $ranges['b_min'] }}-{{ $ranges['a_min'] - 1 }}</td><td>B</td><td>Jayyid</td></tr>
-                    <tr><td>3</td><td>{{ $ranges['c_min'] }}-{{ $ranges['b_min'] - 1 }}</td><td>C</td><td>Maqbul</td></tr>
-                </tbody>
-            </table>
             @if($deskripsi)
             <div style="margin-top: 10px; font-size: 11px;">
                 <strong>Catatan Tambahan:</strong><br>

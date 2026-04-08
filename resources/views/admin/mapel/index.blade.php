@@ -31,6 +31,9 @@
             <a href="{{ route('admin.mapel.tahfidz') }}" class="px-4 sm:px-6 py-2.5 rounded-xl text-xs sm:text-sm font-bold transition-all text-gray-500 hover:bg-gray-50">
                 Materi Tahfidz
             </a>
+            <a href="{{ route('admin.mapel.predikat') }}" class="px-4 sm:px-6 py-2.5 rounded-xl text-xs sm:text-sm font-bold transition-all text-gray-500 hover:bg-gray-50">
+                Rentang Predikat
+            </a>
         </div>
     </div>
 
@@ -157,8 +160,53 @@
             </div>
         </div>
     </div>
+
+
 </div>
 
+    {{-- Toast Notification --}}
+    <div x-data="{ 
+            show: false, 
+            message: '', 
+            type: 'success',
+            init() {
+                @if(session('success'))
+                    this.showToast({!! json_encode(session('success')) !!}, 'success');
+                @endif
+                @if(session('error'))
+                    this.showToast({!! json_encode(session('error')) !!}, 'error');
+                @endif
+            },
+            showToast(msg, type) {
+                this.message = msg;
+                this.type = type;
+                this.show = true;
+                setTimeout(() => this.show = false, 5000);
+            }
+         }"
+         x-show="show"
+         x-transition:enter="transition ease-out duration-300"
+         x-transition:enter-start="translate-y-10 opacity-0"
+         x-transition:enter-end="translate-y-0 opacity-100"
+         x-transition:leave="transition ease-in duration-200"
+         x-transition:leave-start="opacity-100"
+         x-transition:leave-end="opacity-0"
+         class="fixed bottom-8 right-8 z-[110]"
+         x-cloak>
+        <div :class="type === 'success' ? 'bg-emerald-600' : 'bg-red-600'" 
+             class="flex items-center gap-3 px-6 py-4 rounded-2xl shadow-2xl text-white">
+            <template x-if="type === 'success'">
+                <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path></svg>
+            </template>
+            <template x-if="type === 'error'">
+                <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg>
+            </template>
+            <span class="font-semibold" x-text="message"></span>
+            <button @click="show = false" class="ml-4 hover:opacity-70 transition-opacity">
+                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg>
+            </button>
+        </div>
+    </div>
 @push('scripts')
 <script>
 function mapelPage() {

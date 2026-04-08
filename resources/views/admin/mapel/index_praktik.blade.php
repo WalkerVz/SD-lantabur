@@ -23,6 +23,7 @@
                 <a href="{{ route('admin.mapel.praktik') }}" class="px-4 sm:px-6 py-2.5 rounded-xl text-xs sm:text-sm font-bold transition-all bg-[#47663D] text-white shadow-md">Praktik</a>
                 <a href="{{ route('admin.mapel.jilid') }}" class="px-4 sm:px-6 py-2.5 rounded-xl text-xs sm:text-sm font-bold transition-all text-gray-500 hover:bg-gray-50">Al-Qur'an</a>
                 <a href="{{ route('admin.mapel.tahfidz') }}" class="px-4 sm:px-6 py-2.5 rounded-xl text-xs sm:text-sm font-bold transition-all text-gray-500 hover:bg-gray-50">Materi Tahfidz</a>
+                <a href="{{ route('admin.mapel.predikat') }}" class="px-4 sm:px-6 py-2.5 rounded-xl text-xs sm:text-sm font-bold transition-all text-gray-500 hover:bg-gray-50">Rentang Predikat</a>
             </div>
         </div>
         <div class="border-t border-gray-100 mt-2 pt-2 w-full overflow-x-auto scrollbar-hide">

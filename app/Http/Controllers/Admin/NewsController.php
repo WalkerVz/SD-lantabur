@@ -13,12 +13,37 @@ class NewsController extends Controller
     use ImageOptimization;
     public function index(Request $request)
     {
-        $query = Berita::orderByDesc('published_at')->orderByDesc('created_at');
+        $sort = $request->get('sort', 'desc'); // default to descending (newest first)
+        $query = Berita::query();
+        
+        // Apply sorting
+        if ($sort === 'asc') {
+            $query->orderBy('published_at', 'asc')->orderBy('created_at', 'asc');
+        } else {
+            $query->orderByDesc('published_at')->orderByDesc('created_at');
+        }
+        
+        // Search filter
         if ($request->filled('q')) {
             $query->where(function ($q) use ($request) {
                 $q->where('judul', 'like', '%' . $request->q . '%')->orWhere('isi', 'like', '%' . $request->q . '%');
             });
         }
+        
+        // Category filter
+        if ($request->filled('kategori')) {
+            $query->where('kategori', $request->kategori);
+        }
+        
+        // Status filter (published/draft)
+        if ($request->filled('status')) {
+            if ($request->status === 'published') {
+                $query->whereNotNull('published_at');
+            } elseif ($request->status === 'draft') {
+                $query->whereNull('published_at');
+            }
+        }
+        
         $berita = $query->paginate(10);
         return view('admin.news.index', compact('berita'));
     }

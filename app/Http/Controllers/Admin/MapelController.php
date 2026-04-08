@@ -26,7 +26,15 @@ class MapelController extends Controller
             ->orderBy('urutan')
             ->get();
 
-        return view('admin.mapel.index', compact('classes', 'selectedKelas', 'mapels'));
+        $tahunAjaranList = \App\Models\MasterTahunAjaran::orderBy('urutan')->orderByDesc('nama')->get();
+
+        return view('admin.mapel.index', compact('classes', 'selectedKelas', 'mapels', 'tahunAjaranList'));
+    }
+
+    public function indexPredikat()
+    {
+        $tahunAjaranList = \App\Models\MasterTahunAjaran::orderBy('urutan')->orderByDesc('nama')->get();
+        return view('admin.mapel.predikat', compact('tahunAjaranList'));
     }
 
     public function store(Request $request)

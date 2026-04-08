@@ -15,10 +15,39 @@
         </button>
     </div>
 
-    <form method="get" class="mb-4 flex gap-2 flex-wrap">
+    <form method="get" id="adminNewsFilterForm" class="mb-4 flex gap-2 flex-wrap">
         <input type="text" name="q" value="{{ request('q') }}" placeholder="Cari berita..." class="px-4 py-2 rounded-lg border border-gray-300 w-64">
+        <select name="kategori" id="adminKategoriSelect" class="px-4 py-2 rounded-lg border border-gray-300">
+            <option value="">Semua Kategori</option>
+            <option value="Akademik" {{ request('kategori') == 'Akademik' ? 'selected' : '' }}>Akademik</option>
+            <option value="Kegiatan" {{ request('kategori') == 'Kegiatan' ? 'selected' : '' }}>Kegiatan</option>
+            <option value="Prestasi" {{ request('kategori') == 'Prestasi' ? 'selected' : '' }}>Prestasi</option>
+            <option value="Pengumuman" {{ request('kategori') == 'Pengumuman' ? 'selected' : '' }}>Pengumuman</option>
+        </select>
+        <select name="status" id="adminStatusSelect" class="px-4 py-2 rounded-lg border border-gray-300">
+            <option value="">Semua Status</option>
+            <option value="published" {{ request('status') == 'published' ? 'selected' : '' }}>Published</option>
+            <option value="draft" {{ request('status') == 'draft' ? 'selected' : '' }}>Draft</option>
+        </select>
+        <select name="sort" id="adminSortSelect" class="px-4 py-2 rounded-lg border border-gray-300">
+            <option value="desc" {{ request('sort', 'desc') == 'desc' ? 'selected' : '' }}>Terbaru</option>
+            <option value="asc" {{ request('sort') == 'asc' ? 'selected' : '' }}>Terlama</option>
+        </select>
         <button type="submit" class="px-4 py-2 bg-gray-200 rounded-lg hover:bg-gray-300">Cari</button>
     </form>
+
+    <script>
+        // Auto-submit form when dropdown changes
+        document.getElementById('adminKategoriSelect').addEventListener('change', function() {
+            document.getElementById('adminNewsFilterForm').submit();
+        });
+        document.getElementById('adminStatusSelect').addEventListener('change', function() {
+            document.getElementById('adminNewsFilterForm').submit();
+        });
+        document.getElementById('adminSortSelect').addEventListener('change', function() {
+            document.getElementById('adminNewsFilterForm').submit();
+        });
+    </script>
 
     <div class="bg-white rounded-xl shadow border border-gray-100 overflow-hidden">
         <div class="overflow-x-auto">

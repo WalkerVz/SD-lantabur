@@ -9,6 +9,7 @@ use App\Models\Spesialisasi;
 use App\Models\StaffSdm;
 use App\Models\StrukturOrganisasi;
 use App\Models\User;
+use App\Models\Slider;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\Hash;
 
@@ -27,6 +28,39 @@ class DatabaseSeeder extends Seeder
         );
         if (!$admin->wasRecentlyCreated) {
             $admin->update(['password' => Hash::make('admin123')]);
+        }
+
+        // Seed Slider dengan default jika tidak ada
+        if (!Slider::exists()) {
+            Slider::insert([
+                [
+                    'judul' => 'Selamat Datang di SD Al-Qur\'an Lantabur',
+                    'deskripsi' => 'Membangun generasi cerdas, berakhlak, dan siap menghadapi masa depan melalui pendidikan yang berkualitas dan inovatif.',
+                    'gambar' => 'sliders/default-slide-1.jpg',
+                    'urutan' => 1,
+                    'aktif' => true,
+                    'created_at' => now(),
+                    'updated_at' => now(),
+                ],
+                [
+                    'judul' => 'Pendidikan Berkualitas',
+                    'deskripsi' => 'Dengan kurikulum terkini dan metode pembelajaran inovatif, kami memastikan setiap siswa mendapatkan pendidikan terbaik.',
+                    'gambar' => 'sliders/default-slide-2.jpg',
+                    'urutan' => 2,
+                    'aktif' => true,
+                    'created_at' => now(),
+                    'updated_at' => now(),
+                ],
+                [
+                    'judul' => 'Lingkungan Mendukung',
+                    'deskripsi' => 'Fasilitas lengkap, guru profesional, dan suasana yang kondusif untuk mengembangkan potensi maksimal siswa.',
+                    'gambar' => 'sliders/default-slide-3.jpg',
+                    'urutan' => 3,
+                    'aktif' => true,
+                    'created_at' => now(),
+                    'updated_at' => now(),
+                ],
+            ]);
         }
 
         if (Spesialisasi::exists()) {

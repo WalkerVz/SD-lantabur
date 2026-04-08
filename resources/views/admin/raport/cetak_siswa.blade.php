@@ -23,7 +23,7 @@
         /* Container untuk A4 */
         .umum-container {
             width: 100%;
-            max-width: 190mm; /* For screen preview */
+            max-width: 210mm; /* For screen preview */
             min-height: 297mm;
             margin: 0 auto;
             background: white;
@@ -72,7 +72,7 @@
         .content {
             position: relative;
             z-index: 10;
-            padding: 15mm 10mm; 
+            padding: 15mm 18mm; 
         }
 
         .umum-header {
@@ -98,7 +98,7 @@
         }
 
         .umum-header h3 {
-            font-size: 13pt; /* Dikecilkan dikit agar muat 1 baris */
+            font-size: 13pt;
             font-weight: bold;
             text-transform: uppercase;
             letter-spacing: 0.5px;
@@ -189,12 +189,12 @@
         .umum-nilai th:nth-child(6) { width: 38%; }
 
         .report-title {
-            text-align: center;
+            text-align: left;
             font-weight: bold;
-            font-size: 14pt;
-            text-decoration: underline;
-            margin: 5px 0 10px 0;
+            font-size: 11pt;
+            margin: 8px 0 3px 0;
             text-transform: uppercase;
+            letter-spacing: 0.3px;
         }
 
         /* Summary Table */
@@ -246,6 +246,7 @@
             width: 100%;
             border-collapse: collapse;
             table-layout: fixed;
+            font-size: 10pt;
         }
 
         .umum-sign td {
@@ -301,7 +302,7 @@
                 margin: 0 !important;
             }
             .content {
-                padding: 15mm 10mm !important;
+                padding: 15mm 18mm !important;
             }
         }
 
@@ -334,7 +335,7 @@
             </div>
         </div>
 
-        <div class="report-title">RAPOR PENGETAHUAN</div>
+
 
         <!-- INFO SISWA -->
     <table class="umum-info">
@@ -357,7 +358,7 @@
                 if ($nilai >= ($ranges['a_min'] ?? 91)) return 'A';
                 if ($nilai >= ($ranges['b_min'] ?? 83)) return 'B';
                 if ($nilai >= ($ranges['c_min'] ?? 75)) return 'C';
-                return '-';
+                return 'D';
             }
         }
 
@@ -374,6 +375,7 @@
     @endphp
 
     <!-- TABEL NILAI -->
+    <div class="report-title">RAPOR PENGETAHUAN</div>
     <table class="umum-nilai">
         <thead>
         <tr>
