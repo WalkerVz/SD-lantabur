@@ -250,12 +250,14 @@ class RaportController extends Controller
     public function cetak(int $kelas)
     {
         [$tahun, $semester] = $this->resolveTahunSemester(request());
-        $raport = RaportNilai::where('kelas', $kelas)
-            ->where('semester', $semester)
-            ->where('tahun_ajaran', $tahun)
+        $raport = RaportNilai::where('raport_nilai.kelas', $kelas)
+            ->where('raport_nilai.semester', $semester)
+            ->where('raport_nilai.tahun_ajaran', $tahun)
+            ->join('siswa', 'raport_nilai.siswa_id', '=', 'siswa.id')
+            ->select('raport_nilai.*')
+            ->orderBy('siswa.nama')
             ->with(['siswa', 'mapelNilai'])
-            ->get()
-            ->sortBy(fn ($r) => $r->siswa?->nama);
+            ->get();
 
         $master_mapel = MasterMapel::where('kelas', $kelas)->where('is_aktif', true)->orderBy('urutan')->get();
 
@@ -810,8 +812,11 @@ class RaportController extends Controller
 
     private function getSiswaByKelas(int $kelas, string $tahun, ?string $search = null)
     {
-        $query = Enrollment::where('tahun_ajaran', $tahun)
-            ->where('kelas', $kelas)
+        $query = Enrollment::where('enrollment.tahun_ajaran', $tahun)
+            ->where('enrollment.kelas', $kelas)
+            ->join('siswa', 'enrollment.siswa_id', '=', 'siswa.id')
+            ->select('siswa.*')
+            ->orderBy('siswa.nama')
             ->whereHas('siswa', function($q) use ($search) {
                 if ($search) {
                     $q->where('nama', 'like', "%$search%");
@@ -821,7 +826,6 @@ class RaportController extends Controller
 
         return $query->get()
             ->pluck('siswa')
-            ->sortBy('nama')
             ->values();
     }
 

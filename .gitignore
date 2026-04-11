@@ -28,3 +28,7 @@ Thumbs.db
 *.xlsx  
 *.xls  
 *.csv  
+
+# Tests & Factories
+/tests/
+/database/factories/

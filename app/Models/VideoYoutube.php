@@ -2,23 +2,16 @@
 
 namespace App\Models;
 
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
 class VideoYoutube extends Model
 {
+    use HasFactory;
     protected $table = 'video_youtube';
     protected $fillable = ['judul', 'youtube_id', 'url_asli', 'deskripsi', 'urutan', 'aktif'];
     protected $casts = ['aktif' => 'boolean'];
 
-    /**
-     * Ekstrak YouTube ID dari berbagai format URL:
-     * - https://www.youtube.com/watch?v=VIDEO_ID
-     * - https://youtu.be/VIDEO_ID
-     * - https://www.youtube.com/shorts/VIDEO_ID
-     * - https://www.youtube.com/live/VIDEO_ID
-     * - https://www.youtube-nocookie.com/embed/VIDEO_ID
-     * - VIDEO_ID langsung (11 karakter)
-     */
     public static function extractYoutubeId(string $url): ?string
     {
         $url = trim($url);

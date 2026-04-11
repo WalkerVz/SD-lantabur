@@ -93,12 +93,13 @@ class SiswaController extends Controller
             return response()->json(['siswa' => []]);
         }
         $siswa = Enrollment::where('tahun_ajaran', $tahunAjaran)
-            ->where('kelas', $kelas)
+            ->where('enrollment.kelas', $kelas)
+            ->join('siswa', 'enrollment.siswa_id', '=', 'siswa.id')
+            ->select('siswa.*')
+            ->orderBy('siswa.nama')
             ->with('siswa.infoPribadi')
             ->get()
             ->pluck('siswa')
-            ->filter()
-            ->sortBy(fn ($s) => strtolower($s->nama ?? ''))
             ->values();
         return response()->json(['siswa' => $siswa]);
     }
@@ -367,12 +368,13 @@ class SiswaController extends Controller
         $siswa = [];
         if ($sourceTahun && $sourceKelas) {
             $siswa = Enrollment::where('tahun_ajaran', $sourceTahun)
-                ->where('kelas', $sourceKelas)
+                ->where('enrollment.kelas', $sourceKelas)
+                ->join('siswa', 'enrollment.siswa_id', '=', 'siswa.id')
+                ->select('siswa.*')
+                ->orderBy('siswa.nama')
                 ->with('siswa')
                 ->get()
                 ->pluck('siswa')
-                ->filter()
-                ->sortBy(fn ($s) => strtolower($s->nama ?? ''))
                 ->values();
         }
 
