@@ -193,16 +193,22 @@
             margin-top: 30px;
             width: 100%;
             border-collapse: collapse;
-            table-layout: fixed;
             font-size: 10pt;
         }
 
         .praktik-sign td {
             border: none;
-            padding: 0;
+            padding: 0 10px;
             text-align: center;
             vertical-align: top;
+        }
+
+        .praktik-sign.col-3 td {
             width: 33.33%;
+        }
+
+        .praktik-sign.col-2 td {
+            width: 50%;
         }
 
         .praktik-sign p {
@@ -214,12 +220,10 @@
             text-decoration: underline;
         }
 
-        .praktik-sign p {
-            margin: 2px 0;
-        }
-
-        .praktik-sign b {
-            text-decoration: underline;
+        .sign-name {
+            max-width: 220px;
+            margin: 0 auto !important;
+            word-wrap: break-word;
         }
 
         .decision-box p {
@@ -339,15 +343,14 @@
 
 
     <!-- TANDA TANGAN -->
-        <table class="praktik-sign">
+        @if(strtoupper($semester) == 'GENAP')
+        <table class="praktik-sign col-3">
             <tr>
                 <td>
                     <p>Mengetahui,<br>Orang Tua/Wali</p>
                 </td>
                 <td style="padding-top: 30px;">
-                    @if(strtoupper($semester) == 'GENAP')
                     <p>Kepala Sekolah</p>
-                    @endif
                 </td>
                 <td>
                     <p>Pekanbaru, {{ $tanggal }}<br>Wali Kelas {{ \App\Models\Siswa::getNamaKelas($kelas) }}</p>
@@ -355,18 +358,36 @@
             </tr>
             <tr>
                 <td style="padding-top: 50px;">
-                    <p><b>{{ strtoupper($ortu) }}</b></p>
+                    <p class="sign-name"><b>{{ strtoupper($ortu) }}</b></p>
                 </td>
                 <td style="padding-top: 80px;">
-                    @if(strtoupper($semester) == 'GENAP')
-                    <p><b>{{ strtoupper($kepala_sekolah) }}</b><br>{{ $niy_kepsek }}</p>
-                    @endif
+                    <p class="sign-name"><b>{{ strtoupper($kepala_sekolah) }}</b><br>{{ $niy_kepsek }}</p>
                 </td>
                 <td style="padding-top: 50px;">
-                    <p><b>{{ strtoupper($wali_kelas) }}</b><br>{{ $niy_wali ?? '' }}</p>
+                    <p class="sign-name"><b>{{ strtoupper($wali_kelas) }}</b><br>{{ $niy_wali ?? '' }}</p>
                 </td>
             </tr>
         </table>
+        @else
+        <table class="praktik-sign col-2">
+            <tr>
+                <td>
+                    <p>Mengetahui,<br>Orang Tua/Wali</p>
+                </td>
+                <td>
+                    <p>Pekanbaru, {{ $tanggal }}<br>Wali Kelas {{ \App\Models\Siswa::getNamaKelas($kelas) }}</p>
+                </td>
+            </tr>
+            <tr>
+                <td style="padding-top: 50px;">
+                    <p class="sign-name"><b>{{ strtoupper($ortu) }}</b></p>
+                </td>
+                <td style="padding-top: 50px;">
+                    <p class="sign-name"><b>{{ strtoupper($wali_kelas) }}</b><br>{{ $niy_wali ?? '' }}</p>
+                </td>
+            </tr>
+        </table>
+        @endif
 
         <!-- TOMBOL CETAK -->
         <div class="no-print" style="margin-top: 30px; text-align: center;">

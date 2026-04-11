@@ -245,25 +245,37 @@
             margin-top: 20px;
             width: 100%;
             border-collapse: collapse;
-            table-layout: fixed;
             font-size: 10pt;
         }
 
         .umum-sign td {
             border: none;
-            padding: 0;
+            padding: 0 10px;
             text-align: center;
             vertical-align: top;
+        }
+
+        .umum-sign.col-3 td {
             width: 33.33%;
+        }
+        
+        .umum-sign.col-2 td {
+            width: 50%;
         }
 
         .umum-sign p {
             margin: 2px 0;
-            line-height: 1.2;
+            line-height: 1.3;
         }
 
         .umum-sign b {
             text-decoration: underline;
+        }
+
+        .sign-name {
+            max-width: 220px;
+            margin: 0 auto !important;
+            word-wrap: break-word;
         }
 
 
@@ -465,12 +477,12 @@
     <!-- TANDA TANGAN -->
     @if(strtoupper($raport->semester ?? '') == 'GENAP')
     {{-- Semester Genap: 3 kolom (Ortu | Kepala Sekolah | Wali Kelas) --}}
-    <table class="umum-sign">
+    <table class="umum-sign col-3">
         <tr>
             <td>
                 <p>Mengetahui,<br>Orang Tua/Wali</p>
             </td>
-            <td>
+            <td style="padding-top: 30px;">
                 <p>Kepala Sekolah</p>
             </td>
             <td>
@@ -479,19 +491,19 @@
         </tr>
         <tr>
             <td style="padding-top: 55px;">
-                <p><b>{{ strtoupper($signatures['ortu'] ?? '_______________') }}</b></p>
+                <p class="sign-name"><b>{{ strtoupper($signatures['ortu'] ?? '_______________') }}</b></p>
+            </td>
+            <td style="padding-top: 85px;">
+                <p class="sign-name"><b>{{ strtoupper($signatures['kepala_sekolah'] ?? 'KASMIDAR, S.Pd') }}</b><br>{{ $signatures['niy_kepala'] ?? 'NIY. 2403001' }}</p>
             </td>
             <td style="padding-top: 55px;">
-                <p><b>{{ strtoupper($signatures['kepala_sekolah'] ?? 'KASMIDAR, S.Pd') }}</b><br>{{ $signatures['niy_kepala'] ?? 'NIY. 2403001' }}</p>
-            </td>
-            <td style="padding-top: 55px;">
-                <p><b>{{ strtoupper($signatures['wali_kelas'] ?? '_______________') }}</b><br>{{ $signatures['niy_wali'] ?? '' }}</p>
+                <p class="sign-name"><b>{{ strtoupper($signatures['wali_kelas'] ?? '_______________') }}</b><br>{{ $signatures['niy_wali'] ?? '' }}</p>
             </td>
         </tr>
     </table>
     @else
     {{-- Semester Ganjil: 2 kolom (Ortu | Wali Kelas) --}}
-    <table class="umum-sign" style="width: 80%; margin-left: auto; margin-right: auto;">
+    <table class="umum-sign col-2">
         <tr>
             <td>
                 <p>Mengetahui,<br>Orang Tua/Wali</p>
@@ -502,10 +514,10 @@
         </tr>
         <tr>
             <td style="padding-top: 55px;">
-                <p><b>{{ strtoupper($signatures['ortu'] ?? '_______________') }}</b></p>
+                <p class="sign-name"><b>{{ strtoupper($signatures['ortu'] ?? '_______________') }}</b></p>
             </td>
             <td style="padding-top: 55px;">
-                <p><b>{{ strtoupper($signatures['wali_kelas'] ?? '_______________') }}</b><br>{{ $signatures['niy_wali'] ?? '' }}</p>
+                <p class="sign-name"><b>{{ strtoupper($signatures['wali_kelas'] ?? '_______________') }}</b><br>{{ $signatures['niy_wali'] ?? '' }}</p>
             </td>
         </tr>
     </table>

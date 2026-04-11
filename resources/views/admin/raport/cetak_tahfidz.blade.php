@@ -201,6 +201,12 @@
             text-decoration: underline;
         }
 
+        .sign-name {
+            max-width: 200px;
+            margin: 0 auto !important;
+            word-wrap: break-word;
+        }
+
         .decision-box p {
             margin: 2px 0;
             line-height: 1.3;
@@ -408,19 +414,19 @@
             <div>
                 <p>Mengetahui,<br>Kepala SD Al Qur'an Lantabur Pekanbaru</p>
                 <br><br>
-                <p><b>{{ $kepala_sekolah ?? 'KASMIDAR, S.PD' }}</b><br>{{ $niy_kepsek ?? '2403001' }}</p>
+                <p class="sign-name"><b>{{ $kepala_sekolah ?? 'KASMIDAR, S.PD' }}</b><br>{{ $niy_kepsek ?? '2403001' }}</p>
             </div>
 
             <div style="margin-top: 30px;">
                 <p>Orang Tua/Wali</p>
                 <br><br>
-                <p><b>{{ strtoupper($ortu ?? '_______________') }}</b></p>
+                <p class="sign-name"><b>{{ strtoupper($ortu ?? '_______________') }}</b></p>
             </div>
 
             <div>
                 <p>Pekanbaru, {{ $tanggal }}<br>Guru Tahfidz Al Qur'an</p>
                 <br><br>
-                <p><b>{{ strtoupper($guru) }}</b><br>{{ $niy_guru ?? '' }}</p>
+                <p class="sign-name"><b>{{ strtoupper($guru) }}</b><br>{{ $niy_guru ?? '' }}</p>
             </div>
         </div>
     </div>
