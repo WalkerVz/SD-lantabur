@@ -10,10 +10,6 @@ use Symfony\Component\HttpFoundation\Response;
 
 class EnsureAdmin
 {
-    /**
-     * Pemetaan route name prefix → nama feature di tabel feature_access.
-     * Route yang tidak terdaftar di sini bebas diakses oleh semua role yang login.
-     */
     protected array $featureMap = [
         'admin.settings.accessibility' => 'settings.accessibility',
         'admin.sdm.'                   => 'sdm',

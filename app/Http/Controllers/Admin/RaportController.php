@@ -303,14 +303,30 @@ class RaportController extends Controller
         $semester = $raport->semester;
         $siswa = $raport->siswa;
 
-        \Illuminate\Support\Facades\View::share('is_cetak_semua', true);
-        $htmlPages = [];
+
+        $pages = []; 
+
+        // Helper: pisahkan <style> dan body content dari rendered HTML
+        $extractParts = function(string $html): array {
+            // Ambil semua <style>...</style>
+            preg_match_all('/<style[^>]*>(.*?)<\/style>/si', $html, $styleMatches);
+            $css = implode("\n", $styleMatches[1] ?? []);
+
+            // Ambil konten antara <body> dan </body>
+            preg_match('/<body[^>]*>(.*?)<\/body>/si', $html, $bodyMatch);
+            $body = $bodyMatch[1] ?? $html;
+
+            // Bersihkan tombol cetak per halaman (no-print internal)
+            $body = preg_replace('/<div class="no-print"[^>]*>.*?<\/div>/si', '', $body);
+
+            return ['css' => $css, 'body' => $body];
+        };
 
         // 1. Rapor Umum
-        $htmlPages[] = $this->cetakSiswa($id)->render();
+        $pages[] = $extractParts($this->cetakSiswa($id)->render());
 
         // 2. Rapor Praktik
-        $htmlPages[] = $this->cetakPraktik($id)->render();
+        $pages[] = $extractParts($this->cetakPraktik($id)->render());
 
         // 3. Rapor Jilid (Jika ada)
         $rj = RaportJilid::where('siswa_id', $siswaId)
@@ -320,7 +336,7 @@ class RaportController extends Controller
         if ($rj) {
             $jilidReq = new Request();
             $jilidReq->merge(['tahun_ajaran' => $tahun, 'semester' => $semester]);
-            $htmlPages[] = $this->cetakJilid($siswaId, $jilidReq)->render();
+            $pages[] = $extractParts($this->cetakJilid($siswaId, $jilidReq)->render());
         }
 
         // 4. Rapor Tahfidz (Jika ada)
@@ -331,66 +347,12 @@ class RaportController extends Controller
         if ($rt) {
             $tahfidzReq = new Request();
             $tahfidzReq->merge(['tahun_ajaran' => $tahun, 'semester' => $semester]);
-            $htmlPages[] = $this->cetakTahfidz($siswaId, $tahfidzReq)->render();
+            $pages[] = $extractParts($this->cetakTahfidz($siswaId, $tahfidzReq)->render());
         }
 
-        return view('admin.raport.cetak_semua', compact('htmlPages', 'siswa'));
+        return view('admin.raport.cetak_semua', compact('pages', 'siswa'));
     }
 
-    public function cetakSemuaKelas(int $kelas, Request $request)
-    {
-        [$tahun, $semester] = $this->resolveTahunSemester($request);
-
-        // Fetch Siswa with ALL necessary relations pre-loaded for bulk print (Eager Loading)
-        $siswaList = Enrollment::where('kelas', $kelas)
-            ->where('tahun_ajaran', $tahun)
-            ->with([
-                'siswa.infoPribadi',
-                'siswa.raportNilai' => function($q) use ($tahun, $semester) {
-                    $q->where('tahun_ajaran', $tahun)->where('semester', $semester)->with(['mapelNilai.mapel', 'praktik']);
-                },
-                'siswa.raportJilid' => function($q) use ($tahun, $semester) {
-                    $q->where('tahun_ajaran', $tahun)->where('semester', $semester);
-                },
-                'siswa.raportTahfidz' => function($q) use ($tahun, $semester) {
-                    $q->where('tahun_ajaran', $tahun)->where('semester', $semester);
-                }
-            ])
-            ->get()
-            ->pluck('siswa')
-            ->filter()
-            ->sortBy('nama');
-
-        \Illuminate\Support\Facades\View::share('is_cetak_semua', true);
-        $htmlPages = [];
-
-        foreach ($siswaList as $siswa) {
-            $raport = $siswa->raportNilai->first(); 
-
-            if (!$raport) continue;
-
-            // Reuse existing methods which now handle pre-loaded models
-            $htmlPages[] = $this->cetakSiswa($raport)->render();
-            $htmlPages[] = $this->cetakPraktik($raport)->render();
-
-            if ($siswa->raportJilid->count() > 0) {
-                $jilidReq = new Request();
-                $jilidReq->merge(['tahun_ajaran' => $tahun, 'semester' => $semester]);
-                $htmlPages[] = $this->cetakJilid($siswa, $jilidReq)->render();
-            }
-
-            if ($siswa->raportTahfidz->count() > 0) {
-                $tahfidzReq = new Request();
-                $tahfidzReq->merge(['tahun_ajaran' => $tahun, 'semester' => $semester]);
-                $htmlPages[] = $this->cetakTahfidz($siswa, $tahfidzReq)->render();
-            }
-        }
-
-        return view('admin.raport.cetak_semua_kelas', [
-            'htmlPages' => $htmlPages,
-            'kelas' => $kelas
-        ]);
-    }
 
     public function cetakPraktik($idOrModel)
     {

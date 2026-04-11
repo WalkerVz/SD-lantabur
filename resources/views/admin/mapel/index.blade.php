@@ -3,7 +3,7 @@
 @section('title', 'Manajemen Mata Pelajaran')
 
 @section('content')
-<div class="max-w-6xl mx-auto" x-data="mapelPage()">
+<div class="max-w-6xl mx-auto" x-data="mapelPage({{ $nextUrutan }})">
     <div class="flex flex-col sm:flex-row sm:items-center justify-between mb-8 gap-4">
         <div>
             <h1 class="text-2xl sm:text-3xl font-bold text-gray-900 leading-tight">Manajemen Mata Pelajaran</h1>
@@ -87,12 +87,11 @@
                                     </button>
                                     @endif
                                     @if(\App\Models\FeatureAccess::can(auth()->user()->role ?? 'admin', 'mapel.delete'))
-                                    <form action="{{ route('admin.mapel.destroy', $m->id) }}" method="POST" onsubmit="return confirm('Hapus mata pelajaran ini?')">
-                                        @csrf @method('DELETE')
-                                        <button type="submit" class="p-1.5 sm:p-2 text-red-600 hover:bg-red-50 rounded-lg transition" title="Hapus">
-                                            <svg class="w-4 h-4 sm:w-5 sm:h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"/></svg>
-                                        </button>
-                                    </form>
+                                    <button type="button"
+                                        @click="confirmDelete('{{ route('admin.mapel.destroy', $m->id) }}', '{{ addslashes($m->nama) }}')"
+                                        class="p-1.5 sm:p-2 text-red-600 hover:bg-red-50 rounded-lg transition" title="Hapus">
+                                        <svg class="w-4 h-4 sm:w-5 sm:h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"/></svg>
+                                    </button>
                                     @endif
                                 </div>
                             </td>
@@ -161,21 +160,56 @@
         </div>
     </div>
 
+    {{-- Modal Konfirmasi Hapus Mapel --}}
+    <div x-show="deleteConfirmOpen" x-cloak class="fixed inset-0 z-[70] overflow-y-auto" role="dialog" aria-modal="true">
+        <div class="flex min-h-screen items-center justify-center p-4">
+            <div x-show="deleteConfirmOpen" class="fixed inset-0 bg-gray-900/60 backdrop-blur-sm" @click="deleteConfirmOpen = false"></div>
+            <div x-show="deleteConfirmOpen" x-transition class="relative bg-white rounded-2xl shadow-2xl max-w-md w-full p-6 text-center">
+                <div class="mx-auto w-14 h-14 rounded-full bg-red-100 flex items-center justify-center mb-4">
+                    <svg class="w-8 h-8 text-red-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"/></svg>
+                </div>
+                <h3 class="text-lg font-bold text-gray-900 mb-2">Hapus Mata Pelajaran?</h3>
+                <p class="text-gray-600 text-sm mb-6 leading-relaxed">
+                    Anda yakin ingin menghapus mata pelajaran
+                    <strong x-text="deleteConfirmNama" class="text-red-700"></strong>?
+                    <br><span class="text-xs text-gray-400 mt-1 block">Semua nilai siswa yang terkait juga akan ikut terhapus.</span>
+                </p>
+                <div class="flex gap-3">
+                    <button type="button" @click="deleteConfirmOpen = false" class="flex-1 px-5 py-2.5 bg-gray-100 text-gray-700 rounded-xl font-medium hover:bg-gray-200 transition">Batal</button>
+                    <form :action="deleteConfirmUrl" method="POST" x-ref="deleteForm">
+                        @csrf @method('DELETE')
+                        <button type="submit" class="w-full px-5 py-2.5 bg-red-600 text-white rounded-xl font-bold hover:bg-red-700 transition shadow-lg shadow-red-200">Ya, Hapus</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
 
 </div>
 
 
 @push('scripts')
 <script>
-function mapelPage() {
+function mapelPage(nextUrutan = 1) {
     return {
         modalOpen: false,
         editId: null,
         formData: {
             nama: '',
             kkm: 70,
-            urutan: 1,
+            urutan: nextUrutan,
             is_aktif: 1
+        },
+
+        // Konfirmasi hapus
+        deleteConfirmOpen: false,
+        deleteConfirmUrl: '',
+        deleteConfirmNama: '',
+
+        confirmDelete(url, nama) {
+            this.deleteConfirmUrl = url;
+            this.deleteConfirmNama = nama;
+            this.deleteConfirmOpen = true;
         },
 
         openModal(data = null) {
@@ -192,7 +226,7 @@ function mapelPage() {
                 this.formData = {
                     nama: '',
                     kkm: 70,
-                    urutan: 1,
+                    urutan: nextUrutan,
                     is_aktif: 1
                 };
             }

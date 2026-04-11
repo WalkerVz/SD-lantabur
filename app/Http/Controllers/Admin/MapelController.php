@@ -26,9 +26,13 @@ class MapelController extends Controller
             ->orderBy('urutan')
             ->get();
 
+        // Urutan berikutnya untuk default field "Tambah Mapel"
+        $nextUrutan = $mapels->max('urutan') + 1;
+        if ($nextUrutan < 1) $nextUrutan = 1;
+
         $tahunAjaranList = \App\Models\MasterTahunAjaran::orderBy('urutan')->orderByDesc('nama')->get();
 
-        return view('admin.mapel.index', compact('classes', 'selectedKelas', 'mapels', 'tahunAjaranList'));
+        return view('admin.mapel.index', compact('classes', 'selectedKelas', 'mapels', 'nextUrutan', 'tahunAjaranList'));
     }
 
     public function indexPredikat()
@@ -46,7 +50,18 @@ class MapelController extends Controller
             'urutan' => 'required|integer|min:1',
         ]);
 
-        MasterMapel::create($request->all());
+        $kelas = $request->kelas;
+        $urutan = (int) $request->urutan;
+
+        DB::transaction(function () use ($request, $kelas, $urutan) {
+            // Geser mapel lain yang urutannya >= urutan baru ke bawah
+            MasterMapel::where('kelas', $kelas)
+                ->where('urutan', '>=', $urutan)
+                ->orderBy('urutan', 'desc')
+                ->increment('urutan');
+
+            MasterMapel::create($request->only('nama', 'kelas', 'kkm', 'urutan'));
+        });
 
         return back()->with('success', 'Mata pelajaran berhasil ditambahkan.');
     }
@@ -61,7 +76,29 @@ class MapelController extends Controller
             'is_aktif' => 'required|boolean',
         ]);
 
-        $mapel->update($request->all());
+        $oldUrutan = (int) $mapel->urutan;
+        $newUrutan = (int) $request->urutan;
+        $kelas = $mapel->kelas;
+
+        DB::transaction(function () use ($mapel, $request, $oldUrutan, $newUrutan, $kelas) {
+            if ($oldUrutan !== $newUrutan) {
+                if ($newUrutan < $oldUrutan) {
+                    // Mapel naik ke atas: geser mapel di antara posisi baru & lama ke bawah
+                    MasterMapel::where('kelas', $kelas)
+                        ->where('id', '!=', $mapel->id)
+                        ->whereBetween('urutan', [$newUrutan, $oldUrutan - 1])
+                        ->increment('urutan');
+                } else {
+                    // Mapel turun ke bawah: geser mapel di antara posisi lama & baru ke atas
+                    MasterMapel::where('kelas', $kelas)
+                        ->where('id', '!=', $mapel->id)
+                        ->whereBetween('urutan', [$oldUrutan + 1, $newUrutan])
+                        ->decrement('urutan');
+                }
+            }
+
+            $mapel->update($request->only('nama', 'kkm', 'urutan', 'is_aktif'));
+        });
 
         return back()->with('success', 'Mata pelajaran berhasil diperbarui.');
     }
@@ -69,18 +106,9 @@ class MapelController extends Controller
     public function destroy($id)
     {
         $mapel = MasterMapel::findOrFail($id);
-        
-        $hasValue = $mapel->nilai()
-            ->whereNotNull('nilai')
-            ->where('nilai', '!=', '')
-            ->exists();
-
-        if ($hasValue) {
-            return back()->with('error', 'Mata pelajaran tidak dapat dihapus karena sudah memiliki nilai di raport siswa.');
-        }
 
         DB::transaction(function () use ($mapel) {
-            // Jika hanya ada record kosong, hapus record kosongnya dulu agar tidak orphan
+            // Hapus semua record nilai terkait (termasuk yang sudah terisi)
             $mapel->nilai()->delete();
             $mapel->delete();
         });
@@ -152,18 +180,8 @@ class MapelController extends Controller
     {
         $item = MasterPraktik::findOrFail($id);
 
-        $hasValue = RaportPraktik::where('section', $item->section)
-            ->where('kategori', $item->kategori)
-            ->whereNotNull('nilai')
-            ->where('nilai', '!=', '')
-            ->exists();
-
-        if ($hasValue) {
-            return back()->with('error', 'Kategori ini tidak bisa dihapus karena sudah memiliki nilai di raport siswa.');
-        }
-
         DB::transaction(function () use ($item) {
-            // Hapus record kosong yang tersisa di raport_praktik
+            // Hapus semua record di raport_praktik terkait (termasuk yang sudah terisi)
             RaportPraktik::where('section', $item->section)
                 ->where('kategori', $item->kategori)
                 ->delete();
@@ -221,33 +239,15 @@ class MapelController extends Controller
     {
         $item = MasterMateriJilid::findOrFail($id);
 
-        // Fetch reports that contain this material name
+        // Ambil semua raport yang mengandung materi ini
         $allReports = RaportJilid::whereJsonContains('materi', ['materi' => $item->materi])->get();
-        $hasValue = false;
-        
-        foreach ($allReports as $r) {
-            $materiList = $r->materi ?? [];
-            foreach ($materiList as $m) {
-                // HANYA blokir jika materi DAN jilid-nya sama (case-insensitive untuk jilid agar aman)
-                if (($m['materi'] ?? '') === $item->materi && strcasecmp($m['jilid'] ?? '', $item->jilid) === 0) {
-                    if (!empty($m['nilai']) || !empty($m['keterangan'])) {
-                        $hasValue = true;
-                        break 2;
-                    }
-                }
-            }
-        }
 
-        if ($hasValue) {
-            return back()->with('error', 'Materi ini tidak bisa dihapus karena sudah memiliki nilai/keterangan di raport siswa.');
-        }
-
-        // Cleanup: Hapus entry materi kosong dari semua raport siswa
+        // Cleanup: Hapus entry materi dari semua raport siswa (termasuk yang sudah terisi)
         DB::transaction(function () use ($item, $allReports) {
             foreach ($allReports as $r) {
                 $materiList = $r->materi ?? [];
                 $newList = array_values(array_filter($materiList, function($m) use ($item) {
-                    // Filter out only the exact match of materi + jilid
+                    // Filter out the exact match of materi + jilid
                     return !(($m['materi'] ?? '') === $item->materi && strcasecmp($m['jilid'] ?? '', $item->jilid) === 0);
                 }));
                 
@@ -299,27 +299,10 @@ class MapelController extends Controller
     {
         $item = MasterMateriTahfidz::findOrFail($id);
 
-        // Fetch reports that contain this material name
+        // Ambil semua raport yang mengandung materi ini
         $allReports = RaportTahfidz::whereJsonContains('materi', ['materi' => $item->materi])->get();
-        $hasValue = false;
 
-        foreach ($allReports as $r) {
-            $materiList = $r->materi ?? [];
-            foreach ($materiList as $m) {
-                if (($m['materi'] ?? '') === $item->materi && strcasecmp($m['jilid'] ?? '', $item->jilid) === 0) {
-                    if (!empty($m['nilai']) || !empty($m['keterangan'])) {
-                        $hasValue = true;
-                        break 2;
-                    }
-                }
-            }
-        }
-
-        if ($hasValue) {
-            return back()->with('error', 'Materi ini tidak bisa dihapus karena sudah memiliki nilai/keterangan di raport siswa.');
-        }
-
-        // Cleanup: Hapus entry materi kosong dari semua raport siswa
+        // Cleanup: Hapus entry materi dari semua raport siswa (termasuk yang sudah terisi)
         DB::transaction(function () use ($item, $allReports) {
             foreach ($allReports as $r) {
                 $materiList = $r->materi ?? [];

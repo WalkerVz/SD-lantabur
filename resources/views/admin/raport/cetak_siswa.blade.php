@@ -463,34 +463,53 @@
     </div>
 
     <!-- TANDA TANGAN -->
+    @if(strtoupper($raport->semester ?? '') == 'GENAP')
+    {{-- Semester Genap: 3 kolom (Ortu | Kepala Sekolah | Wali Kelas) --}}
     <table class="umum-sign">
         <tr>
             <td>
                 <p>Mengetahui,<br>Orang Tua/Wali</p>
             </td>
-            <td style="padding-top: 30px;">
-                @if(strtoupper($raport->semester ?? '') == 'GENAP')
+            <td>
                 <p>Kepala Sekolah</p>
-                @endif
             </td>
             <td>
                 <p>Pekanbaru, {{ $tanggal_cetak ?? date('d F Y') }}<br>Wali Kelas {{ \App\Models\Siswa::getNamaKelas($raport->kelas ?? 0) }}</p>
             </td>
         </tr>
         <tr>
-            <td style="padding-top: 50px;">
+            <td style="padding-top: 55px;">
                 <p><b>{{ strtoupper($signatures['ortu'] ?? '_______________') }}</b></p>
             </td>
-            <td style="padding-top: 80px;">
-                @if(strtoupper($raport->semester ?? '') == 'GENAP')
+            <td style="padding-top: 55px;">
                 <p><b>{{ strtoupper($signatures['kepala_sekolah'] ?? 'KASMIDAR, S.Pd') }}</b><br>{{ $signatures['niy_kepala'] ?? 'NIY. 2403001' }}</p>
-                @endif
             </td>
-            <td style="padding-top: 50px;">
+            <td style="padding-top: 55px;">
                 <p><b>{{ strtoupper($signatures['wali_kelas'] ?? '_______________') }}</b><br>{{ $signatures['niy_wali'] ?? '' }}</p>
             </td>
         </tr>
     </table>
+    @else
+    {{-- Semester Ganjil: 2 kolom (Ortu | Wali Kelas) --}}
+    <table class="umum-sign" style="width: 80%; margin-left: auto; margin-right: auto;">
+        <tr>
+            <td>
+                <p>Mengetahui,<br>Orang Tua/Wali</p>
+            </td>
+            <td>
+                <p>Pekanbaru, {{ $tanggal_cetak ?? date('d F Y') }}<br>Wali Kelas {{ \App\Models\Siswa::getNamaKelas($raport->kelas ?? 0) }}</p>
+            </td>
+        </tr>
+        <tr>
+            <td style="padding-top: 55px;">
+                <p><b>{{ strtoupper($signatures['ortu'] ?? '_______________') }}</b></p>
+            </td>
+            <td style="padding-top: 55px;">
+                <p><b>{{ strtoupper($signatures['wali_kelas'] ?? '_______________') }}</b><br>{{ $signatures['niy_wali'] ?? '' }}</p>
+            </td>
+        </tr>
+    </table>
+    @endif
 
     <!-- TOMBOL CETAK -->
     <div class="no-print" style="margin-top: 30px; text-align: center;">
