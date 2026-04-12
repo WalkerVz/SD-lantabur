@@ -172,5 +172,7 @@ Route::prefix('admin')->name('admin.')->group(function () {
 
         Route::get('master-kelas', [MasterKelasController::class, 'index'])->name('master-kelas.index');
         Route::put('master-kelas/{id}', [MasterKelasController::class, 'update'])->name('master-kelas.update');
+
+        Route::get('visitor-log', [\App\Http\Controllers\Admin\VisitorLogController::class, 'index'])->name('visitor-log.index');
     });
 });

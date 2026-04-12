@@ -20,6 +20,32 @@ class DashboardController extends Controller
         
         $totalBerita = Berita::count();
 
-        return view('admin.dashboard', compact('totalGuru', 'totalSiswa', 'totalBerita'));
+        // Data Web Traffic
+        $pengunjungHariIni = \App\Models\WebTraffic::whereDate('date', today())->value('visits') ?? 0;
+        $pengunjungBulanIni = \App\Models\WebTraffic::whereMonth('date', date('m'))->whereYear('date', date('Y'))->sum('visits');
+        $totalPengunjung = \App\Models\WebTraffic::sum('visits');
+
+        // Data Grafik 7 Hari Terakhir
+        $grafikTraffic = \App\Models\WebTraffic::where('date', '>=', today()->subDays(6))
+            ->orderBy('date', 'asc')
+            ->get();
+            
+        $chartLabels = [];
+        $chartData = [];
+        for ($i = 6; $i >= 0; $i--) {
+            $dateString = today()->subDays($i)->format('Y-m-d');
+            $chartLabels[] = today()->subDays($i)->format('d M');
+            
+            $visit = $grafikTraffic->first(function ($item) use ($dateString) {
+                $itemDate = is_string($item->date) ? $item->date : $item->date->format('Y-m-d');
+                return str_starts_with($itemDate, $dateString);
+            });
+            $chartData[] = $visit ? $visit->visits : 0;
+        }
+
+        return view('admin.dashboard', compact(
+            'totalGuru', 'totalSiswa', 'totalBerita', 
+            'pengunjungHariIni', 'pengunjungBulanIni', 'totalPengunjung', 'chartLabels', 'chartData'
+        ));
     }
 }
