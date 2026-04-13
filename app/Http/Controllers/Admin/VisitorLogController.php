@@ -9,9 +9,22 @@ use App\Models\VisitorLog;
 
 class VisitorLogController extends Controller
 {
-    public function index()
+    public function index(Request $request)
     {
-        $logs = VisitorLog::orderBy('created_at', 'desc')->paginate(50);
+        $query = VisitorLog::query();
+
+        // Filter IP Address (Partial Match)
+        if ($request->filled('ip')) {
+            $query->where('ip_address', 'like', '%' . $request->ip . '%');
+        }
+
+        // Filter Date
+        if ($request->filled('date')) {
+            $query->whereDate('created_at', $request->date);
+        }
+
+        $logs = $query->orderBy('created_at', 'desc')->paginate(10)->withQueryString();
+        
         return view('admin.visitor-log.index', compact('logs'));
     }
 }
