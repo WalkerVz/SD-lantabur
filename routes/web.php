@@ -25,7 +25,7 @@ Route::get('/news', [PageController::class, 'news']);
 Route::get('/news/{id}', [PageController::class, 'newsShow'])->name('news.show');
 Route::get('/gallery', [PageController::class, 'gallery']);
 
-Route::prefix('admin')->name('admin.')->group(function () {
+Route::prefix('adminLantabur')->name('admin.')->group(function () {
     Route::get('login', [LoginController::class, 'showLoginForm'])->name('login');
     Route::post('login', [LoginController::class, 'login'])->name('login.submit');
     Route::post('logout', [LoginController::class, 'logout'])->name('logout')->middleware('admin');
@@ -175,4 +175,20 @@ Route::prefix('admin')->name('admin.')->group(function () {
 
         Route::get('visitor-log', [\App\Http\Controllers\Admin\VisitorLogController::class, 'index'])->name('visitor-log.index');
     });
+});
+
+// Shortcut routes for shared hosting setups (Storage link, optimize, dll)
+// Sebaiknya dihapus atau dikomentari setelah berhasil dijalankan di hosting
+Route::get('/artisan-setup', function() {
+    try {
+        \Illuminate\Support\Facades\Artisan::call('storage:link');
+        $storage = "Storage Linked successfully. <br>";
+        
+        \Illuminate\Support\Facades\Artisan::call('optimize:clear');
+        $optimize = "Cache cleared and optimized successfully. <br>";
+        
+        return $storage . $optimize . "Setup Complete!";
+    } catch (\Exception $e) {
+        return "Error: " . $e->getMessage();
+    }
 });

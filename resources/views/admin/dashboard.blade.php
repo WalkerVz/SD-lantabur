@@ -8,7 +8,7 @@
     <div class="flex flex-col md:flex-row md:items-end justify-between gap-4">
         <div>
             <h1 class="text-3xl font-bold text-gray-800 tracking-tight">Dashboard Overview</h1>
-            <p class="text-gray-500 mt-1 font-medium">Selamat datang kembali, <span class="text-[#47663D]">{{ Auth::user()->name }}</span></p>
+            <p class="text-gray-500 mt-1 font-medium">Selamat datang kembali, <span class="text-[#47663D]">{{ auth()->user()?->name ?? 'Pengguna' }}</span></p>
         </div>
         <div class="hidden md:flex items-center gap-2 text-sm text-gray-400 bg-white px-4 py-2 rounded-lg border border-gray-100 shadow-sm">
             <svg class="w-4 h-4 text-[#47663D]" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"/></svg>
